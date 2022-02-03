@@ -16,13 +16,13 @@ import javax.swing.JFileChooser;
  *
  */
 public class FloorSubsytem implements Runnable {
-//	private Scheduler s;
+	private Scheduler scheduler;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();
 	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();
 	
-//	public FloorSubsystem (Scheduler s) {
-//		this.s = s;
-//	}
+	public FloorSubsytem (Scheduler scheduler) {
+		this.scheduler = scheduler;
+	}
 
 	/**
 	 * @param args
@@ -83,9 +83,14 @@ public class FloorSubsytem implements Runnable {
 	public void run() {
 		while(true)
 		{
-			synchronized(s)
+			synchronized(scheduler)
 			{
-                s.addRequest(requests);
+				scheduler.putRequests(requests);
+			}
+			synchronized(scheduler)
+			{
+                arrivalSensors.put(scheduler.getArrivalSensor(), false);
+                scheduler.notifyAll();
 			}
 		}
 	}

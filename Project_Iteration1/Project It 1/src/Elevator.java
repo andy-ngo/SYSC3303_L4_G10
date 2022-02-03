@@ -2,7 +2,7 @@
 public class Elevator implements Runnable 
 {
 
-	private Scheduler s;
+	private Scheduler scheduler;
 	private Elevator_Motor motor;
 	private int tot_Floors = 13;
 	private int id;
@@ -12,9 +12,9 @@ public class Elevator implements Runnable
 	private int lamp_Num = 0;
 	private int curr_Floor = 0;
 	
-	public Elevator(int id, int curr_Floor, boolean open_Door)
+	public Elevator(Scheduler scheduler, int id, int curr_Floor, boolean open_Door)
 	{
-		this.s = s;
+		this.scheduler = scheduler;
 		this.curr_Floor = 1;
 		this.lamp_Num = curr_Floor;
 		this.open_Door = open_Door;

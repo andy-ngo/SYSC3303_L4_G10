@@ -1,77 +1,68 @@
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
- * @author schararaislam
+ * @author Ali Fahd
  *
  */
-public class Scheduler implements Runnable {
-	private String[] communication = new String[] { null, null };
-	private boolean empty = true; 
+public class Scheduler {
+	private ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();
+	private int ASNumber = 0;
+	private boolean emptyRequests = true; 
+	private boolean emptyArrivalSensor = true; 
 
 
-	// using the synchronized with Floorsubsystem to communicate with the elevator thread
-	public synchronized void FloorSystem(String[] floorcom) {
-		while (!empty) {
+	public synchronized void putRequests(ArrayList<FloorRequest> requests) {
+		while (!emptyRequests) {
 			try {
-				this.wait();
+				wait();
 			} catch (InterruptedException e) {
 				System.out.println(e);
 			}
 		}
-		communication[0] = floorcom[0];
-		communication[1] = floorcom[1];
-		empty = false;
-		System.out.println("Floor System " + Thread.currentThread().getName());
+		this.requests = requests;
+		emptyRequests = false;
+		System.out.println("Requests issued to scheduler.");
 		notifyAll();
-
 	}
 
-	public synchronized String[] ElevatorSystem(String[] elevatorcom) {
-		while (!empty) {
+	public synchronized ArrayList<FloorRequest> getRequests() {
+		while (emptyRequests) {
 			try {
-				this.wait();
+				wait();
 			} catch (InterruptedException e) {
 				System.out.println(e);
 			}
 		}
-		communication[0] = elevatorcom[0];
-		communication[1] = elevatorcom[1];
-		empty = false;
-		System.out.println("Elevator System " + Thread.currentThread().getName());
+		System.out.println("Requests handed off to elevator.");
+		emptyRequests = true;
 		notifyAll();
-}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+		return requests;
 	}
 	
-	
-/*
-	public synchronized void FloorSubsystem() {
-		while (empty) {
+	public synchronized void putArrivalSensor(int ASNumber) {
+		while (!emptyArrivalSensor) {
 			try {
-				this.wait();
+				wait();
 			} catch (InterruptedException e) {
-				return;
+				System.out.println(e);
 			}
-		
-		notifyAll();
 		}
-	}
-	*/
-	/*
-	public synchronized void ElevatorSystem() {
-		while (empty) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				return;
-			}
-		
+		this.ASNumber = ASNumber;
+		emptyArrivalSensor = false;
 		notifyAll();
 	}
-	*/
-	
-	
 
+	public synchronized int getArrivalSensor() {
+		while (emptyArrivalSensor) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				System.out.println(e);
+			}
+		}
+		emptyArrivalSensor = true;
+		notifyAll();
+		return ASNumber;
+	}
 }
