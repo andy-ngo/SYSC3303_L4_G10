@@ -6,20 +6,21 @@ public class Elevator implements Runnable
 	private Elevator_Motor motor;
 	private int tot_Floors = 13;
 	private int id;
-	
+	private boolean buttons[];
 	private boolean open_Door = false;
 	private boolean lamp = false;
 	private int lamp_Num = 0;
 	private int curr_Floor = 0;
 	
-	public Elevator(Scheduler s, boolean open_Door)
+	public Elevator(int id, int curr_Floor, boolean open_Door)
 	{
 		this.s = s;
 		this.curr_Floor = 1;
 		this.lamp_Num = curr_Floor;
-		this.open_Door = false;
+		this.open_Door = open_Door;
 		this.motor = Elevator_Motor.Stop;
 		buttons = new boolean[tot_Floors];
+		
 	}
 	
 	public boolean check()
@@ -27,20 +28,22 @@ public class Elevator implements Runnable
 		if(lamp == false && s.request() == true)
 		{
 			//go to floor
-			while(lamp_Num != s.get_Floor())
+			while(curr_Floor != s.get_Floor())
 			{
 				lamp = true;
-				if(lamp_Num < s.get_Floor())
+				if(curr_Floor < s.get_Floor())
 				{
 					go_Up();
-					lamp_Num++;
-					return true;
+					curr_Floor++;
+					s.floor_Change(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
 				}
 				if(lamp_Num > s.get_Floor())
 				{
 					go_Down();
-					lamp_Num--;
-					return true;
+					curr_Floor--;
+					s.floor_Change(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
 				}
 			}	
 			//get to floor
@@ -51,29 +54,46 @@ public class Elevator implements Runnable
 		return false;
 	}
 	
-	public void button_pressed(boolean buttons[])
+	public void button_pressed(int button_Num)
 	{
 		//will check if there is another floor button on queue and will go to the closest floor
-		s.next_floor();
-
+		this.buttons[button_Num-1] = true;
+		s.next_Floor();
+		check();
 	}
 	
-	private void go_Up()
+	private boolean go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
 		System.out.println("Going up");
+		return true;
 	}
 	
-	private void go_Down()
+	private boolean go_Down()
 	{
 		this.motor = Elevator_Motor.Down;
 		System.out.println("Going down");
+		return true;
 	}
 	
-	private void stop()
+	private boolean stop()
 	{
 		this.motor = Elevator_Motor.Stop;
+		s.arrival();
 		System.out.println("Floor reached");
+		notifyAll();
+		return true;
+	}
+	
+	private boolean closeDoor()
+	{
+		this.open_Door = false;
+		return true;
+	}
+	
+	public int getCurrentFloor()
+	{
+		return this.curr_Floor;
 	}
 	
 	@Override
