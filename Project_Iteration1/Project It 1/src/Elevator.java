@@ -105,6 +105,7 @@ public class Elevator implements Runnable
 	
 	private boolean closeDoor()
 	{
+		//testing
 		this.open_Door = false;
 		return true;
 	}
