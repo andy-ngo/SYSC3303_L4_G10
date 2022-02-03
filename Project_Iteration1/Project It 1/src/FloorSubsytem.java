@@ -81,5 +81,12 @@ public class FloorSubsytem implements Runnable {
 
 	@Override
 	public void run() {
+		while(true)
+		{
+			synchronized(s)
+			{
+                s.addRequest(requests);
+			}
+		}
 	}
 }
