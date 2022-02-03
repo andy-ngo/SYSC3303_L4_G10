@@ -3,9 +3,10 @@ public class Elevator implements Runnable
 {
 
 	private Scheduler s;
-	public enum motor_Movement{down,stop,up};
-	private motor_Movement motor;
-	private int id = 0;
+	private Elevator_Motor motor;
+	private int tot_Floors = 13;
+	private int id;
+	
 	private boolean open_Door = false;
 	private boolean lamp = false;
 	private int lamp_Num = 0;
@@ -14,7 +15,11 @@ public class Elevator implements Runnable
 	public Elevator(Scheduler s, boolean open_Door)
 	{
 		this.s = s;
-		this.open_Door = open_Door;
+		this.curr_Floor = 1;
+		this.lamp_Num = curr_Floor;
+		this.open_Door = false;
+		this.motor = Elevator_Motor.Stop;
+		buttons = new boolean[tot_Floors];
 	}
 	
 	public boolean check()
@@ -24,6 +29,7 @@ public class Elevator implements Runnable
 			//go to floor
 			while(lamp_Num != s.get_Floor())
 			{
+				lamp = true;
 				if(lamp_Num < s.get_Floor())
 				{
 					go_Up();
@@ -38,35 +44,35 @@ public class Elevator implements Runnable
 				}
 			}	
 			//get to floor
+			lamp = false;
 			open_Door = true;
 			return true;
 		}
 		return false;
 	}
 	
-	public void button_pressed(Floor f)
+	public void button_pressed(boolean buttons[])
 	{
 		//will check if there is another floor button on queue and will go to the closest floor
 		s.next_floor();
-		
-		
+
 	}
 	
 	private void go_Up()
 	{
-		motor.up;
+		this.motor = Elevator_Motor.Up;
 		System.out.println("Going up");
 	}
 	
 	private void go_Down()
 	{
-		motor.down;
+		this.motor = Elevator_Motor.Down;
 		System.out.println("Going down");
 	}
 	
 	private void stop()
 	{
-		motor.stop;
+		this.motor = Elevator_Motor.Stop;
 		System.out.println("Floor reached");
 	}
 	
