@@ -38,7 +38,7 @@ public class Elevator implements Runnable
 					s.floor_Change(getCurrentFloor());
 					System.out.println("Lamp Number" + curr_Floor);
 				}
-				if(lamp_Num > s.get_Floor())
+				if(curr_Floor > s.get_Floor())
 				{
 					go_Down();
 					curr_Floor--;
@@ -59,7 +59,25 @@ public class Elevator implements Runnable
 		//will check if there is another floor button on queue and will go to the closest floor
 		this.buttons[button_Num-1] = true;
 		s.next_Floor();
-		check();
+		
+		while(curr_Floor != button_Num)
+		{
+			lamp = true;
+			if(curr_Floor < button_Num)
+			{
+				go_Up();
+				curr_Floor++;
+				s.floor_Change(getCurrentFloor());
+				System.out.println("Lamp Number" + curr_Floor);
+			}
+			if(curr_Floor > button_Num)
+			{
+				go_Down();
+				curr_Floor--;
+				s.floor_Change(getCurrentFloor());
+				System.out.println("Lamp Number" + curr_Floor);
+			}
+		}
 	}
 	
 	private boolean go_Up()
