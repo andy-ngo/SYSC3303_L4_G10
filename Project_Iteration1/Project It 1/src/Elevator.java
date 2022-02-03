@@ -23,27 +23,30 @@ public class Elevator implements Runnable
 		
 	}
 	
-	public boolean check()
+	public boolean operate_Check()
 	{
 		if(lamp == false && s.request() == true)
 		{
 			//go to floor
 			while(curr_Floor != s.get_Floor())
 			{
-				lamp = true;
-				if(curr_Floor < s.get_Floor())
+				synchronized(s)
 				{
-					go_Up();
-					curr_Floor++;
-					s.floor_Change(getCurrentFloor());
-					System.out.println("Lamp Number" + curr_Floor);
-				}
-				if(lamp_Num > s.get_Floor())
-				{
-					go_Down();
-					curr_Floor--;
-					s.floor_Change(getCurrentFloor());
-					System.out.println("Lamp Number" + curr_Floor);
+					lamp = true;
+					if(curr_Floor < s.get_Floor())
+					{
+						go_Up();
+						curr_Floor++;
+						s.floor_Change(getCurrentFloor());
+						System.out.println("Lamp Number" + curr_Floor);
+					}
+					if(curr_Floor > s.get_Floor())
+					{
+						go_Down();
+						curr_Floor--;
+						s.floor_Change(getCurrentFloor());
+						System.out.println("Lamp Number" + curr_Floor);
+					}
 				}
 			}	
 			//get to floor
@@ -58,14 +61,43 @@ public class Elevator implements Runnable
 	{
 		//will check if there is another floor button on queue and will go to the closest floor
 		this.buttons[button_Num-1] = true;
-		s.next_Floor();
-		check();
+		//schedule class will add the button number to the queue for the next floor it will go to
+		s.next_Floor(button_Num);
+		
+		while(curr_Floor != s.get_Floor)
+		{
+			lamp = true;
+			synchronized(s)
+			{
+				if(curr_Floor < s.get_Floor)
+				{
+					go_Up();
+					curr_Floor++;
+					s.floor_Change(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
+				}
+				if(curr_Floor > s.get_Floor)
+				{
+					go_Down();
+					curr_Floor--;
+					s.floor_Change(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
+				}
+			}
+			
+		}
+		//button will turn off
+		this.buttons[button_Num] = false;
+		lamp = false;
+		open_Door = true;
+		
 	}
 	
 	private boolean go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
 		System.out.println("Going up");
+		notifyAll();
 		return true;
 	}
 	
@@ -73,10 +105,11 @@ public class Elevator implements Runnable
 	{
 		this.motor = Elevator_Motor.Down;
 		System.out.println("Going down");
+		notifyAll();
 		return true;
 	}
 	
-	private boolean stop()
+	private synchronized boolean stop()
 	{
 		this.motor = Elevator_Motor.Stop;
 		s.arrival();
@@ -103,7 +136,14 @@ public class Elevator implements Runnable
 		{
 			synchronized(s)
 			{
-				
+				if(operate_Check())
+				{
+					button_pressed(s.request_Floor());
+				}
+				else
+				{
+					s.notifyAll();
+				}
 			}
 		}
 	}
