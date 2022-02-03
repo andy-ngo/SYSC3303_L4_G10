@@ -16,8 +16,13 @@ import javax.swing.JFileChooser;
  *
  */
 public class FloorSubsytem implements Runnable {
+//	private Scheduler s;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();
 	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();
+	
+//	public FloorSubsystem (Scheduler s) {
+//		this.s = s;
+//	}
 
 	/**
 	 * @param args
