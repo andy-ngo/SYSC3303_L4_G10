@@ -1,18 +1,16 @@
-README
+# SYSC 3303 Project Iteration 1 
+# L4 Group 10
 
-SYSC 3303 Project Iteration 1 
-L4 Group 10
+## Group Members:
+ - Ali Fahd
+ - Andy Ngo 101132278
+ - Karim Mahrous
+ - Scharara Islam 101149731
 
-Group Members:
-Ali Fahd
-Andy Ngo
-Karim Mahrous
-Scharara Islam 101149731
-
-How to Run:
+## How to Run:
 To run the application, use Main.java
 
-Source Code:
+## Source Code:
 
 Main.java
 
@@ -31,16 +29,16 @@ A class that can create, delete, and clear floor request as well as sending data
 Scheduler.java
 A class that act as a server to communicate with the Elevator class and the Floor Subsystem class by using thread.
 
-Breakdown of Responsibilities:
-Ali Fahd:
+## Breakdown of Responsibilities:
+### Ali Fahd:
  - Created the FloorRequest and FloorSubsystem
 
-Andy Ngo:
+### Andy Ngo:
 - Created the Elevator and Elevator_Motor
 
-Karim Mahrous:
+### Karim Mahrous:
  - UML of Class and Sequence Diagram
 
-Scharara Islam 
+### Scharara Islam 
 - Created Scheduler class and edited by Ali Fahd
 - README
