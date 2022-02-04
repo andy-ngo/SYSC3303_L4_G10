@@ -5,7 +5,8 @@ import java.util.Map;
 /**
  * @author Scharara Islam
  * @author Ali Fahd
- *
+ * A scheduler class that allows to communicate between the Elevator class and FloorSubsystem using Thread.
+ * This class is responsible for accepting request from the Floor and routing the elevator to their requested floor
  */
 public class Scheduler {
 	private ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();
