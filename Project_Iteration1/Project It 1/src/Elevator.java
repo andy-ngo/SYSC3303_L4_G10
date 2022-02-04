@@ -47,13 +47,13 @@ public class Elevator implements Runnable
 				{
 					go_Up();
 					curr_Floor++;
-					System.out.println("Lamp Number" + curr_Floor);
+					System.out.println("Lamp Number " + curr_Floor);
 				}
 				if(curr_Floor > request.get(i).getFloorDestination())
 				{
 					go_Down();
 					curr_Floor--;
-					System.out.println("Lamp Number" + curr_Floor);
+					System.out.println("Lamp Number " + curr_Floor);
 				}
 			}
 			
@@ -78,29 +78,29 @@ public class Elevator implements Runnable
 		
 	}
 	
-	private boolean go_Up()
+	private void go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
 		System.out.println("Going up");
-		notifyAll();
-		return true;
+		//notifyAll();
+		//return true;
 	}
 	
-	private boolean go_Down()
+	private void go_Down()
 	{
 		this.motor = Elevator_Motor.Down;
 		System.out.println("Going down");
-		notifyAll();
-		return true;
+		//notifyAll();
+		//return true;
 	}
 	
-	private synchronized boolean stop()
+	private synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
 		s.putArrivalSensor(curr_Floor,true);
 		System.out.println("Floor reached");
-		notifyAll();
-		return true;
+		//notifyAll();
+		//return true;
 	}
 	
 	private boolean closeDoor()
