@@ -40,5 +40,5 @@ A class that act as a server to communicate with the Elevator class and the Floo
  - UML of Class and Sequence Diagram
 
 ### Scharara Islam 
-- Created Scheduler class and edited by Ali Fahd
+- Created Scheduler class and edited by Ali Fahd and Andy Ngo
 - README
