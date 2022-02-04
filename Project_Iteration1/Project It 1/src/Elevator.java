@@ -68,6 +68,7 @@ public class Elevator implements Runnable
 	public void button_pressed(ArrayList<FloorRequest> request)
 	{
 		//will check if there is another floor button on queue and will go to the closest floor
+		System.out.println("Button Pressed");
 		operate_Check(request);
 		//button will turn off
 		///this.buttons[button_Num] = false;
@@ -116,18 +117,12 @@ public class Elevator implements Runnable
 	@Override
 	public void run()
 	{
+		System.out.println("Elevator");
 		while(true)
 		{
 			synchronized(s)
 			{
-				if(operate_Check(s.getRequests()))
-				{
-					button_pressed(s.getRequests());
-				}
-				else
-				{
-					s.notifyAll();
-				}
+				operate_Check(s.getRequests());
 			}
 		}
 	}
