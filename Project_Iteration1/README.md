@@ -34,10 +34,13 @@ A class that act as a server to communicate with the Elevator class and the Floo
 Breakdown of Responsibilities:
 Ali Fahd:
  - Created the FloorRequest and FloorSubsystem
-Andy Ngo
-: - Created the Elevator and Elevator_Motor
+
+Andy Ngo:
+- Created the Elevator and Elevator_Motor
+
 Karim Mahrous:
  - UML of Class and Sequence Diagram
+
 Scharara Islam 
 - Created Scheduler class and edited by Ali Fahd
 - README
