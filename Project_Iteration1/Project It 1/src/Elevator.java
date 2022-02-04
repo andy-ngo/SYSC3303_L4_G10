@@ -18,9 +18,13 @@ public class Elevator implements Runnable
 	private int lamp_Num = 0;
 	private int curr_Floor = 0;
 	
-	public Elevator(Scheduler s,int id, int curr_Floor, boolean open_Door)
+	public Elevator(Scheduler s)
 	{
 		this.s = s;
+	}
+	
+	public Elevator(int id, int curr_Floor, boolean open_Door)
+	{
 		this.id = id;
 		this.curr_Floor = 1;
 		this.lamp_Num = curr_Floor;
