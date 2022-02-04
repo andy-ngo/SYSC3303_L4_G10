@@ -1,3 +1,9 @@
+/*
+ * Author: Andy Ngo
+ * Student ID: 101132278
+ */
+
+import java.util.ArrayList;
 
 public class Elevator implements Runnable 
 {
@@ -12,9 +18,10 @@ public class Elevator implements Runnable
 	private int lamp_Num = 0;
 	private int curr_Floor = 0;
 	
-	public Elevator(Scheduler scheduler, int id, int curr_Floor, boolean open_Door)
+	public Elevator(Scheduler s,int id, int curr_Floor, boolean open_Door)
 	{
-		this.scheduler = scheduler;
+		this.s = s;
+		this.id = id;
 		this.curr_Floor = 1;
 		this.lamp_Num = curr_Floor;
 		this.open_Door = open_Door;
@@ -25,69 +32,66 @@ public class Elevator implements Runnable
 	
 	public boolean operate_Check()
 	{
-		if(lamp == false && s.request() == true)
+		//go to floor
+		while(curr_Floor != s.getFloor())
 		{
-			//go to floor
-			while(curr_Floor != s.get_Floor())
+			synchronized(s)
 			{
-				synchronized(s)
+				lamp = true;
+				if(curr_Floor < s.getFloor())
 				{
-					lamp = true;
-					if(curr_Floor < s.get_Floor())
-					{
-						go_Up();
-						curr_Floor++;
-						s.floor_Change(getCurrentFloor());
-						System.out.println("Lamp Number" + curr_Floor);
-					}
-					if(curr_Floor > s.get_Floor())
-					{
-						go_Down();
-						curr_Floor--;
-						s.floor_Change(getCurrentFloor());
-						System.out.println("Lamp Number" + curr_Floor);
-					}
+					go_Up();
+					curr_Floor++;
+					s.elevatorUpdate(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
 				}
-			}	
+				if(curr_Floor > s.getFloor())
+				{
+					go_Down();
+					curr_Floor--;
+					s.elevatorUpdate(getCurrentFloor());
+					System.out.println("Lamp Number" + curr_Floor);
+				}
+			}
+		}	
 			//get to floor
-			lamp = false;
-			open_Door = true;
-			return true;
-		}
-		return false;
+		lamp = false;
+		open_Door = true;
+		return true;
 	}
 	
-	public void button_pressed(int button_Num)
+	public void button_pressed(ArrayList<FloorRequest> request)
 	{
 		//will check if there is another floor button on queue and will go to the closest floor
-		this.buttons[button_Num-1] = true;
+		//this.buttons[button_Num-1] = true;
 		//schedule class will add the button number to the queue for the next floor it will go to
-		s.next_Floor(button_Num);
+		s.putRequests(request);
 		
-		while(curr_Floor != s.get_Floor)
+		while(curr_Floor != s.getFloor())
 		{
 			lamp = true;
 			synchronized(s)
 			{
-				if(curr_Floor < s.get_Floor)
+				if(curr_Floor < s.getFloor())
 				{
 					go_Up();
 					curr_Floor++;
-					s.floor_Change(getCurrentFloor());
+					s.elevatorUpdate(getCurrentFloor());
 					System.out.println("Lamp Number" + curr_Floor);
 				}
-				if(curr_Floor > s.get_Floor)
+				if(curr_Floor > s.getFloor())
 				{
 					go_Down();
 					curr_Floor--;
-					s.floor_Change(getCurrentFloor());
+					s.elevatorUpdate(getCurrentFloor());
 					System.out.println("Lamp Number" + curr_Floor);
 				}
 			}
 			
 		}
 		//button will turn off
-		this.buttons[button_Num] = false;
+		///this.buttons[button_Num] = false;
+		stop();
 		lamp = false;
 		open_Door = true;
 		
@@ -112,7 +116,7 @@ public class Elevator implements Runnable
 	private synchronized boolean stop()
 	{
 		this.motor = Elevator_Motor.Stop;
-		s.arrival();
+		s.putArrivalSensor(curr_Floor);
 		System.out.println("Floor reached");
 		notifyAll();
 		return true;
@@ -138,7 +142,7 @@ public class Elevator implements Runnable
 			{
 				if(operate_Check())
 				{
-					button_pressed(s.request_Floor());
+					button_pressed(s.getRequests());
 				}
 				else
 				{

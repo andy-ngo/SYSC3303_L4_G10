@@ -10,6 +10,7 @@ public class Scheduler {
 	private int ASNumber = 0;
 	private boolean emptyRequests = true; 
 	private boolean emptyArrivalSensor = true; 
+	private FloorRequest floorRequest;
 
 
 	public synchronized void putRequests(ArrayList<FloorRequest> requests) {
@@ -64,5 +65,15 @@ public class Scheduler {
 		emptyArrivalSensor = true;
 		notifyAll();
 		return ASNumber;
+	}
+
+	public synchronized int getFloor()
+	{
+		return floorRequest.getFloorDestination();
+	}
+	
+	public synchronized int elevatorUpdate(int floor)
+	{
+		return floor;
 	}
 }
