@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import javax.swing.JFileChooser;
-
-/**
- * 
- */
 
 /**
  * @author Ali Fahd
