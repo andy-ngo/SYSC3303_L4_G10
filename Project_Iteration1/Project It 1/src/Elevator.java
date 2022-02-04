@@ -97,9 +97,13 @@ public class Elevator implements Runnable
 	{
 		System.out.println("Button Pressed");
 		//run the number through the operate check function
+		//this will make requested number pressed true
+		this.buttons[request.get(request.size()-1).getFloorDestination() - 1] = true;
 		operate_Check(request);
 		stop();
 		openDoor();
+		//make the button false after arriving to the floor
+		this.buttons[request.get(request.size()-1).getFloorDestination()] = false;
 	}
 	
 	/*
