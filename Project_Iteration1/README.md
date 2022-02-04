@@ -2,9 +2,9 @@
 # L4 Group 10
 
 ## Group Members:
- - Ali Fahd
+ - Ali Fahd 101107270
  - Andy Ngo 101132278
- - Karim Mahrous
+ - Karim Mahrous 101150894
  - Scharara Islam 101149731
 
 ## How to Run:
@@ -13,25 +13,26 @@ To run the application, use Main.java
 ## Source Code:
 
 Main.java
+CLass that will create instances of each class and run the whole system.
 
 Elevator.java
-A class which allow to operate a function as an elevator in real life as well as synchronizing with the Scheduler System to get request
+A class which allow to operate a function as an elevator in real life as well as synchronizing with the Scheduler System to get request.
 
 Elevator_Moter.java
 A class to represent the function of the elevator to go Up and Down as well as stopping.
 
 FloorRequest.java
-A class that gets to the requested floor for the elevator to go and as well as the time it takes when the elevator was requested
+Data structure for floor requests whicih are imported.
 
 FloorSubsystem.java
-A class that can create, delete, and clear floor request as well as sending data to Scheduler class.
+A class that imports the floor requests and send them to the scheduler. Also updates arrival sensors.
 
 Scheduler.java
-A class that act as a server to communicate with the Elevator class and the Floor Subsystem class by using thread.
+A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
 
 ## Breakdown of Responsibilities:
 ### Ali Fahd:
- - Created the FloorRequest and FloorSubsystem
+ - Created the FloorRequest, FloorSubsystem, and Main
 
 ### Andy Ngo:
 - Created the Elevator and Elevator_Motor
