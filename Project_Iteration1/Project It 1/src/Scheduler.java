@@ -67,4 +67,12 @@ public class Scheduler {
 		notifyAll();
 		return arrivalSensor;
 	}
+	
+	public boolean getEmptyRequests() {
+		return emptyRequests;
+	}
+	
+	public boolean getEmptyArrivalSensor() {
+		return emptyArrivalSensor;
+	}
 }

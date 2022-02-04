@@ -25,21 +25,15 @@ public class FloorSubsytem implements Runnable {
 	 *
 	 * @param fileLocation location of the file
 	 */
-	public static void addFloorRequest() {
-		JFileChooser fileChooser = new JFileChooser(); 
-		
-		int response = fileChooser.showOpenDialog(null);
-		
-		if(response == JFileChooser.APPROVE_OPTION) {
-			File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-			try (Scanner scan = new Scanner(file)){
-				while(scan.hasNextLine()) {
-					String[] requestString = scan.nextLine().split(" ");
-					requests.add(new FloorRequest(requestString[0], Integer.parseInt(requestString[1]), requestString[2], Integer.parseInt(requestString[3])));
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+	public static void addFloorRequest(String filename) {
+		File file = new File(filename);
+		try (Scanner scan = new Scanner(file)){
+			while(scan.hasNextLine()) {
+				String[] requestString = scan.nextLine().split(" ");
+				requests.add(new FloorRequest(requestString[0], Integer.parseInt(requestString[1]), requestString[2], Integer.parseInt(requestString[3])));
 			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 		for(FloorRequest fr: requests) {
 			System.out.println(fr.toString());
@@ -66,10 +60,20 @@ public class FloorSubsytem implements Runnable {
 		// Turn on/off arrival sensor
 		arrivalSensors.put(floor, on);
 	}
+	
+	public Map<Integer, Boolean> getArrivalSensors() {
+		return arrivalSensors;
+	}
 
 	@Override
 	public void run() {
-		addFloorRequest();
+		JFileChooser fileChooser = new JFileChooser(); 
+		
+		int response = fileChooser.showOpenDialog(null);
+		
+		if(response == JFileChooser.APPROVE_OPTION) {
+			addFloorRequest(fileChooser.getSelectedFile().getAbsolutePath());
+		}
 		while(true)
 		{
 			synchronized(scheduler)
