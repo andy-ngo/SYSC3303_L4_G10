@@ -23,13 +23,6 @@ public class FloorSubsytem implements Runnable {
 	public FloorSubsytem (Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		addFloorRequest();
-	}
 	
 	/**
 	 * Parses through a file with a list of requests from the floor and creates a
@@ -81,6 +74,7 @@ public class FloorSubsytem implements Runnable {
 
 	@Override
 	public void run() {
+		addFloorRequest();
 		while(true)
 		{
 			synchronized(scheduler)
@@ -89,7 +83,8 @@ public class FloorSubsytem implements Runnable {
 			}
 			synchronized(scheduler)
 			{
-                arrivalSensors.put(scheduler.getArrivalSensor(), false);
+				String[] temp = scheduler.getArrivalSensor();
+                arrivalSensors.put(Integer.parseInt(temp[0]), Boolean.parseBoolean(temp[1]));
                 scheduler.notifyAll();
 			}
 		}

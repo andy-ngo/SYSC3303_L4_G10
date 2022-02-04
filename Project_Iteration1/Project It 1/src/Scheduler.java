@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -7,10 +8,9 @@ import java.util.Map;
  */
 public class Scheduler {
 	private ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();
-	private int ASNumber = 0;
+	private String[] arrivalSensor = {"", ""};
 	private boolean emptyRequests = true; 
-	private boolean emptyArrivalSensor = true; 
-	private FloorRequest floorRequest;
+	private boolean emptyArrivalSensor = true;
 
 
 	public synchronized void putRequests(ArrayList<FloorRequest> requests) {
@@ -41,7 +41,7 @@ public class Scheduler {
 		return requests;
 	}
 	
-	public synchronized void putArrivalSensor(int ASNumber) {
+	public synchronized void putArrivalSensor(int ASNumber, Boolean status) {
 		while (!emptyArrivalSensor) {
 			try {
 				wait();
@@ -49,12 +49,13 @@ public class Scheduler {
 				System.out.println(e);
 			}
 		}
-		this.ASNumber = ASNumber;
+		arrivalSensor[0] = Integer.toString(ASNumber);
+		arrivalSensor[1] = Boolean.toString(status);
 		emptyArrivalSensor = false;
 		notifyAll();
 	}
 
-	public synchronized int getArrivalSensor() {
+	public synchronized String[] getArrivalSensor() {
 		while (emptyArrivalSensor) {
 			try {
 				wait();
@@ -64,16 +65,6 @@ public class Scheduler {
 		}
 		emptyArrivalSensor = true;
 		notifyAll();
-		return ASNumber;
-	}
-
-	public synchronized int getFloor()
-	{
-		return floorRequest.getFloorDestination();
-	}
-	
-	public synchronized int elevatorUpdate(int floor)
-	{
-		return floor;
+		return arrivalSensor;
 	}
 }
