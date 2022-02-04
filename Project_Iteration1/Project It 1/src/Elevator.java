@@ -1,7 +1,7 @@
 /*
  * Author: Andy Ngo
  * Student ID: 101132278
- * Version:1.0V
+ * Version: 1.0V
  * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
@@ -16,9 +16,10 @@ public class Elevator implements Runnable
 	//initialize variables
 	private Scheduler s;
 	private Elevator_Motor motor;
+	private int id;
 	private boolean buttons[];
 	private boolean open_Door = false;
-	private int lamp_Num;
+	private boolean lamp_Status = false;
 	private int curr_Floor;
 	
 	//initialize constructors
@@ -27,13 +28,13 @@ public class Elevator implements Runnable
 		this.s = s;
 	}
 	
-	public Elevator(Scheduler s,int id, int curr_Floor, boolean open_Door)
+	public Elevator(int id, int curr_Floor)
 	{
-		this.s = s;
+		this.id = id;
 		this.curr_Floor = 1;
-		this.lamp_Num = curr_Floor;
-		this.open_Door = open_Door;
+		this.open_Door = false;
 		this.motor = Elevator_Motor.Stop;
+		this.lamp_Status = false;
 	}
 	
 	/*
@@ -45,13 +46,20 @@ public class Elevator implements Runnable
 	public boolean operate_Check(ArrayList<FloorRequest> request)
 	{
 		//go to floor
-		open_Door = false;
+		closeDoor();
 		for(int i = 0 ; i < request.size(); i++)
 		{
+			lamp_Status = true;
+			this.id = i;
 			curr_Floor = request.get(i).getFloorOrigin();
+			s.putArrivalSensor(curr_Floor,false);
+			
+			//keep checking if current floor is the same as the destination floor or else keep looping
 			while(curr_Floor != request.get(i).getFloorDestination())
 			{
-				System.out.println("\n======= ELEVATOR " + i + " =======");
+				System.out.println("\n======= ELEVATOR " + id + " =======");
+				
+				//making sure the movement is synchronizing with the scheduler
 				synchronized(s)
 				{
 					if(curr_Floor < request.get(i).getFloorDestination())
@@ -70,8 +78,10 @@ public class Elevator implements Runnable
 			}
 			//arrive at floor
 			open_Door = true;
+			lamp_Status = false;
 			System.out.println("\n  ****DOOR OPENED****");
 			System.out.println("~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
+			s.putArrivalSensor(curr_Floor,true);
 			stop();
 		}	
 		return true;
@@ -89,30 +99,66 @@ public class Elevator implements Runnable
 		//run the number through the operate check function
 		operate_Check(request);
 		stop();
-		open_Door = true;
-		
+		openDoor();
 	}
 	
 	/*
 	 * These functions will control the elevator motor movement, up, down, and stop
 	 */
-	private void go_Up()
+	public void go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
 		System.out.println("Going up");
 	}
 	
-	private void go_Down()
+	public void go_Down()
 	{
 		this.motor = Elevator_Motor.Down;
 		System.out.println("Going down");
 	}
 	
-	private synchronized void stop()
+	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
-		s.putArrivalSensor(curr_Floor,true);
 		System.out.println("Floor reached");
+	}
+	
+	/*
+	 * These additional functions will be used in the test class to make sure that everything is functioning properly
+	 */
+	public Elevator_Motor getDirection()
+	{
+		return this.motor;
+	}
+	
+	public boolean lampStatus()
+	{
+		return this.lamp_Status;
+	}
+	
+	public void lampOn()
+	{
+		lamp_Status = true;
+	}
+	
+	public void lampOff()
+	{
+		lamp_Status = false;
+	}
+	
+	public boolean doorStatus()
+	{
+		return this.open_Door;
+	}
+	
+	public void closeDoor()
+	{
+		open_Door = false; 
+	}
+	
+	public void openDoor()
+	{
+		open_Door = true; 
 	}
 	
 	/*
