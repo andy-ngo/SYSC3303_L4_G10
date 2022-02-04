@@ -2,7 +2,7 @@
 public class Elevator implements Runnable 
 {
 
-	private Scheduler scheduler;
+	private Scheduler s;
 	private Elevator_Motor motor;
 	private int tot_Floors = 13;
 	private int id;
