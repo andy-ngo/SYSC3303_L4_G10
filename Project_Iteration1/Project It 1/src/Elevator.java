@@ -1,6 +1,12 @@
 /*
  * Author: Andy Ngo
  * Student ID: 101132278
+ * Version:1.0V
+ * 
+ * Description:
+ * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
+ * if there are any requests. If there are requests the elevator will check to go up and down or to stop when it arrives.
+ * This class will be synchronizing with the scheduler class.
  */
 
 import java.util.ArrayList;
@@ -30,7 +36,12 @@ public class Elevator implements Runnable
 		this.motor = Elevator_Motor.Stop;
 	}
 	
-	//this function will check whether the floor that the elevator is trying to get to is higher or lower and will keep going until it reaches the destination floor
+	/*
+	 * This function will check whether the floor that the elevator is trying to get to is higher or lower and will keep going until it reaches the destination floor.
+	 * 
+	 * @params ArrayList<FloorRequest> request
+	 * The parameter will be used in the function to check whether there are any requested floors on the list.
+	 */
 	public boolean operate_Check(ArrayList<FloorRequest> request)
 	{
 		//go to floor
@@ -66,7 +77,12 @@ public class Elevator implements Runnable
 		return true;
 	}
 	
-	//if there is a button pressed in the elevator it will call the operate_check funtion
+	/*
+	 * If there is a button pressed in the elevator it will call the operate_check function
+	 * 
+	 * @params ArrayList<FloorRequest> request
+	 * The parameter will be used in the function to check whether there are any requested floors on the list and will let the operate_check function read it
+	 */
 	public void button_pressed(ArrayList<FloorRequest> request)
 	{
 		System.out.println("Button Pressed");
@@ -77,7 +93,9 @@ public class Elevator implements Runnable
 		
 	}
 	
-	//These functions will control the elevator motor movement, up, down, and stop
+	/*
+	 * These functions will control the elevator motor movement, up, down, and stop
+	 */
 	private void go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
@@ -97,6 +115,9 @@ public class Elevator implements Runnable
 		System.out.println("Floor reached");
 	}
 	
+	/*
+	 * This function will just be used to run the elevator class when it is called in the main class
+	 */
 	@Override
 	public void run()
 	{
