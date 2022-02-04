@@ -80,6 +80,7 @@ public class FloorSubsytem implements Runnable {
 			{
 				String[] temp = scheduler.getArrivalSensor();
                 arrivalSensors.put(Integer.parseInt(temp[0]), Boolean.parseBoolean(temp[1]));
+        		System.out.println(arrivalSensors);
                 scheduler.notifyAll();
 			}
 		}
