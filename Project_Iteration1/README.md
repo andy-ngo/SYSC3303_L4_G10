@@ -53,5 +53,5 @@ Test file to verify that it is working
  - UML of Class and Sequence Diagram
 
 ### Scharara Islam 
-- Created Scheduler class and edited by Ali Fahd and Andy Ngo
+- Created Scheduler class and edited by Ali Fahd
 - README
