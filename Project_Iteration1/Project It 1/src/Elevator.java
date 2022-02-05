@@ -45,20 +45,20 @@ public class Elevator implements Runnable
 	 */
 	public boolean operate_Check(ArrayList<FloorRequest> request)
 	{
-		//go to floor
-		closeDoor();
+		//go through floor request list
 		for(int i = 0 ; i < request.size(); i++)
 		{
-			lamp_Status = true;
+			//initialize variables to use in the loop
+			lampOn();
+			closeDoor();
 			this.id = i;
 			curr_Floor = request.get(i).getFloorOrigin();
-			s.putArrivalSensor(curr_Floor,false);
 			
 			//keep checking if current floor is the same as the destination floor or else keep looping
-			while(curr_Floor != request.get(i).getFloorDestination())
+			while(curr_Floor != request.get(i).getFloorDestination() )
 			{
 				System.out.println("\n======= ELEVATOR " + id + " =======");
-				
+				System.out.println("Arrival Sensor OFF");
 				//making sure the movement is synchronizing with the scheduler
 				synchronized(s)
 				{
@@ -76,14 +76,18 @@ public class Elevator implements Runnable
 					}
 				}
 			}
-			//arrive at floor
-			open_Door = true;
-			lamp_Status = false;
+			//arrive at floor open door and turn off lamp
+			openDoor();
+			lampOff();
 			System.out.println("\n  ****DOOR OPENED****");
 			System.out.println("~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
+			System.out.println("Arrival Sensor ON");
+			//will change the status of the arrival sensor to update the floor subsystem through the scheduler
 			s.putArrivalSensor(curr_Floor,true);
 			stop();
-		}	
+		}
+		System.out.println("Arrival Sensor OFF");
+		s.putArrivalSensor(curr_Floor,false);
 		return true;
 	}
 	
@@ -97,13 +101,12 @@ public class Elevator implements Runnable
 	{
 		System.out.println("Button Pressed");
 		//run the number through the operate check function
-		//this will make requested number pressed true
-		this.buttons[request.get(request.size()-1).getFloorDestination() - 1] = true;
+		this.buttons[request.get(request.size()).getFloorDestination() - 1] = true;
 		operate_Check(request);
 		stop();
 		openDoor();
 		//make the button false after arriving to the floor
-		this.buttons[request.get(request.size()-1).getFloorDestination()] = false;
+		this.buttons[request.get(request.size()).getFloorDestination()] = false;
 	}
 	
 	/*
