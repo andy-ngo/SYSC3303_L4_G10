@@ -33,9 +33,11 @@ A class that act as a server to communicate with the Elevator class and the Floo
 ## Breakdown of Responsibilities:
 ### Ali Fahd:
  - Created the FloorRequest, FloorSubsystem, and Main
+ - Created the testing: FloorSubsystemTest and SchedulerTest
 
 ### Andy Ngo:
 - Created the Elevator and Elevator_Motor
+- Created the testing: ElevatorTest
 
 ### Karim Mahrous:
  - UML of Class and Sequence Diagram
