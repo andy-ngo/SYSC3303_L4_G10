@@ -37,7 +37,7 @@ Test file to verify that it is working
 - SchedulerTest.java
 
 ## UML Diagrams:
-- UML Class Diagram
+- ClassDiagram1.png
 - UML Sequence Diagram
 
 ## Breakdown of Responsibilities:
