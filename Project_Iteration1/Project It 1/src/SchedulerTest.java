@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Test class for Scheduler class. Uses local elevator.txt file created with sample data for tests.
  * 
- */
-
-/**
  * @author Ali Fahd
  *
  */
@@ -19,20 +17,28 @@ class SchedulerTest extends Scheduler {
 	Scheduler scheduler = new Scheduler();
 	FloorSubsytem floorSystem = new FloorSubsytem(scheduler);
 	
+	/**
+	 * Test method for testing requests in scheduler. Checks if requests are put in the scheduler and then removed from scheduler.
+	 *
+	 */
 	@Test
 	void testRequests() {
-		floorSystem.addFloorRequest("elevator.txt");
+		floorSystem.addFloorRequest("elevator.txt");	//imports sample data
 		scheduler.putRequests(floorSystem.getRequests());
-		Assertions.assertFalse(scheduler.getEmptyRequests());
+		Assertions.assertFalse(scheduler.getEmptyRequests());	//checks if data is placed in scheduler
 		scheduler.getRequests();
-		Assertions.assertTrue(scheduler.getEmptyRequests());
+		Assertions.assertTrue(scheduler.getEmptyRequests());	//checks if data has left scheduler
 	}
 	
+	/**
+	 * Test method for testing arrival sensors in scheduler. Checks if sensor notifications are put in the scheduler and then removed from scheduler.
+	 *
+	 */
 	@Test
 	void testArrivalSensor() {
 		scheduler.putArrivalSensor(2,true);
-		Assertions.assertFalse(scheduler.getEmptyArrivalSensor());
+		Assertions.assertFalse(scheduler.getEmptyArrivalSensor());	//checks if sensor data is placed in scheduler
 		scheduler.getArrivalSensor();
-		Assertions.assertTrue(scheduler.getEmptyArrivalSensor());
+		Assertions.assertTrue(scheduler.getEmptyArrivalSensor());	//checks if sensor data has been removed from scheduler
 	}
 }
