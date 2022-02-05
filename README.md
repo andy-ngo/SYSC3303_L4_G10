@@ -18,7 +18,7 @@ Main.java
 Elevator.java
 - A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. This class is synchronized with the scheduler class.
 
-Elevator_Moter.java
+Elevator_Motor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
 
 FloorRequest.java
