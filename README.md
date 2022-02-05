@@ -38,7 +38,7 @@ Test file to verify that it is working
 
 ## UML Diagrams:
 - ClassDiagram1.png
-- UML Sequence Diagram
+- SequenceDiagram1.png
 
 ## Breakdown of Responsibilities:
 ### Ali Fahd:
