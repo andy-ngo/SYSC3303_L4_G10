@@ -13,6 +13,7 @@ public class Scheduler {
 	private String[] arrivalSensor = {"", ""};	//temp field for passing arrival sensor information
 	private boolean emptyRequests = true; // check for getting requests
 	private boolean emptyArrivalSensor = true;	// check for getting arrival sensors
+	private HashMap<Integer, ArrayList<Integer>> elevatorArrivals = new HashMap<Integer, ArrayList<Integer>>();	// keeps track of elevator arrivals
 
 	/**
      * Method puts request into the scheduler. Updates empty request status.
@@ -28,7 +29,7 @@ public class Scheduler {
 		}
 		this.requests = requests;
 		emptyRequests = false; 	// request have been put in scheduler
-		System.out.println("Requests issued to scheduler.");
+		System.out.println("SCHEDULER: Requests issued to scheduler.");
 		notifyAll();
 	}
 	
@@ -44,7 +45,7 @@ public class Scheduler {
 				System.out.println(e);
 			}
 		}
-		System.out.println("Requests handed off to elevator.");
+		System.out.println("SCHEDULER: Requests handed off to elevator.");
 		emptyRequests = true;	// requests have been taken from scheduler
 		notifyAll();
 		return requests;
@@ -100,5 +101,24 @@ public class Scheduler {
      */	
 	public boolean getEmptyArrivalSensor() {
 		return emptyArrivalSensor;
+	}
+	
+	/**
+     * Method sets elevator arrival values.
+     * @param int floorNuumber - the floor the elevator has arrived on
+     * @param int elevatorNumber - the elevator that has arrived on the respective floor empty arrival sensor status.
+     */	
+	public void setElevatorArrival(int floorNumber, int elevatorNumber) {
+		elevatorArrivals.putIfAbsent(floorNumber, new ArrayList<Integer>());
+		elevatorArrivals.get(floorNumber).add(elevatorNumber);
+	}
+	
+	/**
+     * Method sets elevator arrival values.
+     * @param int num - the floor number on which elevators are to be received
+     * @return ArrayList<Integer> - elevators returned that have arrived on respective floor.
+     */	
+	public ArrayList<Integer> getFloorStatus(int num) {
+		return elevatorArrivals.get(num);
 	}
 }

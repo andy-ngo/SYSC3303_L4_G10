@@ -14,7 +14,7 @@ import javax.swing.JFileChooser;
 public class FloorSubsytem implements Runnable {
 	private Scheduler scheduler;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();	//list of requests
-	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();	// keeps track fo arrival sensors
+	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();	// keeps track of arrival sensors
 	
 	/**
 	 * Constructor for class FloorSubsystem. Initializes scheduler.
@@ -44,7 +44,7 @@ public class FloorSubsytem implements Runnable {
 		}
 		//outputs each request imported
 		for(FloorRequest fr: requests) {
-			System.out.println(fr.toString());
+			System.out.println("FLOOR SUBSYSTEM: " + fr.toString());
 		}		
 	}
 	
@@ -124,7 +124,7 @@ public class FloorSubsytem implements Runnable {
 			{
 				String[] temp = scheduler.getArrivalSensor();	//retrieves arrival sensor data from scheduler
                 arrivalSensors.put(Integer.parseInt(temp[0]), Boolean.parseBoolean(temp[1]));	//updates hash map
-        		System.out.println("Arrival Sensors: " + arrivalSensors);	//prints arrival sensor status
+        		System.out.println("FLOOR SUBSYSTEM: Arrival Sensors: " + arrivalSensors);	//prints arrival sensor status
                 scheduler.notifyAll();
 			}
 		}

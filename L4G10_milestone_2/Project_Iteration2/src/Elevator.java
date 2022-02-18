@@ -21,6 +21,7 @@ public class Elevator implements Runnable
 	private boolean open_Door = false;
 	private boolean lamp_Status = false;
 	private int curr_Floor;
+	private StateMachine stateMachine;
 	
 	//initialize constructors
 	public Elevator(Scheduler s)
@@ -35,6 +36,7 @@ public class Elevator implements Runnable
 		this.open_Door = false;
 		this.motor = Elevator_Motor.Stop;
 		this.lamp_Status = false;
+		stateMachine = new StateMachine();
 	}
 	
 	/*
@@ -166,6 +168,10 @@ public class Elevator implements Runnable
 	public void openDoor()
 	{
 		open_Door = true; 
+	}
+	
+	public StateMachine getStateMachine() {
+		return stateMachine;
 	}
 	
 	/*

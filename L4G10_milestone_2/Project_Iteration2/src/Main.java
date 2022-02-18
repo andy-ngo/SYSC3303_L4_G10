@@ -1,7 +1,7 @@
 /**
  * Class used to run the whole elevator system.
  *
- * @author Ali FAhd
+ * @author Ali Fahd
  */
 
 public class Main {

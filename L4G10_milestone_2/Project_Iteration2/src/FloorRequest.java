@@ -65,7 +65,6 @@ public class FloorRequest {
      * @return String summary - the data of the request in a readable format.
      */
     public String toString() {
-        String summary = "Elevator Request: Time - " + getRequestTime() + " - Floor Origin - " + getFloorOrigin() + " - Direction - " + getDirection() + " - Floor Destination - " + getFloorDestination();
-        return summary;
+        return "Elevator Request: Time - " + getRequestTime() + " - Floor Origin - " + getFloorOrigin() + " - Direction - " + getDirection() + " - Floor Destination - " + getFloorDestination();
     }
 }
