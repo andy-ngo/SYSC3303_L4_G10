@@ -31,6 +31,7 @@ Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
 
 StateMachine.java
+- Data Structure for the Elevator Subsystems
 
 ## Test Included:
 JUnit Test files to verify that it is working
@@ -41,16 +42,19 @@ JUnit Test files to verify that it is working
 ## UML Diagrams:
 - ClassDiagram1.png
 - SequenceDiagram1.png
-- State Machine Sequence
+- 
 
 ## Breakdown of Responsibilities:
 ### ITERATION 2
 ### Ali Fahd:
-
+- Created the StateMachine.java
+- Updated source codes
 
 ### Karim Mahrous:
+- Designed the State Machine Sequence
 
 ### Andy Ngo:
+- Updated source codes
 
 ### Scharara Islam:
 - Update README
