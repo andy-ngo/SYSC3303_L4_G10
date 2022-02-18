@@ -30,6 +30,8 @@ FloorSubsystem.java
 Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
 
+StateMachine.java
+
 ## Test Included:
 JUnit Test files to verify that it is working
 - ElevatorTest.java
@@ -39,19 +41,30 @@ JUnit Test files to verify that it is working
 ## UML Diagrams:
 - ClassDiagram1.png
 - SequenceDiagram1.png
+- State Machine Sequence
 
 ## Breakdown of Responsibilities:
+### ITERATION 2
+### Ali Fahd:
+
+
+### Karim Mahrous:
+
+### Andy Ngo:
+
+### Scharara Islam:
+- Update README
+
+
+### ITERATION 1
 ### Ali Fahd:
  - Created the FloorRequest, FloorSubsystem, and Main
  - Created the testing: FloorSubsystemTest and SchedulerTest
-
 ### Andy Ngo:
 - Created the Elevator and Elevator_Motor
 - Created the testing: ElevatorTest
-
 ### Karim Mahrous:
  - UML of Class and Sequence Diagram
-
 ### Scharara Islam 
 - Created Scheduler class and edited by Ali Fahd
 - README
