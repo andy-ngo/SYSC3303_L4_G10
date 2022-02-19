@@ -13,10 +13,17 @@ To run the application, use Main.java
 ## Source Code:
 
 Main.java
-- CLass that will create instances of each class and run the whole system.
+- Class that will create instances of each class and run the whole system.
 
-Elevator.java
-- A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. This class is synchronized with the scheduler class.
+ElevatorSubsystem.java
+- A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. It will communicate with the scheduler whenever there has been arrival. This class is synchronized with the scheduler class.
+- A state machine was added into this iteration. Having the elevator call to the state machine method at each different state. 
+  - The following states that were implemented are:
+    - IDLE_STATE
+    - OPERATE_STATE
+    - UP_STATE
+    - DOWN_STATE
+    - STOP_STATE
 
 Elevator_Motor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
@@ -29,6 +36,8 @@ FloorSubsystem.java
 
 Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
+- State Machine implemented and allow to control the scheduler by the given state
+  - The SchedulerState: EmptyRequests, ReceivedRequests, EmptyArrivalSensors, ReceivedArrivalSensors
 
 ## Test Included:
 JUnit Test files to verify that it is working
@@ -37,9 +46,9 @@ JUnit Test files to verify that it is working
 - SchedulerTest.java
 
 ## UML Diagrams:
-- ClassDiagram1.png
-- SequenceDiagram1.png
-- 
+- ClassDiagram2.png
+- SequenceDiagram2.png
+- StateDiagram2.png
 
 ## Breakdown of Responsibilities:
 ### ITERATION 2
@@ -48,12 +57,13 @@ JUnit Test files to verify that it is working
 
 ### Karim Mahrous:
 - Designed the State Machine Sequence
+- Updated UML Class Diagram and Sequence Diagram
 
 ### Andy Ngo:
 - Updated source codes
 
 ### Scharara Islam:
-- Update README
+- Updated README
 
 
 ### ITERATION 1

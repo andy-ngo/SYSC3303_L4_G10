@@ -70,7 +70,7 @@ public class ElevatorSubsystem implements Runnable
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
 				System.out.println("Elevator notifying Scheduler of arrival...");
-				s.setElevatorArrival(curr_Floor, id);
+				s.setElevatorArrival(id, curr_Floor);
 				break;
 				
 		}
