@@ -13,7 +13,7 @@ To run the application, use Main.java
 ## Source Code:
 
 Main.java
-- CLass that will create instances of each class and run the whole system.
+- Class that will create instances of each class and run the whole system.
 
 ElevatorSubsystem.java
 - A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. It will communicate with the scheduler whenever there has been arrival. This class is synchronized with the scheduler class.
@@ -46,9 +46,9 @@ JUnit Test files to verify that it is working
 - SchedulerTest.java
 
 ## UML Diagrams:
-- ClassDiagram1.png
-- SequenceDiagram1.png
-- StateDiagram1.png
+- ClassDiagram2.png
+- SequenceDiagram2.png
+- StateDiagram2.png
 
 ## Breakdown of Responsibilities:
 ### ITERATION 2
