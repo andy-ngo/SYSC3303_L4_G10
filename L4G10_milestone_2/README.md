@@ -36,6 +36,8 @@ FloorSubsystem.java
 
 Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
+- State Machine implemented and allow to control the scheduler by the given state
+  - The SchedulerState: EmptyRequests, ReceivedRequests, EmptyArrivalSensors, ReceivedArrivalSensors
 
 ## Test Included:
 JUnit Test files to verify that it is working
@@ -46,7 +48,7 @@ JUnit Test files to verify that it is working
 ## UML Diagrams:
 - ClassDiagram1.png
 - SequenceDiagram1.png
-- 
+- State_Diagram1.png
 
 ## Breakdown of Responsibilities:
 ### ITERATION 2
