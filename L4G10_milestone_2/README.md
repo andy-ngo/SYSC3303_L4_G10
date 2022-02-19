@@ -48,7 +48,7 @@ JUnit Test files to verify that it is working
 ## UML Diagrams:
 - ClassDiagram1.png
 - SequenceDiagram1.png
-- State_Diagram1.png
+- StateDiagram1.png
 
 ## Breakdown of Responsibilities:
 ### ITERATION 2
