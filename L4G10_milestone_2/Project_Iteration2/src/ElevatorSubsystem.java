@@ -36,42 +36,49 @@ public class ElevatorSubsystem implements Runnable
 		this.lamp_Status = false;
 	}
 	
+	/*
+	 * Enumeration method to declare some states for the state machine
+	 */
+	public enum ElevatorStates 
+	{
+    	IDLE_STATE,OPERATE_STATE,UP_STATE,DOWN_STATE,STOP_STATE;
+    }
+	
 	/**
 	 * This will be the state machine controlling the elevator movement by following the state given
-	 * @param int state - will be used to change the state
+	 * @param ElevatorStates - will be used to change the state of the elevator
 	 */
-	public void stateMachine(int state)
+	public void stateMachine(ElevatorStates state)
 	{
 		switch(state)
 		{
 			//idle
-			case 0:
+			case IDLE_STATE:
 				System.out.println("Waiting for requests...\n");
 				break;
 			
 			//operate
-			case 1:
+			case OPERATE_STATE:
 				System.out.println("\n~~Operate State~~");
-				//operate(s.getRequests());
 				break;
 			//go up
-			case 2:
+			case UP_STATE:
 				System.out.println("\nELEVATOR GOING UP\n");
 				go_Up();
 				break;
 				
 			//go down
-			case 3:
+			case DOWN_STATE:
 				System.out.println("\nELEVATOR GOING DOWN\n");
 				go_Down();
 				break;
 
 			//stop/unloading
-			case 4:
+			case STOP_STATE:
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
-				s.setElevatorArrival(id, curr_Floor);
-				//state = elevatorStates.OPERATE_STATE;
+				System.out.println("Elevator notifying Scheduler of arrival...");
+				s.setElevatorArrival(curr_Floor, id);
 				break;
 				
 		}
@@ -86,7 +93,7 @@ public class ElevatorSubsystem implements Runnable
 	public boolean operate(ArrayList<FloorRequest> request)
 	{
 		
-		stateMachine(1);
+		stateMachine(ElevatorStates.OPERATE_STATE);
 		
 		//go through floor request list
 		for(int i = 0 ; i < request.size(); i++)
@@ -105,8 +112,6 @@ public class ElevatorSubsystem implements Runnable
 			{
 				nextFloor = request.get(i+1).getFloorOrigin();
 			}
-
-			s.setElevatorArrival(id, curr_Floor);
 			
 			//print out the current floor and destination floor
 			System.out.println("\n###########################");
@@ -124,12 +129,12 @@ public class ElevatorSubsystem implements Runnable
 				{
 					if(curr_Floor < request.get(i).getFloorDestination())
 					{
-						stateMachine(2);
+						stateMachine(ElevatorStates.UP_STATE);
 						System.out.println("Lamp Number " + curr_Floor);
 					}
 					if(curr_Floor > request.get(i).getFloorDestination())
 					{
-						stateMachine(3);
+						stateMachine(ElevatorStates.DOWN_STATE);
 						System.out.println("Lamp Number " + curr_Floor);
 					}
 				}
@@ -141,7 +146,7 @@ public class ElevatorSubsystem implements Runnable
 			System.out.println("~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
 			System.out.println("Arrival Sensor ON");
 			//state = elevatorStates.STOP_STATE;
-			stateMachine(4);
+			stateMachine(ElevatorStates.STOP_STATE);
 				
 			//will print out no more requests once i reaches it's limit
 			if(i == request.size()-1)
@@ -256,7 +261,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		while(true)
 		{
-			stateMachine(0);
+			stateMachine(ElevatorStates.IDLE_STATE);
 			synchronized(s)
 			{
 				operate(s.getRequests());
