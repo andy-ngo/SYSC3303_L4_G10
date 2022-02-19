@@ -70,7 +70,7 @@ public class ElevatorSubsystem implements Runnable
 			case 4:
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
-				s.setElevatorArrival(curr_Floor, id);
+				s.setElevatorArrival(id, curr_Floor);
 				//state = elevatorStates.OPERATE_STATE;
 				break;
 				
@@ -105,6 +105,8 @@ public class ElevatorSubsystem implements Runnable
 			{
 				nextFloor = request.get(i+1).getFloorOrigin();
 			}
+
+			s.setElevatorArrival(id, curr_Floor);
 			
 			//print out the current floor and destination floor
 			System.out.println("\n###########################");

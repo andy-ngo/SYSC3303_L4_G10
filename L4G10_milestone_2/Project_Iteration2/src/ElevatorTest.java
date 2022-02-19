@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class ElevatorTest{
 
-	private Elevator elevator;
+	private ElevatorSubsystem elevator;
 	private int id = 1;
 	private int curr_floor = 0;
 	
@@ -23,7 +23,7 @@ class ElevatorTest{
 	@Test
 	public void testDoorStatus()
 	{
-		elevator = new Elevator(id,curr_floor);
+		elevator = new ElevatorSubsystem(id,curr_floor);
 		elevator.closeDoor();
 		assertEquals(false,elevator.doorStatus());
 		elevator.openDoor();
@@ -36,7 +36,7 @@ class ElevatorTest{
 	@Test
 	public void testElevatorDirection()
 	{
-		elevator = new Elevator(id,curr_floor);
+		elevator = new ElevatorSubsystem(id,curr_floor);
 		elevator.go_Up();
 		assertEquals(Elevator_Motor.Up,elevator.getDirection());
 		elevator.go_Down();
@@ -51,7 +51,7 @@ class ElevatorTest{
 	@Test
 	public void testLampStatus()
 	{
-		elevator = new Elevator(id,1);
+		elevator = new ElevatorSubsystem(id,1);
 		elevator.lampOff();
 		assertEquals(false,elevator.lampStatus());
 		elevator.lampOn();

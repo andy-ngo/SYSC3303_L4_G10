@@ -46,6 +46,7 @@ public class FloorSubsytem implements Runnable {
 		for(FloorRequest fr: requests) {
 			System.out.println("FLOOR SUBSYSTEM: " + fr.toString());
 		}		
+		System.out.println("\n");
 	}
 	
 	/**
