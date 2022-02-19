@@ -1,11 +1,12 @@
 /*
  * Author: Andy Ngo
  * Student ID: 101132278
- * Version: 1.0V
+ * Version: 2.0V
  * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
  * if there are any requests. If there are requests the elevator will check to go up and down or to stop when it arrives.
+ * A state machine is implemented to organize some parts of the code.
  * This class will be synchronizing with the scheduler class.
  */
 
@@ -21,9 +22,6 @@ public class ElevatorSubsystem implements Runnable
 	private boolean open_Door = false;
 	private boolean lamp_Status = false;
 	private int curr_Floor;
-	private int state = 0;
-	//private elevatorStates state = elevatorStates.IDLE_STATE;
-	//private StateMachine stateMachine;
 	
 	//initialize constructors
 	public ElevatorSubsystem(Scheduler s)
@@ -36,19 +34,11 @@ public class ElevatorSubsystem implements Runnable
 		this.id = id;
 		this.open_Door = false;
 		this.lamp_Status = false;
-		//stateMachine = new StateMachine();
-		//stateMachine.setCurrentFloor(1);
-		//stateMachine.setMotor(Elevator_Motor.Stop);
 	}
-	/*
-	public enum elevatorStates
-	{
-		IDLE_STATE,OPERATE_STATE,UP_STATE,DOWN_STATE,STOP_STATE;
-	}
-	*/
 	
 	/**
 	 * This will be the state machine controlling the elevator movement by following the state given
+	 * @param int state - will be used to change the state
 	 */
 	public void stateMachine(int state)
 	{
@@ -56,40 +46,29 @@ public class ElevatorSubsystem implements Runnable
 		{
 			//idle
 			case 0:
-				/*
-				if(s.getRequests() == null)
-				{
-					System.out.println("Waiting for requests...\n");
-					//state = elevatorStates.IDLE_STATE;
-					state = 0;
-				}
-				else
-				{
-					System.out.println("\nUpcoming requests...\n");
-					//state = elevatorStates.OPERATE_STATE;
-					state = 1;
-				}
-				*/
+				System.out.println("Waiting for requests...\n");
 				break;
-			/*
-			 * operate
+			
+			//operate
 			case 1:
-				//System.out.println("\n~~Operate State~~\n");
-				//operate(f.getRequests());
+				System.out.println("\n~~Operate State~~");
+				//operate(s.getRequests());
 				break;
-			*/
 			//go up
-			case 1:
+			case 2:
+				System.out.println("\nELEVATOR GOING UP\n");
 				go_Up();
 				break;
 				
 			//go down
-			case 2:
+			case 3:
+				System.out.println("\nELEVATOR GOING DOWN\n");
 				go_Down();
 				break;
 
 			//stop/unloading
-			case 3:
+			case 4:
+				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
 				s.setElevatorArrival(curr_Floor, id);
 				//state = elevatorStates.OPERATE_STATE;
@@ -107,13 +86,15 @@ public class ElevatorSubsystem implements Runnable
 	public boolean operate(ArrayList<FloorRequest> request)
 	{
 		
+		stateMachine(1);
+		
 		//go through floor request list
 		for(int i = 0 ; i < request.size(); i++)
 		{
 			//initialize variables to use in the loop
 			lampOn();
 			closeDoor();
-			stateMachine(0);
+			
 			
 			int nextFloor = 0;
 			id = 1;
@@ -141,12 +122,12 @@ public class ElevatorSubsystem implements Runnable
 				{
 					if(curr_Floor < request.get(i).getFloorDestination())
 					{
-						stateMachine(1);
+						stateMachine(2);
 						System.out.println("Lamp Number " + curr_Floor);
 					}
 					if(curr_Floor > request.get(i).getFloorDestination())
 					{
-						stateMachine(2);
+						stateMachine(3);
 						System.out.println("Lamp Number " + curr_Floor);
 					}
 				}
@@ -158,7 +139,7 @@ public class ElevatorSubsystem implements Runnable
 			System.out.println("~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
 			System.out.println("Arrival Sensor ON");
 			//state = elevatorStates.STOP_STATE;
-			stateMachine(3);
+			stateMachine(4);
 				
 			//will print out no more requests once i reaches it's limit
 			if(i == request.size()-1)
@@ -266,12 +247,6 @@ public class ElevatorSubsystem implements Runnable
 	}
 	
 	/*
-	public StateMachine getStateMachine() {
-		return stateMachine;
-	}
-	*/
-	
-	/*
 	 * This function will just be used to run the elevator class when it is called in the main class
 	 */
 	@Override
@@ -279,6 +254,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		while(true)
 		{
+			stateMachine(0);
 			synchronized(s)
 			{
 				operate(s.getRequests());
