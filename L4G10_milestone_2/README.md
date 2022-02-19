@@ -55,12 +55,13 @@ JUnit Test files to verify that it is working
 
 ### Karim Mahrous:
 - Designed the State Machine Sequence
+- Updated UML Class Diagram
 
 ### Andy Ngo:
 - Updated source codes
 
 ### Scharara Islam:
-- Update README
+- Updated README
 
 
 ### ITERATION 1
