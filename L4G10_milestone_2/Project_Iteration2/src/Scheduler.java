@@ -133,7 +133,6 @@ public class Scheduler {
 		}
 		emptyArrivalSensor = true;	// arrival sensor data has been taken from scheduler
 		notifyAll();
-    	stateMachine(SchedulerStates.EmptyArrivalSensors);
 		return arrivalSensor;
 	}
 	
