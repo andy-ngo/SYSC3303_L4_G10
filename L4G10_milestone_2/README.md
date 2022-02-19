@@ -15,8 +15,15 @@ To run the application, use Main.java
 Main.java
 - CLass that will create instances of each class and run the whole system.
 
-Elevator.java
-- A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. This class is synchronized with the scheduler class.
+ElevatorSubsystem.java
+- A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. It will communicate with the scheduler whenever there has been arrival. This class is synchronized with the scheduler class.
+- A state machine was added into this iteration. Having the elevator call to the state machine method at each different state. 
+  - The following states that were implemented are:
+    - IDLE_STATE
+    - OPERATE_STATE
+    - UP_STATE
+    - DOWN_STATE
+    - STOP_STATE
 
 Elevator_Motor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
