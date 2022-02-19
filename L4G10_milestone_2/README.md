@@ -30,9 +30,6 @@ FloorSubsystem.java
 Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
 
-StateMachine.java
-- Data Structure for the Elevator Subsystems
-
 ## Test Included:
 JUnit Test files to verify that it is working
 - ElevatorTest.java
@@ -47,7 +44,6 @@ JUnit Test files to verify that it is working
 ## Breakdown of Responsibilities:
 ### ITERATION 2
 ### Ali Fahd:
-- Created the StateMachine.java
 - Updated source codes
 
 ### Karim Mahrous:
