@@ -36,14 +36,6 @@ public class ElevatorSubsystem implements Runnable
 		this.lamp_Status = false;
 	}
 	
-	/*
-	 * Enumeration method to declare some states for the state machine
-	 */
-	public enum ElevatorStates 
-	{
-    	IDLE_STATE,OPERATE_STATE,UP_STATE,DOWN_STATE,STOP_STATE;
-    }
-	
 	/**
 	 * This will be the state machine controlling the elevator movement by following the state given
 	 * @param ElevatorStates - will be used to change the state of the elevator
