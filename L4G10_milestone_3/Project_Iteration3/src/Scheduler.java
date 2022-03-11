@@ -1,8 +1,6 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.net.*;
+
 /**
  * @author Scharara Islam
  * @author Ali Fahd
@@ -15,7 +13,9 @@ public class Scheduler {
 	private boolean emptyRequest = true; // check for getting requests
 	private boolean emptyArrivalSensor = true;	// check for getting arrival sensors
 	private HashMap<Integer, Integer> elevatorArrivals = new HashMap<Integer, Integer>();	// keeps track of elevator arrivals key=elevator number, value = arrival floor number
-	
+	private DatagramPacket sendPacket,receivePacket;
+	private DatagramSocket elevatorSendReceiveSocket, floorSendReceiveSocket;
+
 	/**
      * Enum for the states
      */
@@ -32,7 +32,28 @@ public class Scheduler {
     public Scheduler() {
     	stateMachine(SchedulerStates.EmptyRequests);
     	stateMachine(SchedulerStates.EmptyArrivalSensors);
+
+		try
+    	{
+    		elevatorSendReceiveSocket = new DatagramSocket(99);
+    		floorSendReceiveSocket = new DatagramSocket(23);
+    	} catch(SocketException se)
+    	{
+    		se.printStackTrace();
+    		System.exit(1);
+    	}
     }
+
+	private void sendReceive()
+    {
+    	byte[] dataByte = new byte[100];
+    	receivePacket = new DatagramPacket(dataByte, dataByte.length);
+    	while(true)
+    	{
+    	
+    	}
+    }
+    
     
     /**
 	 * This will be the state machine controlling the scheduler status by following the state given
