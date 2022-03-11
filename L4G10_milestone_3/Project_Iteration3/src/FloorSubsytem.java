@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.io.*;
 import java.net.*;
@@ -89,10 +90,9 @@ public class FloorSubsytem implements Runnable {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-        Date date = new Date();
 		//outputs each request imported
 		for(FloorRequest fr: requests) {
-			System.out.println(new Timestamp(date.getTime()) + " FLOOR SUBSYSTEM: " + fr.toString());
+			System.out.println(Timestamp.from(Instant.now()) + "  -   FLOOR SUBSYSTEM: " + fr.toString());
 		}		
 		System.out.println("\n");
 	}
@@ -173,7 +173,7 @@ public class FloorSubsytem implements Runnable {
 			long converted = requestTimeNS(fr.getRequestTime());
 			while(true) {
 				if(System.nanoTime() - start == converted) {
-					System.out.println("FLOOR SUBSYSTEM: Request issued to scheduler.\n");
+					System.out.println(Timestamp.from(Instant.now()) + "  -  FLOOR SUBSYSTEM: Request issued to scheduler.\n");
 					scheduler.putRequest(fr);	//puts request data in scheduler
 					break;
 				}
@@ -183,7 +183,7 @@ public class FloorSubsytem implements Runnable {
 		{
 			synchronized(scheduler)
 			{
-				System.out.println("FLOOR SUBSYSTEM: Request has been serviced. " + scheduler.getArrivalSensor());
+				System.out.println(Timestamp.from(Instant.now()) + "  -  FLOOR SUBSYSTEM: Request has been serviced. " + scheduler.getArrivalSensor());
 			}
 		}
 	}

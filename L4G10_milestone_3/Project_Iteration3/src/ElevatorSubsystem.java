@@ -13,6 +13,9 @@
 import java.util.ArrayList;
 import java.net.*;
 import java.io.*;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 
 public class ElevatorSubsystem implements Runnable 
 {
@@ -91,29 +94,29 @@ public class ElevatorSubsystem implements Runnable
 					e.printStackTrace();
 					System.exit(1);
 				}
-				System.out.println("ELEVATOR SUBSYSTEM: Waiting for requests...\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR SUBSYSTEM: Waiting for requests...\n");
 				break;
 			
 			case OPERATE_STATE:
-				System.out.println("\n~~Operate State~~");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ~~Operate State~~");
 				break;
 			//go up
 			case UP_STATE:
-				System.out.println("\nELEVATOR GOING UP\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR GOING UP\n");
 				go_Up();
 				break;
 				
 			//go down
 			case DOWN_STATE:
-				System.out.println("\nELEVATOR GOING DOWN\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR GOING DOWN\n");
 				go_Down();
 				break;
 
 			//stop/unloading
 			case STOP_STATE:
-				System.out.println("\nELEVATOR STOPPED\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR STOPPED\n");
 				stop();
-				System.out.println("Elevator notifying Scheduler of arrival...");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  Elevator notifying Scheduler of arrival...");
 				//s.putArrivalSensor(id, curr_Floor);
 
 				byte[] dataByte = new byte[100];
@@ -155,7 +158,7 @@ public class ElevatorSubsystem implements Runnable
 		lampOn();
 		closeDoor();
 
-		System.out.println("\nGoing to next request");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Going to next request");
 
 		//will check if there are any more floors on the request list and will either go up or down depending on current floor
 		if(curr_Floor < request.getFloorOrigin())
@@ -170,41 +173,41 @@ public class ElevatorSubsystem implements Runnable
 		curr_Floor = request.getFloorOrigin();
 		
 		//print out the current floor and destination floor
-		System.out.println("\n###########################");
-		System.out.println("\n##   Current Floor: " + curr_Floor + "   ##");
-		System.out.println("\n## Destination Floor: " + request.getFloorDestination()+ " ##");
-		System.out.println("\n###########################");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ###########################");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ##   Current Floor: " + curr_Floor + "   ##");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ## Destination Floor: " + request.getFloorDestination()+ " ##");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ###########################");
 		
 		//keep checking if current floor is the same as the destination floor or else keep looping
 		while(curr_Floor != request.getFloorDestination() )
 		{
-			System.out.println("\n======= ELEVATOR " + id + " =======");
-			System.out.println("Arrival Sensor OFF\n");
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ======= ELEVATOR " + id + " =======");
+			System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF\n");
 			//making sure the movement is synchronizing with the scheduler
 			synchronized(s)
 			{
 				if(curr_Floor < request.getFloorDestination())
 				{
 					stateMachine(ElevatorStates.UP_STATE);
-					System.out.println("Lamp Number " + curr_Floor);
+					System.out.println(Timestamp.from(Instant.now()) + "  -  Lamp Number " + curr_Floor);
 				}
 				if(curr_Floor > request.getFloorDestination())
 				{
 					stateMachine(ElevatorStates.DOWN_STATE);
-					System.out.println("Lamp Number " + curr_Floor);
+					System.out.println(Timestamp.from(Instant.now()) + "  -  Lamp Number " + curr_Floor);
 				}
 			}
 		}
 		//arrive at floor open door and turn off lamp
 		openDoor();
 		lampOff();
-		System.out.println("\n  ****DOOR OPENED****");
-		System.out.println("~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
-		System.out.println("Arrival Sensor ON");
+		System.out.println(Timestamp.from(Instant.now()) + "  -    ****DOOR OPENED****");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor ON");
 		//state = elevatorStates.STOP_STATE;
 		stateMachine(ElevatorStates.STOP_STATE);
 		
-		System.out.println("Arrival Sensor OFF");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
 		
 		return true;
 	}
@@ -216,7 +219,7 @@ public class ElevatorSubsystem implements Runnable
 	 */
 	public void button_pressed(FloorRequest request)
 	{
-		System.out.println("Button Pressed");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Button Pressed");
 		//run the number through the operate check function
 		this.buttons[request.getFloorDestination() - 1] = true;
 		operate(request);
@@ -233,7 +236,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		this.motor = Elevator_Motor.Up;
 		curr_Floor++;
-		System.out.println("Going up");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Going up");
 		try {
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
@@ -246,7 +249,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		this.motor = Elevator_Motor.Down;
 		curr_Floor--;
-		System.out.println("Going down");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Going down");
 		try {
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
@@ -258,10 +261,11 @@ public class ElevatorSubsystem implements Runnable
 	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
-		System.out.println("Floor reached.\n");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  Floor reached. Unloading\n");
 		try {
 			Thread.sleep(2000);
-			System.out.println("Doors opened.\n");
+			System.out.println(Timestamp.from(Instant.now()) + "  -  Doors opened.\n");
+			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

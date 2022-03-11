@@ -1,5 +1,8 @@
 import java.util.*;
 import java.net.*;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 
 /**
  * @author Scharara Islam
@@ -32,7 +35,7 @@ public class Scheduler {
     	stateMachine(SchedulerStates.EmptyRequests);
     	stateMachine(SchedulerStates.EmptyArrivalSensors);
 
-		try
+		/*try
     	{
     		elevatorSendReceiveSocket = new DatagramSocket(99);
     		floorSendReceiveSocket = new DatagramSocket(23);
@@ -40,7 +43,7 @@ public class Scheduler {
     	{
     		se.printStackTrace();
     		System.exit(1);
-    	}
+    	}*/
     }
 
 	private void sendReceive()
@@ -63,19 +66,19 @@ public class Scheduler {
 		switch(state)
 		{
 			case EmptyRequests:
-				System.out.println("SCHEDULER: No Requests\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: No Requests\n");
 				break;
 			
 			case ReceivedRequests:
-				System.out.println("SCHEDULER: Contains Requests\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Contains Requests\n");
 				break;
 				
 			case EmptyArrivalSensors:
-				System.out.println("SCHEDULER: No Arrival Sensor Information\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: No Arrival Sensor Information\n");
 				break;
 				
 			case ReceivedArrivalSensors:
-				System.out.println("SCHEDULER: Contains Arrival Sensor Information\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Contains Arrival Sensor Information\n");
 				break;
 				
 		}
@@ -88,7 +91,7 @@ public class Scheduler {
      */
 	public synchronized void putRequest(FloorRequest request) {	
 		this.requests.add(request);
-		System.out.println("SCHEDULER: Requests in queue: " + requests.size());
+		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Requests in queue: " + requests.size());
 		emptyRequest = false; 	// request have been put in scheduler
 		notifyAll();
     	stateMachine(SchedulerStates.ReceivedRequests);
@@ -107,7 +110,7 @@ public class Scheduler {
 			}
 		}
 		FloorRequest fr = requests.remove();
-		System.out.println("SCHEDULER: Request handed off to elevator.\n");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Request handed off to elevator.\n");
 		if (requests.size() == 0) {
 			emptyRequest = true;	// all requests will be taken from scheduler after the remove
 	    	stateMachine(SchedulerStates.EmptyRequests);
@@ -135,7 +138,7 @@ public class Scheduler {
 		elevatorArrivals.get(elevatorNumber);
 		
     	stateMachine(SchedulerStates.ReceivedArrivalSensors);
-		System.out.println("SCHEDULER: {Elevator #: "+ elevatorNumber +" - Floor #: "+ elevatorArrivals.get(elevatorNumber) +"} - " + elevatorArrivals);
+		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: {Elevator #: "+ elevatorNumber +" - Floor #: "+ elevatorArrivals.get(elevatorNumber) +"} - " + elevatorArrivals);
 		
 		emptyArrivalSensor = false; 	// arrival sensor has been put in scheduler
 		
@@ -157,7 +160,7 @@ public class Scheduler {
 		
 		emptyArrivalSensor = true;	// arrival sensor data has been taken from scheduler
 		
-		System.out.println("SCHEDULER: Notifying Floor Subsystem that request has been serviced.");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Notifying Floor Subsystem that request has been serviced.");
     	stateMachine(SchedulerStates.EmptyArrivalSensors);
     	
 		notifyAll();
