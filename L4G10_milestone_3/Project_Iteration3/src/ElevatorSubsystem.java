@@ -114,7 +114,7 @@ public class ElevatorSubsystem implements Runnable
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
 				System.out.println("Elevator notifying Scheduler of arrival...");
-				s.setElevatorArrival(id, curr_Floor);
+				//s.putArrivalSensor(id, curr_Floor);
 
 				byte[] dataByte = new byte[100];
 				try 
@@ -234,6 +234,12 @@ public class ElevatorSubsystem implements Runnable
 		this.motor = Elevator_Motor.Up;
 		curr_Floor++;
 		System.out.println("Going up");
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void go_Down()
@@ -241,12 +247,25 @@ public class ElevatorSubsystem implements Runnable
 		this.motor = Elevator_Motor.Down;
 		curr_Floor--;
 		System.out.println("Going down");
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
-		System.out.println("Floor reached\n");
+		System.out.println("Floor reached.\n");
+		try {
+			Thread.sleep(2000);
+			System.out.println("Doors opened.\n");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/*
