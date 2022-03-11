@@ -1,4 +1,4 @@
-# SYSC 3303 Project Iteration 2
+# SYSC 3303 Project Iteration 3
 # L4 Group 10
 
 ## Group Members:
@@ -46,35 +46,53 @@ JUnit Test files to verify that it is working
 - SchedulerTest.java
 
 ## UML Diagrams:
-- ClassDiagram2.png
-- SequenceDiagram2.png
-- StateDiagram2.png
+- ClassDiagram3.png
+- SequenceDiagram3.png
+- Elevator_StateDiagram3.png
+- Scheduler_StateDiagram3.png
 
 ## Breakdown of Responsibilities:
-### ITERATION 2
-### Ali Fahd:
+## ITERATION 3
+Ali Fahd:
 - Updated source codes
 
-### Karim Mahrous:
-- Designed the State Machine Sequence
+Karim Mahrous:
+- Updated source codes
+
+Andy Ngo:
+- Updated source codes
+
+Scharara Islam:
+- Updated README 
+- Created Scheduler State diagram
+- Updated UML Class Diagram
+
+## Iteration 2
+Ali Fahd:
+- Updated source codes
+
+Karim Mahrous:
+- Designed the State Machine Sequences 
 - Updated UML Class Diagram and Sequence Diagram
 
-### Andy Ngo:
-- Updated source codes, work on UDP
+Andy Ngo:
+- Updated source codes
 
-### Scharara Islam:
-- Updated README
+Scharara Islam:
+- Updated README 
 
+## Iteration 1
+Ali Fahd:
+- Created the FLoorRequest, FloorSubsystem and Main
+- Created the testing: FloorSubsystemTest and SchedulerTest
 
-### ITERATION 1
-### Ali Fahd:
- - Created the FloorRequest, FloorSubsystem, and Main
- - Created the testing: FloorSubsystemTest and SchedulerTest
-### Andy Ngo:
+Andy Ngo:
 - Created the Elevator and Elevator_Motor
 - Created the testing: ElevatorTest
-### Karim Mahrous:
- - UML of Class and Sequence Diagram
-### Scharara Islam 
+
+Karim Mahrous:
+- UML of Class and Sequence DIagram
+
+Scharara Islam:
 - Created Scheduler class and edited by Ali Fahd
 - README
