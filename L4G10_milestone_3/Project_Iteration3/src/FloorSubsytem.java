@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Class FloorSubsystem imports request data from an input file and puts it in scheduler class.
@@ -12,7 +14,7 @@ import javax.swing.JFileChooser;
  *
  */
 public class FloorSubsytem implements Runnable {
-	private Scheduler scheduler;
+	private static Scheduler scheduler;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();	//list of requests
 	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();	// keeps track of arrival sensors
 	
@@ -42,11 +44,17 @@ public class FloorSubsytem implements Runnable {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+        Date date = new Date();
 		//outputs each request imported
 		for(FloorRequest fr: requests) {
-			System.out.println("FLOOR SUBSYSTEM: " + fr.toString());
+			System.out.println(new Timestamp(date.getTime()) + " FLOOR SUBSYSTEM: " + fr.toString());
 		}		
 		System.out.println("\n");
+
+		for(FloorRequest fr: requests) {
+			scheduler.putRequest(fr);	//puts request data in scheduler
+			System.out.println("FLOOR SUBSYSTEM: Request issued to scheduler.\n");
+		}
 	}
 	
 	/**
@@ -117,10 +125,6 @@ public class FloorSubsytem implements Runnable {
 		}
 		while(true)
 		{
-			synchronized(scheduler)
-			{
-				scheduler.putRequests(requests);	//puts request data in scheduler
-			}
 			synchronized(scheduler)
 			{
 				String[] temp = scheduler.getArrivalSensor();	//retrieves arrival sensor data from scheduler

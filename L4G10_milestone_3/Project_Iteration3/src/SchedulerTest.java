@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 class SchedulerTest extends Scheduler {
 	Scheduler scheduler = new Scheduler();
-	FloorSubsytem floorSystem = new FloorSubsytem(scheduler);
+	FloorSubsytem floorSubystem = new FloorSubsytem(scheduler);
 	
 	/**
 	 * Test method for testing requests in scheduler. Checks if requests are put in the scheduler and then removed from scheduler.
@@ -23,10 +23,14 @@ class SchedulerTest extends Scheduler {
 	 */
 	@Test
 	void testRequests() {
-		floorSystem.addFloorRequest("elevator.txt");	//imports sample data
-		scheduler.putRequests(floorSystem.getRequests());
+		floorSubystem.addFloorRequest("elevator.txt");	//imports sample data
+		for(FloorRequest fr: floorSubystem.getRequests()) {
+			scheduler.putRequest(fr);
+		}
 		Assertions.assertFalse(scheduler.getEmptyRequests());	//checks if data is placed in scheduler
-		scheduler.getRequests();
+		for(FloorRequest fr: floorSubystem.getRequests()) {
+			scheduler.getRequest();
+		}		
 		Assertions.assertTrue(scheduler.getEmptyRequests());	//checks if data has left scheduler
 	}
 	

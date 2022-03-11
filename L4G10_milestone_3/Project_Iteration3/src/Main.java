@@ -17,7 +17,7 @@ public class Main {
         Scheduler scheduler = new Scheduler();// initialize scheduler
 
         floorSystem = new Thread(new FloorSubsytem(scheduler), floor);
-        elevatorSystem = new Thread(new ElevatorSubsystem(scheduler), elevator);
+        elevatorSystem = new Thread(new ElevatorSubsystem(scheduler, 1, 1), elevator);
         //run threads
         floorSystem.start();
         elevatorSystem.start();

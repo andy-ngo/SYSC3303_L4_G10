@@ -16,6 +16,7 @@ class ElevatorTest{
 	private ElevatorSubsystem elevator;
 	private int id = 1;
 	private int curr_floor = 0;
+	private Scheduler s = new Scheduler();
 	
 	/*
 	 * Will test to see if the elevator door will open and close
@@ -23,7 +24,7 @@ class ElevatorTest{
 	@Test
 	public void testDoorStatus()
 	{
-		elevator = new ElevatorSubsystem(id,curr_floor);
+		elevator = new ElevatorSubsystem(s,id,curr_floor);
 		elevator.closeDoor();
 		assertEquals(false,elevator.doorStatus());
 		elevator.openDoor();
@@ -36,7 +37,7 @@ class ElevatorTest{
 	@Test
 	public void testElevatorDirection()
 	{
-		elevator = new ElevatorSubsystem(id,curr_floor);
+		elevator = new ElevatorSubsystem(s,id,curr_floor);
 		elevator.go_Up();
 		assertEquals(Elevator_Motor.Up,elevator.getDirection());
 		elevator.go_Down();
@@ -51,7 +52,7 @@ class ElevatorTest{
 	@Test
 	public void testLampStatus()
 	{
-		elevator = new ElevatorSubsystem(id,1);
+		elevator = new ElevatorSubsystem(s,id,1);
 		elevator.lampOff();
 		assertEquals(false,elevator.lampStatus());
 		elevator.lampOn();

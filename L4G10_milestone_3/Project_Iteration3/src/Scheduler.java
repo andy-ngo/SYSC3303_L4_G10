@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.LinkedList;
+import java.util.Queue;
 /**
  * @author Scharara Islam
  * @author Ali Fahd
@@ -9,9 +10,9 @@ import java.util.Map;
  * This class is responsible for accepting request from the Floor and routing the elevator to their requested floor
  */
 public class Scheduler {
-	private ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();	// list of request passed by floor subsystem
+	private Queue<FloorRequest> requests = new LinkedList<>();	// list of request passed by floor subsystem
 	private String[] arrivalSensor = {"", ""};	//temp field for passing arrival sensor information
-	private boolean emptyRequests = true; // check for getting requests
+	private boolean emptyRequest = true; // check for getting requests
 	private boolean emptyArrivalSensor = true;	// check for getting arrival sensors
 	private HashMap<Integer, Integer> elevatorArrivals = new HashMap<Integer, Integer>();	// keeps track of elevator arrivals key=elevator number, value = arrival floor number
 	
@@ -65,17 +66,10 @@ public class Scheduler {
      * Method puts request into the scheduler. Updates empty request status.
      * @param ArrayList<FloorRequest> requests passed to put in scheduler
      */
-	public synchronized void putRequests(ArrayList<FloorRequest> requests) {		
-		while (!emptyRequests) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				System.out.println(e);
-			}
-		}
-		this.requests = requests;
-		emptyRequests = false; 	// request have been put in scheduler
-		System.out.println("SCHEDULER: Requests issued to scheduler.");
+	public synchronized void putRequest(FloorRequest request) {	
+		this.requests.add(request);
+		System.out.println("SCHEDULER: Requests in queue: " + requests.size());
+		emptyRequest = false; 	// request have been put in scheduler
 		notifyAll();
     	stateMachine(SchedulerStates.ReceivedRequests);
 	}
@@ -84,19 +78,22 @@ public class Scheduler {
      * Method gets request that were put into the scheduler. Updates empty request status.
      * @return ArrayList<FloorRequest> requests that were passed to the scheduler
      */
-	public synchronized ArrayList<FloorRequest> getRequests() {		
-		while (emptyRequests) {
+	public synchronized FloorRequest getRequest() {		
+		while (emptyRequest) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				System.out.println(e);
 			}
 		}
-		System.out.println("SCHEDULER: Requests handed off to elevator.");
-		emptyRequests = true;	// requests have been taken from scheduler
+		FloorRequest fr = requests.remove();
+		if (requests.size() == 0) {
+			emptyRequest = true;	// all requests will be taken from scheduler after the remove
+		}
+		System.out.println("SCHEDULER: Request handed off to elevator.");
 		notifyAll();
     	stateMachine(SchedulerStates.EmptyRequests);
-		return requests;
+		return fr;
 	}
 	
 	/**
@@ -141,7 +138,7 @@ public class Scheduler {
      * @return boolean empty request status.
      */	
 	public boolean getEmptyRequests() {
-		return emptyRequests;
+		return emptyRequest;
 	}
 	
 	/**
@@ -171,5 +168,14 @@ public class Scheduler {
      */	
 	public Integer getFloorStatus(int num) {
 		return elevatorArrivals.get(num);
+	}
+	
+
+	/**
+     * Method gets requests queue in scheduler.
+     * @return Queue<FloorRequest> -requests in scheduler
+     */	
+	public Queue<FloorRequest> getRequests() {
+		return requests;
 	}
 }
