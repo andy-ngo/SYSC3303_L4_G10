@@ -60,7 +60,7 @@ JUnit Test files to verify that it is working
 - Updated UML Class Diagram and Sequence Diagram
 
 ### Andy Ngo:
-- Updated source codes
+- Updated source codes, work on UDP
 
 ### Scharara Islam:
 - Updated README
