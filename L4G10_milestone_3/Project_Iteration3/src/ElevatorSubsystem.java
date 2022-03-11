@@ -11,6 +11,8 @@
  */
 
 import java.util.ArrayList;
+import java.net.*;
+import java.io.*;
 
 public class ElevatorSubsystem implements Runnable 
 {
@@ -22,6 +24,9 @@ public class ElevatorSubsystem implements Runnable
 	private boolean open_Door = false;
 	private boolean lamp_Status = false;
 	private int curr_Floor;
+	private DatagramPacket sendPacket, receivePacket;
+	private DatagramSocket sendReceiveSocket;
+	
 	
 	//initialize constructors
 	public ElevatorSubsystem(Scheduler s, int id, int curr_Floor)
@@ -31,6 +36,38 @@ public class ElevatorSubsystem implements Runnable
 		this.open_Door = false;
 		this.lamp_Status = false;
 		this.curr_Floor = curr_Floor;
+		
+		try 
+		{
+			sendReceiveSocket = new DatagramSocket();
+		} catch (SocketException se) 
+		{ 
+			se.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	public void initailize()
+	{
+		byte[] dataByte = new byte[100];
+		
+		try 
+		{
+			this.sendPacket = new DatagramPacket(dataByte,dataByte.length, InetAddress.getLocalHost(),99);
+		} catch (IOException e) 
+		{ 
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		try 
+		{
+			this.sendReceiveSocket = new DatagramSocket();
+		} catch (IOException e) 
+		{ 
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -43,7 +80,18 @@ public class ElevatorSubsystem implements Runnable
 		{
 			//idle
 			case IDLE_STATE:
-				System.out.println("ELEVATOR SUBSYSTEM: Waiting for request...\n");
+				byte[] data = new byte[100];
+				receivePacket = new DatagramPacket(data, data.length);
+				
+				try 
+				{
+					this.sendReceiveSocket = new DatagramSocket();
+				} catch (IOException e) 
+				{ 
+					e.printStackTrace();
+					System.exit(1);
+				}
+				System.out.println("ELEVATOR SUBSYSTEM: Waiting for requests...\n");
 				break;
 			
 			case OPERATE_STATE:
@@ -66,7 +114,27 @@ public class ElevatorSubsystem implements Runnable
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
 				System.out.println("Elevator notifying Scheduler of arrival...");
-				//s.putArrivalSensor(id, curr_Floor); //will change the status of the arrival sensor to update the floor subsystem through the scheduler
+				s.setElevatorArrival(id, curr_Floor);
+
+				byte[] dataByte = new byte[100];
+				try 
+				{
+					this.sendPacket = new DatagramPacket(dataByte,dataByte.length, InetAddress.getLocalHost(),99);
+				} catch (IOException e) 
+				{ 
+					e.printStackTrace();
+					System.exit(1);
+				}
+				
+				try 
+				{
+					this.sendReceiveSocket.send(this.sendPacket);
+				} catch (IOException e) 
+				{ 
+					e.printStackTrace();
+					System.exit(1);
+				}
+
 				break;
 				
 		}

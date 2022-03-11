@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +5,8 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.io.*;
+import java.net.*;
 
 /**
  * Class FloorSubsystem imports request data from an input file and puts it in scheduler class.
@@ -17,7 +17,9 @@ public class FloorSubsytem implements Runnable {
 	private static Scheduler scheduler;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();	//list of requests
 	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();	// keeps track of arrival sensors
-	
+	private DatagramPacket sendPacket,receivePacket;
+	private DatagramSocket sendReceiveSocket;
+
 	/**
 	 * Constructor for class FloorSubsystem. Initializes scheduler.
 	 * @param Scheduler scheduler
@@ -25,6 +27,49 @@ public class FloorSubsytem implements Runnable {
 	 */
 	public FloorSubsytem (Scheduler scheduler) {
 		this.scheduler = scheduler;	//initialize scheduler
+		
+		try
+		{
+			sendReceiveSocket = new DatagramSocket();
+		} catch(SocketException se)
+		{
+			se.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	public void initailize()
+	{
+		byte[] sendData = new byte[100];
+		
+		try 
+		{
+			this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(),23);
+		} catch (UnknownHostException e) 
+		{ 
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		try 
+		{
+			this.sendReceiveSocket.send(this.sendPacket);;
+		} catch (IOException e) 
+		{ 
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		byte[] dataByte = new byte[100];
+		receivePacket = new DatagramPacket(dataByte, dataByte.length);
+		try
+		{
+			sendReceiveSocket.receive(receivePacket);
+		} catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	/**
