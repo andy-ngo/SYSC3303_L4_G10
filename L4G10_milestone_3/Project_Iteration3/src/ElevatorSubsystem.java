@@ -43,10 +43,9 @@ public class ElevatorSubsystem implements Runnable
 		{
 			//idle
 			case IDLE_STATE:
-				System.out.println("ELEVATOR SUBSYSTEM: Waiting for requests...\n");
+				System.out.println("ELEVATOR SUBSYSTEM: Waiting for request...\n");
 				break;
 			
-			//operate
 			case OPERATE_STATE:
 				System.out.println("\n~~Operate State~~");
 				break;
@@ -67,7 +66,7 @@ public class ElevatorSubsystem implements Runnable
 				System.out.println("\nELEVATOR STOPPED\n");
 				stop();
 				System.out.println("Elevator notifying Scheduler of arrival...");
-				s.setElevatorArrival(id, curr_Floor);
+				//s.putArrivalSensor(id, curr_Floor); //will change the status of the arrival sensor to update the floor subsystem through the scheduler
 				break;
 				
 		}
@@ -112,7 +111,7 @@ public class ElevatorSubsystem implements Runnable
 		while(curr_Floor != request.getFloorDestination() )
 		{
 			System.out.println("\n======= ELEVATOR " + id + " =======");
-			System.out.println("Arrival Sensor OFF");
+			System.out.println("Arrival Sensor OFF\n");
 			//making sure the movement is synchronizing with the scheduler
 			synchronized(s)
 			{
@@ -137,12 +136,8 @@ public class ElevatorSubsystem implements Runnable
 		//state = elevatorStates.STOP_STATE;
 		stateMachine(ElevatorStates.STOP_STATE);
 		
-		//will change the status of the arrival sensor to update the floor subsystem through the scheduler
-		s.putArrivalSensor(curr_Floor,true);
-		
-		
 		System.out.println("Arrival Sensor OFF");
-		s.putArrivalSensor(curr_Floor,false);
+		
 		return true;
 	}
 	

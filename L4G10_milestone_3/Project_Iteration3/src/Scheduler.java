@@ -11,7 +11,6 @@ import java.util.Queue;
  */
 public class Scheduler {
 	private Queue<FloorRequest> requests = new LinkedList<>();	// list of request passed by floor subsystem
-	private String[] arrivalSensor = {"", ""};	//temp field for passing arrival sensor information
 	private boolean emptyRequest = true; // check for getting requests
 	private boolean emptyArrivalSensor = true;	// check for getting arrival sensors
 	private HashMap<Integer, Integer> elevatorArrivals = new HashMap<Integer, Integer>();	// keeps track of elevator arrivals key=elevator number, value = arrival floor number
@@ -87,12 +86,12 @@ public class Scheduler {
 			}
 		}
 		FloorRequest fr = requests.remove();
+		System.out.println("SCHEDULER: Request handed off to elevator.\n");
 		if (requests.size() == 0) {
 			emptyRequest = true;	// all requests will be taken from scheduler after the remove
+	    	stateMachine(SchedulerStates.EmptyRequests);
 		}
-		System.out.println("SCHEDULER: Request handed off to elevator.");
 		notifyAll();
-    	stateMachine(SchedulerStates.EmptyRequests);
 		return fr;
 	}
 	
@@ -101,7 +100,7 @@ public class Scheduler {
      * @param int ASNumber number of floor
      * @param Boolean status of sensor
      */
-	public synchronized void putArrivalSensor(int ASNumber, Boolean status) {
+	public synchronized void putArrivalSensor(int elevatorNumber, int floorNumber) {
 		while (!emptyArrivalSensor) {
 			try {
 				wait();
@@ -109,18 +108,24 @@ public class Scheduler {
 				System.out.println(e);
 			}
 		}
-		arrivalSensor[0] = Integer.toString(ASNumber);	//stores arrival sensor data in field
-		arrivalSensor[1] = Boolean.toString(status);
-		emptyArrivalSensor = false; 	// arrival sensor has been put in scheduler
-		notifyAll();
+		
+		elevatorArrivals.remove(elevatorNumber);
+		elevatorArrivals.put(elevatorNumber, floorNumber);
+		elevatorArrivals.get(elevatorNumber);
+		
     	stateMachine(SchedulerStates.ReceivedArrivalSensors);
+		System.out.println("SCHEDULER: {Elevator #: "+ elevatorNumber +" - Floor #: "+ elevatorArrivals.get(elevatorNumber) +"} - " + elevatorArrivals);
+		
+		emptyArrivalSensor = false; 	// arrival sensor has been put in scheduler
+		
+		notifyAll();
 	}
 
 	/**
      * Method gets arrival sensors that were put into the scheduler. Updates empty arrival sensor status.
      * @return String[] arrival sensor that were passed to the scheduler
      */
-	public synchronized String[] getArrivalSensor() {
+	public synchronized HashMap<Integer, Integer> getArrivalSensor() {
 		while (emptyArrivalSensor) {
 			try {
 				wait();
@@ -128,9 +133,15 @@ public class Scheduler {
 				System.out.println(e);
 			}
 		}
+		
 		emptyArrivalSensor = true;	// arrival sensor data has been taken from scheduler
+		
+		System.out.println("SCHEDULER: Notifying Floor Subsystem that request has been serviced.");
+    	stateMachine(SchedulerStates.EmptyArrivalSensors);
+    	
 		notifyAll();
-		return arrivalSensor;
+		
+		return elevatorArrivals;
 	}
 	
 	/**
@@ -148,19 +159,7 @@ public class Scheduler {
 	public boolean getEmptyArrivalSensor() {
 		return emptyArrivalSensor;
 	}
-	
-	/**
-     * Method sets elevator arrival values.
-     * @param int elevatorNumber - the elevator that has arrived on the respective floor.
-     * @param int floorNuumber - the floor the elevator has arrived on
-     */	
-	public void setElevatorArrival(int elevatorNumber, int floorNumber) {
-		elevatorArrivals.remove(elevatorNumber);
-		elevatorArrivals.put(elevatorNumber, floorNumber);
-		elevatorArrivals.get(elevatorNumber);
-		System.out.println("SCHEDULER: {Elevator #: "+ elevatorNumber +" - Floor #: "+ elevatorArrivals.get(elevatorNumber) +"} - " + elevatorArrivals);
-	}
-	
+
 	/**
      * Method sets elevator arrival values.
      * @param int num - the elevator number

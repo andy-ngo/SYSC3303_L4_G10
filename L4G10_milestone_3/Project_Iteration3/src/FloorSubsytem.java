@@ -50,11 +50,6 @@ public class FloorSubsytem implements Runnable {
 			System.out.println(new Timestamp(date.getTime()) + " FLOOR SUBSYSTEM: " + fr.toString());
 		}		
 		System.out.println("\n");
-
-		for(FloorRequest fr: requests) {
-			scheduler.putRequest(fr);	//puts request data in scheduler
-			System.out.println("FLOOR SUBSYSTEM: Request issued to scheduler.\n");
-		}
 	}
 	
 	/**
@@ -109,6 +104,11 @@ public class FloorSubsytem implements Runnable {
 	public Map<Integer, Boolean> getArrivalSensors() {
 		return arrivalSensors;
 	}
+	
+	public long requestTimeNS(String s) {
+		String[] arr = s.split(":");
+		return (Long.parseLong(arr[0]) * 1000000000*60*60)+(Long.parseLong(arr[1])* 1000000000*60)+((long)Double.parseDouble(arr[2]) * 1000000000);
+	}
 
 	/**
 	 * Runs the thread for FloorSubsytem.
@@ -123,13 +123,22 @@ public class FloorSubsytem implements Runnable {
 		if(response == JFileChooser.APPROVE_OPTION) {
 			addFloorRequest(fileChooser.getSelectedFile().getAbsolutePath());	//sends file chosen to addFloorRequest method
 		}
+		long start = System.nanoTime();
+		for(FloorRequest fr: requests) {
+			long converted = requestTimeNS(fr.getRequestTime());
+			while(true) {
+				if(System.nanoTime() - start == converted) {
+					System.out.println("FLOOR SUBSYSTEM: Request issued to scheduler.\n");
+					scheduler.putRequest(fr);	//puts request data in scheduler
+					break;
+				}
+			}
+		}
 		while(true)
 		{
 			synchronized(scheduler)
 			{
-				String[] temp = scheduler.getArrivalSensor();	//retrieves arrival sensor data from scheduler
-                arrivalSensors.put(Integer.parseInt(temp[0]), Boolean.parseBoolean(temp[1]));	//updates hash map
-                scheduler.notifyAll();
+				System.out.println("FLOOR SUBSYSTEM: Request has been serviced. " + scheduler.getArrivalSensor());
 			}
 		}
 	}

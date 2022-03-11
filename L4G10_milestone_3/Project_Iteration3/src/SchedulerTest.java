@@ -36,8 +36,7 @@ class SchedulerTest extends Scheduler {
 	
 	/**
 	 * Test method for testing arrival sensors in scheduler. Checks if sensor notifications are put in the scheduler and then removed from scheduler.
-	 *
-	 */
+	 
 	@Test
 	void testArrivalSensor() {
 		scheduler.putArrivalSensor(2,true);
@@ -45,4 +44,5 @@ class SchedulerTest extends Scheduler {
 		scheduler.getArrivalSensor();
 		Assertions.assertTrue(scheduler.getEmptyArrivalSensor());	//checks if sensor data has been removed from scheduler
 	}
+	 */
 }
