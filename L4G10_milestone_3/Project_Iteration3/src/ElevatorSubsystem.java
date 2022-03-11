@@ -94,6 +94,34 @@ public class ElevatorSubsystem implements Runnable
 					e.printStackTrace();
 					System.exit(1);
 				}
+				
+				String receivePacketData = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
+				System.out.println("Received: " + new String(receivePacket.getData(),0,this.receivePacket.getLength()));
+				
+				if(receivePacketData.equals("Waiting"))
+				{
+					String elevatorHasRequest = receivePacketData;
+					byte[] sendData = elevatorHasRequest.getBytes();
+					try
+					{
+						this.sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getLocalHost(),99);
+					} catch(UnknownHostException e)
+					{
+						e.printStackTrace();
+						System.exit(1);
+					}
+					try
+					{
+						this.sendReceiveSocket.send(this.sendPacket);
+					} catch(IOException e)
+					{
+						e.printStackTrace();
+						System.exit(1);
+					}
+				}
+				else
+				{
+				}
 				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR SUBSYSTEM: Waiting for requests...\n");
 				break;
 			
