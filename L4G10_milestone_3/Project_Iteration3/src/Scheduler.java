@@ -32,15 +32,17 @@ public class Scheduler {
     	stateMachine(SchedulerStates.EmptyRequests);
     	stateMachine(SchedulerStates.EmptyArrivalSensors);
 
+    	
 		try
     	{
-    		elevatorSendReceiveSocket = new DatagramSocket(99);
-    		floorSendReceiveSocket = new DatagramSocket(23);
+    		elevatorSendReceiveSocket = new DatagramSocket(98);
+    		floorSendReceiveSocket = new DatagramSocket(22);
     	} catch(SocketException se)
     	{
     		se.printStackTrace();
     		System.exit(1);
     	}
+    	
     }
 
 	private void sendReceive()

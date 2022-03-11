@@ -44,7 +44,7 @@ public class FloorSubsytem implements Runnable {
 		
 		try 
 		{
-			this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(),23);
+			this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(),24);
 		} catch (UnknownHostException e) 
 		{ 
 			e.printStackTrace();
