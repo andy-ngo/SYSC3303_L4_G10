@@ -102,19 +102,16 @@ public class ElevatorSubsystem implements Runnable
 				break;
 			//go up
 			case UP_STATE:
-				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR GOING UP\n");
 				go_Up();
 				break;
 				
 			//go down
 			case DOWN_STATE:
-				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR GOING DOWN\n");
 				go_Down();
 				break;
 
 			//stop/unloading
 			case STOP_STATE:
-				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR STOPPED\n");
 				stop();
 				System.out.println(Timestamp.from(Instant.now()) + "  -  Elevator notifying Scheduler of arrival...");
 				//s.putArrivalSensor(id, curr_Floor);
@@ -158,16 +155,18 @@ public class ElevatorSubsystem implements Runnable
 		lampOn();
 		closeDoor();
 
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Going to next request");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR -  Going to next request");
 
 		//will check if there are any more floors on the request list and will either go up or down depending on current floor
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
+			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
+			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		
 		curr_Floor = request.getFloorOrigin();
@@ -236,7 +235,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		this.motor = Elevator_Motor.Up;
 		curr_Floor++;
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Going up");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING UP");
 		try {
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
@@ -249,7 +248,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		this.motor = Elevator_Motor.Down;
 		curr_Floor--;
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Going down");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING DOWN");
 		try {
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
@@ -261,10 +260,11 @@ public class ElevatorSubsystem implements Runnable
 	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Floor reached. Unloading\n");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: STOPPED\n");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Floor reached. Unloading\n");
 		try {
 			Thread.sleep(2000);
-			System.out.println(Timestamp.from(Instant.now()) + "  -  Doors opened.\n");
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Doors opened.\n");
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
