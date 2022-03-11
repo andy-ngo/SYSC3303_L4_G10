@@ -36,16 +36,17 @@ public class Scheduler {
     	stateMachine(SchedulerStates.EmptyRequests);
     	stateMachine(SchedulerStates.EmptyArrivalSensors);
 
-    	
+    	/*
 		try
     	{
-    		elevatorSendReceiveSocket = new DatagramSocket(98);
+    		elevatorSendReceiveSocket = new DatagramSocket(99);
     		floorSendReceiveSocket = new DatagramSocket(22);
     	} catch(SocketException se)
     	{
     		se.printStackTrace();
     		System.exit(1);
     	}
+    	*/
     	
     }
 
@@ -93,6 +94,7 @@ public class Scheduler {
      * @param ArrayList<FloorRequest> requests passed to put in scheduler
      */
 	public synchronized void putRequest(FloorRequest request) {	
+		/*
 		try 
 		{
 			floorSendReceiveSocket.receive(receivePacket);
@@ -101,6 +103,7 @@ public class Scheduler {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		*/
 		
 		this.requests.add(request);
 		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Requests in queue: " + requests.size());
