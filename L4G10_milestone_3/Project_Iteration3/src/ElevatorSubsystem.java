@@ -1,6 +1,5 @@
-/*
- * Author: Andy Ngo, Karim Mahrous
- * Student ID: 101132278
+/**
+ * @author Andy Ngo, Karim Mahrous
  * Version: 3.0V
  * 
  * Description:
@@ -52,6 +51,9 @@ public class ElevatorSubsystem implements Runnable
 		}
 	}
 
+	/**
+	 * This method is used to initialize the UDP
+	 */
 	public void initailize()
 	{
 		byte[] dataByte = new byte[100];
@@ -84,7 +86,7 @@ public class ElevatorSubsystem implements Runnable
 		switch(state)
 		{
 			//idle
-			case IDLE_STATE:
+			case IDLE:
 				byte[] data = new byte[100];
 				receivePacket = new DatagramPacket(data, data.length);
 				
@@ -124,27 +126,58 @@ public class ElevatorSubsystem implements Runnable
 				else
 				{
 				}
-				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR SUBSYSTEM: Waiting for requests...\n");
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Waiting for requests...\n");
 				break;
 			
-			case OPERATE_STATE:
-				System.out.println(Timestamp.from(Instant.now()) + "  -  ~~Operate State~~");
+			case OPERATE:
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: ~~Operate State~~");
 				break;
 			//go up
-			case UP_STATE:
+			case UP:
 				go_Up();
+				/*
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				*/
 				break;
 				
 			//go down
-			case DOWN_STATE:
+			case DOWN:
 				go_Down();
+				/*
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				*/
 				break;
 
 			//stop/unloading
-			case STOP_STATE:
+			case STOP:
 				stop();
-				System.out.println(Timestamp.from(Instant.now()) + "  -  Elevator notifying Scheduler of arrival...");
-				//s.putArrivalSensor(id, curr_Floor);
+				/*
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+				/*
+				try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				*/
+				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: notifying Scheduler of arrival...");
+				s.putArrivalSensor(id, curr_Floor);
 
 				byte[] dataByte = new byte[100];
 				try 
@@ -166,48 +199,43 @@ public class ElevatorSubsystem implements Runnable
 				}
 
 				break;
-				
 		}
 		
 	}
 
-	/*
-	 * This function will check whether the floor that the elevator is trying to get to is higher or lower and will keep going until it reaches the destination floor
-	 * 
-	 * @param ArrayList<FloorRequest> request - will be used in the function to check whether there are any requested floors on the list.
-	 */
+
+	
+	 /**
+	  * This function will check whether the floor that the elevator is trying to get to is higher or lower and will keep going until it reaches the destination floor
+	  * @param request - will be used in the function to check whether there are any requested floors on the list.
+	  * @return true
+	  */
 	public boolean operate(FloorRequest request)
 	{
 		
-		stateMachine(ElevatorStates.OPERATE_STATE);
+		stateMachine(ElevatorStates.OPERATE);
 		
 		//initialize variables to use in the loop
 		lampOn();
 		closeDoor();
 
-		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR -  Going to next request");
+		System.out.println("\nELEVATOR: Waiting for next request....");
+		s.printPacket();
+		System.out.println("ELEVATOR: Packet recieved from Floor Subsystem....");
+		System.out.println("ELEVATOR: Parsing packet.....");
+		System.out.println("ELEVATOR: Parsing complete processing request....\n");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Going to next request");
 
 		//will check if there are any more floors on the request list and will either go up or down depending on current floor
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
-			System.out.println("Waiting for next reqest....");
-			System.out.println("Packet recieved from floorsubsystem....");
-			System.out.println("Parsing packet.....");
-			System.out.println("Parsing complete processing request....");System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
-			System.out.println("Travelling to the requested floor....");
-
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
-			System.out.println("Waiting for next reqest....");
-			System.out.println("Packet recieved from floorsubsystem....");
-			System.out.println("Parsing packet.....");
-			System.out.println("Parsing complete processing request....");
 			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
-			System.out.println("Travelling to the requested floor....");
-			
 		}
 		
 		curr_Floor = request.getFloorOrigin();
@@ -224,44 +252,43 @@ public class ElevatorSubsystem implements Runnable
 		while(curr_Floor != request.getFloorDestination() )
 		{
 			System.out.println(Timestamp.from(Instant.now()) + "  -  ======= ELEVATOR " + id + " =======");
-			System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF\n");
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Arrival Sensor OFF");
 			//making sure the movement is synchronizing with the scheduler
 			synchronized(s)
 			{
 				if(curr_Floor < request.getFloorDestination())
 				{
-					stateMachine(ElevatorStates.UP_STATE);
-					System.out.println(Timestamp.from(Instant.now()) + "  -  Lamp Number " + curr_Floor);
+					stateMachine(ElevatorStates.UP);
+					System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Lamp Number " + curr_Floor);
 				}
 				if(curr_Floor > request.getFloorDestination())
 				{
-					stateMachine(ElevatorStates.DOWN_STATE);
-					System.out.println(Timestamp.from(Instant.now()) + "  -  Lamp Number " + curr_Floor);
+					stateMachine(ElevatorStates.DOWN);
+					System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Lamp Number " + curr_Floor);
 				}
 			}
 		}
 		//arrive at floor open door and turn off lamp
 		openDoor();
 		lampOff();
-		System.out.println(Timestamp.from(Instant.now()) + "  -    ****DOOR OPENED****");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR:****DOOR OPENED****");
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor ON");
-		stateMachine(ElevatorStates.STOP_STATE);
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Arrival Sensor ON");
+		stateMachine(ElevatorStates.STOP);
 		
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
-		System.out.println("Waiting for next reqest....");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Arrival Sensor OFF");
 		
 		return true;
 	}
 	
-	/*
+	/**
 	 * If there is a button pressed in the elevator it will call the operate_check function
 	 * 
-	 * @params ArrayList<FloorRequest> request - will be used in the function to check whether there are any requested floors on the list and will let the operate_check function read it
+	 * @param request - will be used in the function to check whether there are any requested floors on the list and will let the operate_check function read it
 	 */
 	public void button_pressed(FloorRequest request)
 	{
-		System.out.println(Timestamp.from(Instant.now()) + "  -  Button Pressed");
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Button Pressed");
 		//run the number through the operate check function
 		this.buttons[request.getFloorDestination() - 1] = true;
 		operate(request);
@@ -271,8 +298,8 @@ public class ElevatorSubsystem implements Runnable
 		this.buttons[request.getFloorDestination()] = false;
 	}
 	
-	/*
-	 * These functions will control the elevator motor movement, up, down, and stop
+	/**
+	 * This function will control the elevator motor movement up
 	 */
 	public void go_Up()
 	{
@@ -280,82 +307,117 @@ public class ElevatorSubsystem implements Runnable
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING UP");
 		curr_Floor++;
 		//System.out.println("Travelling to the requested floor....Have Patience");
-		//Thread.sleep(6000);
+		
 	}
 	
+	/**
+	 * This function will control the elevator motor movement down
+	 */
 	public void go_Down()
 	{
 		this.motor = Elevator_Motor.Down;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING DOWN");
 		curr_Floor--;
 		//System.out.println("Travelling to the requested floor....Have Patience");
-		//Thread.sleep(6000);
+		
 	}
 	
+	/**
+	 * This function will stop the elevator
+	 */
 	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: STOPPED\n");
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Floor reached.\n");
-		//Thread.sleep(2000);
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Doors opened.\n");
-		//Thread.sleep(5000);
 	}
-	
-	/*
-	 * These additional functions will be used in the test class to make sure that everything is functioning properly
+	/**
+	 * This function gets the direction of the elevator motor
+	 * @return Elevator_Motor - the direction of the elevator motor
 	 */
 	public Elevator_Motor getDirection()
 	{
 		return this.motor;
 	}
 	
+	/**
+	 * This will return the lamp status
+	 * @return boolean - if true the lamp is on, if false the lamp is off
+	 */
 	public boolean lampStatus()
 	{
 		return this.lamp_Status;
 	}
-	
+	/**
+	 * Will set lamp status as true to be on
+	 */
 	public void lampOn()
 	{
 		lamp_Status = true;
 	}
 	
+	/**
+	 * Will set lamp status as false to be off
+	 */
 	public void lampOff()
 	{
 		lamp_Status = false;
 	}
 	
+	/**
+	 * Will return the status of the door
+	 * @return boolean - will return true if the door is open and false for closed
+	 */
 	public boolean doorStatus()
 	{
 		return this.open_Door;
 	}
 	
+	/**
+	 * Will return a status of the elevator if it is busy
+	 * @return boolean - will be true if it is busy and false if it is not
+	 */
 	public boolean getBusyStatus()
 	{
 		return this.busy;
 	}
 	
+	/**
+	 * Will set the door status as false to be closed
+	 */
 	public void closeDoor()
 	{
 		open_Door = false; 
 	}
-	
+	 
+	/**
+	 * Will set the door status as true to be open
+	 */
 	public void openDoor()
 	{
 		open_Door = true; 
 	}
 	
+	/**
+	 * Will get the current floor
+	 * @return int - return the floor
+	 */
 	public int getCurrFloor()
 	{
 		return this.curr_Floor;
 	}
 	
+	/**
+	 * Will get the elevator motor
+	 * @return Elevator Motor - the motor direction
+	 */
 	public Elevator_Motor getMotor()
 	{
 		return this.motor;
 	}
 	
-	/*
+	/**
 	 * This function will just be used to run the elevator class when it is called in the main class
 	 */
 	@Override
@@ -363,7 +425,7 @@ public class ElevatorSubsystem implements Runnable
 	{
 		while(true)
 		{
-			stateMachine(ElevatorStates.IDLE_STATE);
+			stateMachine(ElevatorStates.IDLE);
 			synchronized(s)
 			{
 				operate(s.getRequest(0));

@@ -12,6 +12,7 @@ import java.net.*;
 /**
  * Class FloorSubsystem imports request data from an input file and puts it in scheduler class.
  * @author Ali Fahd
+ * @author Andy Ngo
  *
  */
 public class FloorSubsytem implements Runnable {

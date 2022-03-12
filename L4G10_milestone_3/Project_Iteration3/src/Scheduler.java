@@ -8,6 +8,7 @@ import java.lang.Math;
 /**
  * @author Scharara Islam
  * @author Ali Fahd
+ * @author Andy Ngo
  * A scheduler class that allows to communicate between the Elevator class and FloorSubsystem using Thread.
  * This class is responsible for accepting request from the Floor and routing the elevator to their requested floor
  */
@@ -51,14 +52,13 @@ public class Scheduler {
     	
     }
 
+    /**
+     * This method is used to send and receive packets from elevator and floor subsystem
+     */
 	private void sendReceive()
     {
     	byte[] dataByte = new byte[100];
     	receivePacket = new DatagramPacket(dataByte, dataByte.length);
-    	while(true)
-    	{
-    	
-    	}
     }
     
     
@@ -182,6 +182,16 @@ public class Scheduler {
 		notifyAll();
 		
 		return elevatorArrivals;
+	}
+	
+	/**
+	 * This method will print out the packet being sent from floor subsystem
+	 * 
+	 * @param n/a
+	 */
+	public void printPacket()
+	{
+		System.out.println("FLOOR SUBSYSTEM: Sending packet to Elevator Subsystem....");
 	}
 	
 	/**
