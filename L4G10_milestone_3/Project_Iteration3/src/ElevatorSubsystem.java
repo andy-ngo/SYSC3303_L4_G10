@@ -189,14 +189,24 @@ public class ElevatorSubsystem implements Runnable
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
-			System.out.println("Waiting for next rexest....");
+			System.out.println("Waiting for next reqest....");
+			System.out.println("Packet recieved from floorsubsystem....");
+			System.out.println("Parsing packet.....");
+			System.out.println("Parsing complete processing request....");
 			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println("Travelling to the requested floor....");
+
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
-			System.out.println("Waiting for next rexest....");
+			System.out.println("Waiting for next reqest....");
+			System.out.println("Packet recieved from floorsubsystem....");
+			System.out.println("Parsing packet.....");
+			System.out.println("Parsing complete processing request....");
 			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println("Travelling to the requested floor....");
+			
 		}
 		
 		curr_Floor = request.getFloorOrigin();
