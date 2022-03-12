@@ -189,11 +189,13 @@ public class ElevatorSubsystem implements Runnable
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
+			System.out.println("Waiting for next rexest....");
 			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
+			System.out.println("Waiting for next rexest....");
 			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		
@@ -235,6 +237,7 @@ public class ElevatorSubsystem implements Runnable
 		stateMachine(ElevatorStates.STOP_STATE);
 		
 		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
+		System.out.println("Waiting for next rexest....");
 		
 		return true;
 	}
