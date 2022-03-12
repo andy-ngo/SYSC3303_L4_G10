@@ -1,7 +1,7 @@
 /*
- * Author: Andy Ngo
+ * Author: Andy Ngo, Karim Mahrous
  * Student ID: 101132278
- * Version: 2.0V
+ * Version: 3.0V
  * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
@@ -96,6 +96,34 @@ public class ElevatorSubsystem implements Runnable
 					e.printStackTrace();
 					System.exit(1);
 				}
+				
+				String receivePacketData = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
+				System.out.println("Received: " + new String(receivePacket.getData(),0,this.receivePacket.getLength()));
+				
+				if(receivePacketData.equals("Waiting"))
+				{
+					String elevatorHasRequest = receivePacketData;
+					byte[] sendData = elevatorHasRequest.getBytes();
+					try
+					{
+						this.sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getLocalHost(),99);
+					} catch(UnknownHostException e)
+					{
+						e.printStackTrace();
+						System.exit(1);
+					}
+					try
+					{
+						this.sendReceiveSocket.send(this.sendPacket);
+					} catch(IOException e)
+					{
+						e.printStackTrace();
+						System.exit(1);
+					}
+				}
+				else
+				{
+				}
 				System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR SUBSYSTEM: Waiting for requests...\n");
 				break;
 			
@@ -163,12 +191,23 @@ public class ElevatorSubsystem implements Runnable
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
-			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println("Waiting for next reqest....");
+			System.out.println("Packet recieved from floorsubsystem....");
+			System.out.println("Parsing packet.....");
+			System.out.println("Parsing complete processing request....");System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println("Travelling to the requested floor....");
+
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
+			System.out.println("Waiting for next reqest....");
+			System.out.println("Packet recieved from floorsubsystem....");
+			System.out.println("Parsing packet.....");
+			System.out.println("Parsing complete processing request....");
 			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println("Travelling to the requested floor....");
+			
 		}
 		
 		curr_Floor = request.getFloorOrigin();
@@ -210,6 +249,7 @@ public class ElevatorSubsystem implements Runnable
 		stateMachine(ElevatorStates.STOP_STATE);
 		
 		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
+		System.out.println("Waiting for next reqest....");
 		
 		return true;
 	}
@@ -239,6 +279,8 @@ public class ElevatorSubsystem implements Runnable
 		this.motor = Elevator_Motor.Up;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING UP");
 		curr_Floor++;
+		//System.out.println("Travelling to the requested floor....Have Patience");
+		//Thread.sleep(6000);
 	}
 	
 	public void go_Down()
@@ -246,6 +288,8 @@ public class ElevatorSubsystem implements Runnable
 		this.motor = Elevator_Motor.Down;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING DOWN");
 		curr_Floor--;
+		//System.out.println("Travelling to the requested floor....Have Patience");
+		//Thread.sleep(6000);
 	}
 	
 	public synchronized void stop()

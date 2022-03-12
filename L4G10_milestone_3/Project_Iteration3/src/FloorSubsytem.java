@@ -18,6 +18,7 @@ public class FloorSubsytem implements Runnable {
 	private static Scheduler scheduler;
 	private static ArrayList<FloorRequest> requests = new ArrayList<FloorRequest>();	//list of requests
 	private Map<Integer, Boolean> arrivalSensors = new HashMap<>();	// keeps track of arrival sensors
+	private String floorStatus = "Waiting";
 	private DatagramPacket sendPacket,receivePacket;
 	private DatagramSocket sendReceiveSocket;
 
@@ -154,6 +155,59 @@ public class FloorSubsytem implements Runnable {
 		String[] arr = s.split(":");
 		return (Long.parseLong(arr[0]) * 1000000000*60*60)+(Long.parseLong(arr[1])* 1000000000*60)+((long)Double.parseDouble(arr[2]) * 1000000000);
 	}
+	
+	public void requestSend()
+	{
+		if(requests.size() == 0)
+		{
+			String requestStatus = "go";
+			byte[] sendByte = requestStatus.getBytes();
+			
+			try
+			{
+				this.sendPacket = new DatagramPacket(sendByte, sendByte.length,InetAddress.getLocalHost(),69);
+			} catch(UnknownHostException e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+			
+			try
+			{
+				this.sendReceiveSocket.send(this.sendPacket);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+			
+			if(floorStatus.equals("Waiting"))
+			{
+				byte[] dataByte = new byte[100];
+				receivePacket = new DatagramPacket(dataByte, dataByte.length);
+				
+				try
+				{
+					sendReceiveSocket.receive(receivePacket);
+				} catch(IOException e)
+				{
+					e.printStackTrace();
+					System.exit(1);
+				}
+				String toPrint = new String(receivePacket.getData(),0,this.receivePacket.getLength());
+				String[] elevatorResponse = (new String(receivePacket.getData(),0,this.receivePacket.getLength())).split(" ");
+				
+				if(elevatorResponse[1].equals("Arrived"))
+				{
+					//this.setArrivalSensor(elevatorResponse[2].valueOf(0),true);
+				}
+				System.out.println("Floor received: " + toPrint);
+				System.out.println("Floor has nothing to send");
+				floorStatus = "";
+			}
+		}
+	}
+	
 
 	/**
 	 * Runs the thread for FloorSubsytem.
