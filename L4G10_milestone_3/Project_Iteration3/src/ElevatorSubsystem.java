@@ -1,7 +1,7 @@
 /*
- * Author: Andy Ngo
+ * Author: Andy Ngo, Karim Mahrous
  * Student ID: 101132278
- * Version: 2.0V
+ * Version: 3.0V
  * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
@@ -247,7 +247,7 @@ public class ElevatorSubsystem implements Runnable
 		stateMachine(ElevatorStates.STOP_STATE);
 		
 		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
-		System.out.println("Waiting for next rexest....");
+		System.out.println("Waiting for next reqest....");
 		
 		return true;
 	}
@@ -278,6 +278,7 @@ public class ElevatorSubsystem implements Runnable
 		curr_Floor++;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING UP");
 		try {
+			System.out.println("Travelling to the requested floor....Have Patience");
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -291,6 +292,7 @@ public class ElevatorSubsystem implements Runnable
 		curr_Floor--;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING DOWN");
 		try {
+			System.out.println("Travelling to the requested floor....Have Patience");
 			Thread.sleep(6000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
