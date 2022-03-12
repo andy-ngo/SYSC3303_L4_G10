@@ -8,7 +8,7 @@
  - Scharara Islam 101149731
 
 ## How to Run:
-To run the application, use Main.java
+To run the application, use Main.java. To find a sample input file, naviagte to the root of this folder and click on elevator.txt
 
 ## Source Code:
 
