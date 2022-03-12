@@ -9,12 +9,10 @@
  * This class will be synchronizing with the scheduler class.
  */
 
-import java.util.ArrayList;
 import java.net.*;
 import java.io.*;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Date;
 
 public class ElevatorSubsystem implements Runnable 
 {
