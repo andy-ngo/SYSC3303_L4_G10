@@ -24,8 +24,9 @@ public class ElevatorSubsystem implements Runnable
 	private Elevator_Motor motor;
 	private int id;
 	private boolean buttons[];
-	private boolean open_Door = false;
-	private boolean lamp_Status = false;
+	private boolean open_Door;
+	private boolean lamp_Status;
+	private boolean busy;
 	private int curr_Floor;
 	private DatagramPacket sendPacket, receivePacket;
 	private DatagramSocket sendReceiveSocket;
@@ -38,6 +39,7 @@ public class ElevatorSubsystem implements Runnable
 		this.id = id;
 		this.open_Door = false;
 		this.lamp_Status = false;
+		this.busy = false;
 		this.curr_Floor = curr_Floor;
 		
 		try 
@@ -161,15 +163,17 @@ public class ElevatorSubsystem implements Runnable
 		if(curr_Floor < request.getFloorOrigin())
 		{
 			go_Up();
-			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		else if(curr_Floor > request.getFloorOrigin())
 		{
 			go_Down();
-			System.out.println("ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
+			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: To the next requested floor: " + request.getFloorOrigin());
 		}
 		
 		curr_Floor = request.getFloorOrigin();
+		stop();
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Loading passengers...");
 		
 		//print out the current floor and destination floor
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ###########################");
@@ -203,7 +207,6 @@ public class ElevatorSubsystem implements Runnable
 		System.out.println(Timestamp.from(Instant.now()) + "  -    ****DOOR OPENED****");
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ~~~~ARRIVED AT FLOOR " + curr_Floor + "~~~~");
 		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor ON");
-		//state = elevatorStates.STOP_STATE;
 		stateMachine(ElevatorStates.STOP_STATE);
 		
 		System.out.println(Timestamp.from(Instant.now()) + "  -  Arrival Sensor OFF");
@@ -234,42 +237,25 @@ public class ElevatorSubsystem implements Runnable
 	public void go_Up()
 	{
 		this.motor = Elevator_Motor.Up;
-		curr_Floor++;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING UP");
-		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		curr_Floor++;
 	}
 	
 	public void go_Down()
 	{
 		this.motor = Elevator_Motor.Down;
-		curr_Floor--;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: GOING DOWN");
-		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		curr_Floor--;
 	}
 	
 	public synchronized void stop()
 	{
 		this.motor = Elevator_Motor.Stop;
 		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: STOPPED\n");
-		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Floor reached. Unloading\n");
-		try {
-			Thread.sleep(2000);
-			System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Doors opened.\n");
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Floor reached.\n");
+		//Thread.sleep(2000);
+		System.out.println(Timestamp.from(Instant.now()) + "  -  ELEVATOR: Doors opened.\n");
+		//Thread.sleep(5000);
 	}
 	
 	/*
@@ -300,6 +286,11 @@ public class ElevatorSubsystem implements Runnable
 		return this.open_Door;
 	}
 	
+	public boolean getBusyStatus()
+	{
+		return this.busy;
+	}
+	
 	public void closeDoor()
 	{
 		open_Door = false; 
@@ -308,6 +299,16 @@ public class ElevatorSubsystem implements Runnable
 	public void openDoor()
 	{
 		open_Door = true; 
+	}
+	
+	public int getCurrFloor()
+	{
+		return this.curr_Floor;
+	}
+	
+	public Elevator_Motor getMotor()
+	{
+		return this.motor;
 	}
 	
 	/*
@@ -321,7 +322,7 @@ public class ElevatorSubsystem implements Runnable
 			stateMachine(ElevatorStates.IDLE_STATE);
 			synchronized(s)
 			{
-				operate(s.getRequest());
+				operate(s.getRequest(0));
 			}
 		}
 	}

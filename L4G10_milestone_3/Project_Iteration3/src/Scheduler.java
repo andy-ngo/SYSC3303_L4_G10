@@ -2,7 +2,7 @@ import java.util.*;
 import java.net.*;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Date;
+import java.lang.Math;
 
 /**
  * @author Scharara Islam
@@ -11,12 +11,13 @@ import java.util.Date;
  * This class is responsible for accepting request from the Floor and routing the elevator to their requested floor
  */
 public class Scheduler {
-	private Queue<FloorRequest> requests = new LinkedList<>();	// list of request passed by floor subsystem
+	private ArrayList<FloorRequest> requests = new ArrayList<>();	// list of request passed by floor subsystem
 	private boolean emptyRequest = true; // check for getting requests
 	private boolean emptyArrivalSensor = true;	// check for getting arrival sensors
 	private HashMap<Integer, Integer> elevatorArrivals = new HashMap<Integer, Integer>();	// keeps track of elevator arrivals key=elevator number, value = arrival floor number
 	private DatagramPacket sendPacket,receivePacket;
 	private DatagramSocket elevatorSendReceiveSocket, floorSendReceiveSocket;
+	private ArrayList<ElevatorSubsystem> elevators = new ArrayList<>();
 
 	/**
      * Enum for the states
@@ -103,7 +104,7 @@ public class Scheduler {
      * Method gets request that were put into the scheduler. Updates empty request status.
      * @return ArrayList<FloorRequest> requests that were passed to the scheduler
      */
-	public synchronized FloorRequest getRequest() {		
+	public synchronized FloorRequest getRequest(int n) {		
 		while (emptyRequest) {
 			try {
 				wait();
@@ -111,7 +112,7 @@ public class Scheduler {
 				System.out.println(e);
 			}
 		}
-		FloorRequest fr = requests.remove();
+		FloorRequest fr = requests.remove(n);
 		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Request handed off to elevator.\n");
 		if (requests.size() == 0) {
 			emptyRequest = true;	// all requests will be taken from scheduler after the remove
@@ -160,14 +161,35 @@ public class Scheduler {
 			}
 		}
 		
-		emptyArrivalSensor = true;	// arrival sensor data has been taken from scheduler
-		
+		stateMachine(SchedulerStates.EmptyArrivalSensors);
 		System.out.println(Timestamp.from(Instant.now()) + "  -  SCHEDULER: Notifying Floor Subsystem that request has been serviced.");
-    	stateMachine(SchedulerStates.EmptyArrivalSensors);
+    	
+		emptyArrivalSensor = true;	// arrival sensor data has been taken from scheduler
     	
 		notifyAll();
 		
 		return elevatorArrivals;
+	}
+	
+	/**
+     * Method gets which requests elevator should service on the way up or down.
+     * 
+     * @param n the elevator number checking
+     * @return ArrayList<FloorRequest> the elevator number that will service the next request.
+     */	
+	public ArrayList<FloorRequest> checkFloor(int n) {
+		ArrayList<FloorRequest> arr = new ArrayList<>();	//list of requests elevator will service
+		
+    	for(int i = 0; i < requests.size(); i++) {	//loops through elevators
+    		FloorRequest fr = requests.get(i);
+        	if(fr.getDirection() == elevators.get(n).getMotor().toString()) {	//if the elevator will be traveling in the same direction as the request wants to go
+        		if(fr.getFloorOrigin() == elevators.get(n).getCurrFloor()) {
+        			arr.add(fr);
+        		}
+        	}
+    	}
+    	
+    	return arr;
 	}
 	
 	/**
@@ -200,7 +222,16 @@ public class Scheduler {
      * Method gets requests queue in scheduler.
      * @return Queue<FloorRequest> -requests in scheduler
      */	
-	public Queue<FloorRequest> getRequests() {
+	public ArrayList<FloorRequest> getRequests() {
 		return requests;
+	}
+	
+
+	/**
+     * Adds a elevator object to the scheduler so the scheduler can monitor it.
+     * @param ElevatorSubsystem elevator added to scheduler
+     */	
+	public void addElevator(ElevatorSubsystem elevator) {
+		elevators.add(elevator);
 	}
 }

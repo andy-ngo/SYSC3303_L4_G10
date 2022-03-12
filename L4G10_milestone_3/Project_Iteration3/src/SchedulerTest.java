@@ -29,20 +29,20 @@ class SchedulerTest extends Scheduler {
 		}
 		Assertions.assertFalse(scheduler.getEmptyRequests());	//checks if data is placed in scheduler
 		for(FloorRequest fr: floorSubystem.getRequests()) {
-			scheduler.getRequest();
+			scheduler.getRequest(0);
 		}		
 		Assertions.assertTrue(scheduler.getEmptyRequests());	//checks if data has left scheduler
 	}
 	
-	/**
+	/*
 	 * Test method for testing arrival sensors in scheduler. Checks if sensor notifications are put in the scheduler and then removed from scheduler.
-	 
+	 */
 	@Test
 	void testArrivalSensor() {
-		scheduler.putArrivalSensor(2,true);
+		scheduler.putArrivalSensor(2,1);
 		Assertions.assertFalse(scheduler.getEmptyArrivalSensor());	//checks if sensor data is placed in scheduler
 		scheduler.getArrivalSensor();
 		Assertions.assertTrue(scheduler.getEmptyArrivalSensor());	//checks if sensor data has been removed from scheduler
 	}
-	 */
+	 
 }
