@@ -1,3 +1,5 @@
+import java.sql.Timestamp;
+
 /**
  * Data Structure for Floor Requests that are inputed form the data file.
  * @author Ali Fahd
@@ -6,8 +8,10 @@
 public class FloorRequest {
 	private String requestTime;
     private int floorOrigin;
-    private String direction;
+    private ElevatorMotor direction;
     private int floorDestination;
+    private long travelTime;
+    private long doorTime;
 
     /**
      * Constructor for class Floor Request. Initializes each field.
@@ -17,12 +21,26 @@ public class FloorRequest {
      * @param int floor destination - floor where user wants to get off
      *
      */
-    public FloorRequest(String requestTime, int floorOrigin, String direction, int floorDestination) {
+    public FloorRequest(String requestTime, int floorOrigin, ElevatorMotor direction, int floorDestination, long travelTime, long doorTime) {
 		this.requestTime = requestTime;
 		this.floorOrigin = floorOrigin;
 		this.direction = direction;
 		this.floorDestination = floorDestination;
+        this.travelTime = travelTime;
+        this.doorTime = doorTime;
 	}
+    
+    /**
+     * Default constructor
+     */
+    public FloorRequest() {
+        this.requestTime = (String.valueOf(new Timestamp(System.currentTimeMillis())));
+        this.direction = ElevatorMotor.Stop;
+        this.floorDestination = -1;
+        this.floorOrigin = -1;
+        this.travelTime = -1L;
+        this.doorTime = -1L;
+    }
 
     /**
      * @return String requestTime - time stamp when elevator request was made
@@ -42,7 +60,7 @@ public class FloorRequest {
      * @return String direction - returns direction of elevator request
      */
     public String getDirection() {
-        return direction;
+        return direction.toString();
     }
 
     /**
@@ -65,6 +83,7 @@ public class FloorRequest {
      * @return String summary - the data of the request in a readable format.
      */
     public String toString() {
-        return "Elevator Request: Time - " + getRequestTime() + " - Floor Origin - " + getFloorOrigin() + " - Direction - " + getDirection() + " - Floor Destination - " + getFloorDestination();
+        String stringVersion = getRequestTime() + " " + getFloorOrigin() + " " + getDirection() + " " + getFloorDestination();
+        return stringVersion;
     }
 }
