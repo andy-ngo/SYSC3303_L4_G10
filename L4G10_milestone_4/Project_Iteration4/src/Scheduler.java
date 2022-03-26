@@ -150,8 +150,8 @@ public class Scheduler {
             System.exit(1);
         }
 
-        String name = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
-        String[] removed = name.split(" ");
+        String id = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
+        String[] removed = id.split(" ");
         
         if (!removed[0].equals("go")) {
             if (!removed[0].equals("error")) {
@@ -183,27 +183,27 @@ public class Scheduler {
             System.exit(1);
         }
 
-        String name = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
-        String[] splitElevatorMsg = name.split("-");
+        String id = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
+        String[] splitElevatorMsg = id.split("-");
         String[] test = message.split(" "); 
         
         for(Elevator e : elevators) {
-        	if(splitElevatorMsg[0].equals(e.getName())) {
+        	if(splitElevatorMsg[0].equals(e.getID())) {
         		elev = e;
         	}
         }
-        int elevatorNum = Integer.parseInt(String.valueOf(elev.getName().charAt(elev.getName().length()-1)));
+        int elevatorNum = Integer.parseInt(String.valueOf(elev.getID().charAt(elev.getID().length()-1)));
         time.set(elevatorNum-1,getTime());
 
         for (String tt : test) {
             String[] test2 = tt.split("-");
             if (test2[0].equals(splitElevatorMsg[0])) {
                 if (test2[1].equals("moving") && !splitElevatorMsg[1].equals("moving")) {
-                    createMovingMessage(name, test, tt);
+                    createMovingMessage(id, test, tt);
                 } else {
                     if (test2[1].equals("moving") && splitElevatorMsg[1].equals("moving")) {
                         if (Integer.parseInt(test2[2]) != Integer.parseInt(splitElevatorMsg[2])) {
-                            createMovingMessage(name, test, tt);
+                            createMovingMessage(id, test, tt);
                         }
                     }
                 }
@@ -298,9 +298,9 @@ public class Scheduler {
         	elev.setStatus("arrived");
             elev.setCurrentFloor(Integer.parseInt(splitElevatorMsg[2]));
             if (message.equals("")) {  
-                message = message + name;
+                message = message + id;
             } else { 
-                message = message + " " + name;
+                message = message + " " + id;
                 waiting--;
             }
         }
@@ -311,18 +311,18 @@ public class Scheduler {
     /**
      * Helper method that creates a message with an elevator that is moving
      *
-     * @param name
+     * @param id
      * @param test
      * @param tt
      */
-    private void createMovingMessage(String name, String[] test, String tt) {
+    private void createMovingMessage(String id, String[] test, String tt) {
         message = "";
         for (String tt2 : test) {
             if (tt2.equals(tt)) {
                 if (message.equals("")) {
-                    message = message + name;
+                    message = message + id;
                 } else {
-                    message = message + " " + name;
+                    message = message + " " + id;
                 }
             } else {
                 if (message.equals("")) {
@@ -408,10 +408,10 @@ public class Scheduler {
      */
     private void getElevatorFromDifference(HashMap<String, Integer> differenceMap, int floor, boolean down, int floor2, String dir) {
         int minDifference = Collections.min(differenceMap.values());
-        for (String currElevatorName : differenceMap.keySet()) {
-            if (differenceMap.get(currElevatorName).equals(minDifference)) {
+        for (String currElevatorid : differenceMap.keySet()) {
+            if (differenceMap.get(currElevatorid).equals(minDifference)) {
                 for (Elevator e : elevators) {
-                    if (e.getName().equals(currElevatorName)) {
+                    if (e.getID().equals(currElevatorid)) {
                         if (down) {
                         	e.addToDown(floor);
                             if (dir.equals("UP")) {
@@ -454,14 +454,14 @@ public class Scheduler {
                 int difference = currElevator.getCurrentFloor() - origin;
                 if (currElevator.getDirection().equals(ElevatorMotor.Down)) {
                     if (difference > 0) {
-                        differenceDown.put(currElevator.name, difference);
+                        differenceDown.put(currElevator.id, difference);
                     }
                 } else if (currElevator.getDirection().equals(ElevatorMotor.Up)) {
                     if (difference < 0) {
-                        differenceUp.put(currElevator.name, difference);
+                        differenceUp.put(currElevator.id, difference);
                     }
                 } else if (currElevator.getDirection().equals(ElevatorMotor.Stop)) {
-                    differenceStopped.put(currElevator.getName(), difference);
+                    differenceStopped.put(currElevator.getID(), difference);
                 }
             }
 
@@ -486,7 +486,7 @@ public class Scheduler {
                     }
 
                     for (Elevator e : elevators) {
-                        if (minElevatorReq.getName().equals(e.getName())) {
+                        if (minElevatorReq.getID().equals(e.getID())) {
                             e.addToDown(origin);
                             e.addToDown(floor);
                             e.setElevatorLamps(true, floor);
@@ -516,7 +516,7 @@ public class Scheduler {
                     }
 
                     for (Elevator e : elevators) {
-                        if (minElevatorReq.getName().equals(e.getName())) {
+                        if (minElevatorReq.getID().equals(e.getID())) {
                             e.addToUp(origin);
                             e.addToUp(floor);
                             e.setElevatorLamps(false, floor);
@@ -603,8 +603,8 @@ public class Scheduler {
                 e.printStackTrace();
                 System.exit(1);
             }
-            String name = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
-            elevators.add(new Elevator(name, receivePacket.getPort(), receivePacket.getAddress(), 1));
+            String id = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
+            elevators.add(new Elevator(id, receivePacket.getPort(), receivePacket.getAddress(), 1));
             if (elevators.size() == numOfElevators) {
                 break;
             }
@@ -618,7 +618,7 @@ public class Scheduler {
         for (int z = 0; z < elevators.size(); z++) {
             Elevator temp = elevators.get(z);
             System.out
-                    .println(temp.getName() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
+                    .println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
         }
     }
 
