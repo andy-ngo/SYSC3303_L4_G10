@@ -18,11 +18,11 @@ public class Elevator {
 	private ArrayList<Integer> destinations;
 	
 	/**
-	 * Initializes all variables
+	 * Constructor for elevator.
 	 *
-	 * @param id         Elevator's id
-	 * @param port         Elevator's port
-	 * @param address      Elevator's adress
+	 * @param id elevator's id
+	 * @param port elevator's port
+	 * @param address elevator's address
 	 * @param currentFloor current floor of elevator
 	 */
 	public Elevator(String id, int port, InetAddress address, int currentFloor) {
@@ -46,52 +46,48 @@ public class Elevator {
 		this.status = "waiting";
 	}
 
-	public Elevator() {
-		// TODO Auto-generated constructor stub
-	}
+	public Elevator() {}
 
 	/**
-	 * @return the current floor
+	 * @return int the current floor
 	 */
 	public int getCurrentFloor() {
 		return currentFloor;
 	}
 
 	/**
-	 * Returns the error code
-	 *
-	 * @return the error code
+	 * @return int the error code
 	 */
 	public int getError() {
 		return error;
 	}
 
 	/**
-	 * Set the error
+	 * Set error
 	 */
-	public void setError(int x) {
-		this.error = x;
+	public void setError(int error) {
+		this.error = error;
 	}
 
 	/**
-	 * Set the current floor
+	 * Set current floor
 	 */
 	public void setCurrentFloor(int currentFloor) {
 		this.currentFloor = currentFloor;
 	}
 
 	/**
-	 * @return the elevator's direction
+	 * @return ElevatorMotor the elevator's direction
 	 */
 	public ElevatorMotor getElevatorMotor() {
 		return direction;
 	}
 
 	/**
-	 * Set the direction
+	 * Set the elevator direction
 	 */
-	public void setElevatorMotor(ElevatorMotor direction) {
-		this.direction = direction;
+	public void setElevatorMotor(ElevatorMotor motor) {
+		this.direction = motor;
 	}
 
 	/**
@@ -102,98 +98,98 @@ public class Elevator {
 	}
 
 	/**
-	 * remove 1st value from the down queue
+	 * remove first value from the down queue
 	 */
 	public void removeDown() {
 		downQueue.remove(0);
 	}
 
 	/**
-	 * @return id of elevator
+	 * @return string id of elevator
 	 */
 	public String getID() {
 		return id;
 	}
 
 	/**
-	 * Set id
+	 * @param string id of elevator
 	 */
 	public void setID(String id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return the down queue
+	 * @return ArrayList<Integer> the down queue
 	 */
 	public ArrayList<Integer> getDownQueue() {
 		return downQueue;
 	}
 
 	/**
-	 * @return the up queue
+	 * @return ArrayList<Integer> the up queue
 	 */
 	public ArrayList<Integer> getUpQueue() {
 		return upQueue;
 	}
 
 	/**
-	 * @return the port
+	 * @return int the port
 	 */
 	public int getPort() {
 		return port;
 	}
 
 	/**
-	 * Set the port
+	 * @param int port of elevator
 	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
 
 	/**
-	 * Add to the up queue queue
+	 * @param int floorNum
 	 */
 	public void addToUp(int floorNum) {
 		upQueue.add(floorNum);
 	}
 
 	/**
-	 * Add to the down queue
+	 * @param int floorNum
 	 */
 	public void addToDown(int floorNum) {
 		downQueue.add(floorNum);
 	}
 
 	/**
-	 * @return address
+	 * @return InetAddress address
 	 */
 	public InetAddress getAddress() {
 		return address;
 	}
 
 	/**
-	 * Set the address
+	 * @param InetAddress address
 	 */
 	public void setAddress(InetAddress address) {
 		this.address = address;
 	}
 
 	/**
-	 * @return timestamp
+	 * @return String timestamp
 	 */
 	public String getTimestamp() {
 		return this.timestamp;
 	}
 
 	/**
-	 * @return status
+	 * @return String status
 	 */
 	public String getStatus() {
 		return this.status;
 	}
 
 	/**
-	 * Set the status
+	 * @param string status
 	 */
 	public void setStatus(String status) {
 		this.status = status;
@@ -201,7 +197,7 @@ public class Elevator {
 	}
 	
 	/**
-	 * @return destination
+	 * @return int destination
 	 */
 	public int getDestination() {
 		return this.currDestination;
@@ -209,7 +205,7 @@ public class Elevator {
 
 	/**
 	 * 
-	 * Add the destination
+	 * @param int destination
 	 */
 	public void addDestination(int destination) {
 		this.destinations.add(destination);
@@ -219,7 +215,6 @@ public class Elevator {
 	}
 	
 	/**
-	 * 
 	 * Set the destination
 	 */
 	private void setDestination() {
@@ -234,6 +229,9 @@ public class Elevator {
 			}
 	}
 	
+	/**
+	 * @param string timestamp
+	 */
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
@@ -247,11 +245,15 @@ public class Elevator {
 		Collections.reverse(this.downQueue);
 	}
 
-	public void setElevatorLamps(boolean add, int floornum) {
+	/**
+	 * @param boolean add
+	 * @param int floorNum
+	 */
+	public void setElevatorLamps(boolean add, int floorNum) {
 		if (add) {
-			this.elevatorLampArray[floornum - 1] = true;
+			this.elevatorLampArray[floorNum - 1] = true;
 		} else {
-			this.elevatorLampArray[floornum - 1] = false;
+			this.elevatorLampArray[floorNum - 1] = false;
 		}
 
 	}

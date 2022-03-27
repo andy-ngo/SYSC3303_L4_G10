@@ -12,14 +12,14 @@ import java.net.*;
 
 public class ElevatorSubsystem implements Runnable {
 
-    private int location = 1; // current location of the elevator
-    private ElevatorStates currentState; // current state of the elevator
-    private ElevatorMotor motorState; // The motor state is whether the elevator is moving
-    private boolean doorOpen; // Whether the door is open
-    private FloorRequest data; // The current request
-    private int[] elevatorButtons; // array of buttons
-    private boolean[] elevatorLamps; // array of lamps
-    private ElevatorMotor directionLamp; // ElevatorMotoral lamp
+	private int floor = 1; 					// The floor that the elevator is on
+    private ElevatorStates currentState; 	// The current state of the elevator
+    private ElevatorMotor motorState; 		// The motor state is whether the elevator is moving
+    private boolean doorOpen; 				// Door boolean state
+    private FloorRequest data; 				// The current request
+    private int[] buttons; 					// Array of elevator buttons
+    private boolean[] lampStatus; 		// Array of lamps
+    private ElevatorMotor directionLamp; 	// The direction that the elevator is going that will be show on the lamp
     private DatagramPacket sendPacket, receivePacket;
     private DatagramSocket sendReceiveSocket;
     private String[] packetString = new String[2];
@@ -45,7 +45,7 @@ public class ElevatorSubsystem implements Runnable {
         motorState = ElevatorMotor.STOP;
         data = new FloorRequest();
         doorOpen = true;
-        elevatorLamps = new boolean[rpf.getNumFloors()];
+        lampStatus = new boolean[rpf.getNumFloors()];
         currFloor = 1;
         destFloor = 0;
 
@@ -58,14 +58,14 @@ public class ElevatorSubsystem implements Runnable {
         }
 
         // Initializing the lamps
-        for (int i = 0; i < elevatorLamps.length; ++i) {
-            elevatorLamps[i] = false;
+        for (int i = 0; i < lampStatus.length; ++i) {
+        	lampStatus[i] = false;
         }
 
         // Initializing the buttons
-        elevatorButtons = new int[rpf.getNumFloors()];
-        for (int i = 0; i < this.elevatorButtons.length; ++i) {
-            elevatorButtons[i] = i + 1;
+        buttons = new int[rpf.getNumFloors()];
+        for (int i = 0; i < this.buttons.length; ++i) {
+        	buttons[i] = i + 1;
         }
 
         // Initializing the directionLamp
@@ -114,7 +114,7 @@ public class ElevatorSubsystem implements Runnable {
         }
         //If type is floor number, then turn on the direction lamps
         if (type.equals("Floor Number")) {
-            this.elevatorLamps[Integer.parseInt(direction) - 1] = true;
+            this.lampStatus[Integer.parseInt(direction) - 1] = true;
             this.destFloor = Integer.parseInt(direction);
         }
 
@@ -216,12 +216,12 @@ public class ElevatorSubsystem implements Runnable {
                     //compares time between floors to iterate one floor after another
                     if (currTime - time2 >= time_between_floors) {
                         if (this.currFloor < this.destFloor) { // if going up
-                            location++;
+                        	floor++;
                             time2 = System.nanoTime();
                             System.out.println("\n================  " + id + "  ================");
                             System.out.println("    ==\t\tGoing up...      \t==");
                         } else if (this.currFloor > this.destFloor) {//if going down
-                            location--;
+                        	floor--;
                             time2 = System.nanoTime();
                             System.out.println("\n================  " + id + "  ================");
                             System.out.println("    ==\t\tGoing Down...     \t==");
@@ -229,7 +229,7 @@ public class ElevatorSubsystem implements Runnable {
                     }
 
                     //Send the message of moving to the scheduler
-                    String msg = id + "-moving-" + (location + 1);
+                    String msg = id + "-moving-" + (floor + 1);
                     sendElevatorMessage(msg);
                     //recursively call the same state till reached the correct floor
                     currentState = ElevatorStates.MOVING_STATE;

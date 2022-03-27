@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -8,12 +7,11 @@ public class ReadPropertyFile {
     private static final long NANOSEC = 1000000000;
 
     /**
-     * Initializes the variables and gets the input configuration file
+     * constructor, gets input config file
      */
     public ReadPropertyFile() {
         property = new Properties();
 
-        // Reading from file
         try {
             FileInputStream ip = new FileInputStream("config.properties");
             property.load(ip);
@@ -23,54 +21,54 @@ public class ReadPropertyFile {
     }
 
     /**
-     * Gets the floor port from the config file
+     * Gets the floor port from config file
      *
-     * @return floor port
+     * @return int floor port
      */
     public int getFloorPort() {
         return Integer.parseInt(this.property.getProperty("floor_port"));
     }
 
     /**
-     * Gets the elevator port from the config file
+     * Gets the elevator port from config file
      *
-     * @return elevator port
+     * @return int elevator port
      */
     public int getElevatorPort() {
         return Integer.parseInt(this.property.getProperty("elevator_port"));
     }
 
     /**
-     * Gets the num of elevator from the config file
+     * Gets the num of elevator from config file
      *
-     * @return num of elevator
+     * @return int num of elevator
      */
     public int getNumElevators() {
         return Integer.parseInt(this.property.getProperty("elevators"));
     }
 
     /**
-     * Gets the num of floors from the config file
+     * Gets the num of floors from config file
      *
-     * @return num of floors
+     * @return int num of floors
      */
     public int getNumFloors() {
         return Integer.parseInt(this.property.getProperty("floors"));
     }
 
     /**
-     * Gets the time of opening and closing door from the config file
+     * Gets door timings from config file
      *
-     * @return the open/close door time
+     * @return long door time
      */
     public long getDoorTimes() {
         return Long.parseLong(this.property.getProperty("time_open_close_doors_sec")) * NANOSEC;
     }
 
     /**
-     * Gets the time an elevator takes from one floor to another from the config file
+     * Gets the elevator timing from config file
      *
-     * @return time between floors taken by the elevator
+     * @return long time between floors
      */
     public long getFloorTravelTimes() {
         return Long.parseLong(this.property.getProperty("time_between_floors_sec")) * NANOSEC;
@@ -79,7 +77,7 @@ public class ReadPropertyFile {
     /**
      * Gets the path of the floor data json file from the config file
      *
-     * @return path of json file where serialized floor data is stored
+     * @return json file path
      */
     public String getJsonPath() {
         return this.property.getProperty("json_path");
