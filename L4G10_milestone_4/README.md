@@ -1,4 +1,4 @@
-# SYSC 3303 Project Iteration 3
+# SYSC 3303 Project Iteration 4
 # L4 Group 10
 
 ## Group Members:
@@ -14,15 +14,9 @@ To run the application, start with the Scheduler.java, then FloorSubsystem.java,
 ## Source Code:
 ElevatorSubsystem.java
 - A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. It will communicate with the scheduler whenever there has been arrival. This class is synchronized with the scheduler class.
-- A state machine was added into this iteration. Having the elevator call to the state machine method at each different state. 
-  - The following states that were implemented are:
-    - IDLE
-    - OPERATE
-    - UP
-    - DOWN
-    - STOP
 
 Elevator.java
+- A class that has all the elevator properties that can be used in tests cases and the elevatorSubsystem
 
 Elevator_Motor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
@@ -35,8 +29,9 @@ FloorSubsystem.java
 
 Scheduler.java
 - A class that act as a server to communicate with the Elevator class and the Floor Subsystem class.
-- State Machine implemented and allow to control the scheduler by the given state
-  - The SchedulerState: EmptyRequests, ReceivedRequests, EmptyArrivalSensors, ReceivedArrivalSensors
+
+ReadPropertyFile.java
+- a class that reads the files for the program to run with.
 
 ## Test Included:
 JUnit Test files to verify that it is working
