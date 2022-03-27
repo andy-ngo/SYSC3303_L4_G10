@@ -167,8 +167,8 @@ public class ElevatorSubsystem implements Runnable
                 //Convert packet to string
                 String receivePacketData = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
 
-                //print the info received
-                //System.out.println(this.id + " Received: " + receivePacketData);
+                System.out.println("\n================  " + this.id + "  ================");
+                System.out.println("    ==      Received: " + new String(receivePacket.getData(), 0, this.receivePacket.getLength()) + "      ==");
 
                 //Process the received info
                 if (receivePacketData.equals("waiting")) //if received waiting then, put elevator into initial state
@@ -197,13 +197,14 @@ public class ElevatorSubsystem implements Runnable
                 //once state is changed, set time to get the initial time of movement start
                 time = System.nanoTime();
                 break;
-            case START_STATE: // doors close
+            case START_STATE: //This is the state where the elevator will begin to close the doors
                 //Set the timing of the door to close
                 if (System.nanoTime() >= (door_times + time)) 
                 {
                     doorOpen = false;
 
-                    System.out.println(id + " Door Closed...");
+                    System.out.println("\n================  " + id + "  ================");
+                	System.out.println("    ==\t\tDoor Closed\t==");
 
                     //send to scheduler that door is closed and then change state
                     this.packetString = (new String(receivePacket.getData(), 0, this.receivePacket.getLength())).split(" ");
@@ -216,7 +217,8 @@ public class ElevatorSubsystem implements Runnable
                 //if door is still in the process of closing
                 else 
                 { 
-                    System.out.println(Timestamp.from(Instant.now()) + "  -  ==== " + id + " Door closing ====");
+                	System.out.println("\n================  " + id + "  ================");
+                	System.out.println("    ==\t\tDoor Closing...\t==");
 
                     //Send to scheduler that door is closing
                     msg1 = id + "-door_closing";
@@ -293,7 +295,8 @@ public class ElevatorSubsystem implements Runnable
                 //Keep sending doors opening to scheduler till the doors are fully open
                 else 
                 {
-                    System.out.println(id + " Door Opening...");
+                	System.out.println("\n================  " + id + "  ================");
+                	System.out.println("\t==\t\tDoor Opening... \t==");
                     msg1 = id + "-door_opening";
                     sendElevatorMessage(msg1);
                     //Recursively set the same state till doors are completely open
@@ -305,13 +308,15 @@ public class ElevatorSubsystem implements Runnable
                 if (errorSelect == -1)  // If error is door is stuck
                 {
                 	//Simulate door stuck and reset 
-                	System.out.println(id + " Door closing...");
-                    System.out.println(id + " Door is stuck...");
-                                     
+                	System.out.println("\n================  " + id + "  ================");
+                	System.out.println("    ==\t\tDoor Closing... \t==");
+                    System.out.println("    ==\t\tDoor is Stuck... \t==");
+                               
                 	//Timing for the error
                     if (System.nanoTime() < (door_times + time)) //if doors fully reset
                     { 
-                        System.out.println(id + " Reseting Door...");
+                    	System.out.println("\n================  " + id + "  ================");
+                    	System.out.println("    ==\t\t" + " Reseting Door... \t==");
                         msg2 =  id + "-doorReseting-" + this.currFloor;
                         sendElevatorMessage(msg2);
                         //Recursively set the same state till doors are completely open
@@ -331,8 +336,9 @@ public class ElevatorSubsystem implements Runnable
                 else if (errorSelect == -2) //if fatal error: stuck between floors
                 {
                     //Send the data to the scheduler about which floor is elevator stuck on
-                    System.out.println(Timestamp.from(Instant.now()) + "  -  ==== " + id + " Stuck at floor " + this.currFloor + " ====");
-                    System.out.println(Timestamp.from(Instant.now()) + "  -  ==== " + id + " Shutting down and reallocating queues ====");
+                	System.out.println("\n================  " + id + "  ================");
+                    System.out.println("    ==      Stuck at floor " + this.currFloor + "\t==");
+                    System.out.println(" == Shutting down and reallocating queues ==");
                     msg1 = id + "-error-" + this.currFloor;
                     sendElevatorMessage(msg1);
                     errorSelect = -3;
@@ -373,7 +379,8 @@ public class ElevatorSubsystem implements Runnable
     @Override
     public void run() 
     {
-        System.out.println(id + " Started!");
+    	System.out.println("\n================  " + id + "  ==================");
+        System.out.println("       ==\t Started! \t==");
         init();
         while (true) 
         {
@@ -418,7 +425,6 @@ public class ElevatorSubsystem implements Runnable
     }
 
     /**
-     * Main for the elevator subsystem
      * @param args
      */
     public static void main(String[] args) 
@@ -428,7 +434,7 @@ public class ElevatorSubsystem implements Runnable
 
         for (int i = 0; i < rpf.getNumElevators(); i++) 
         {
-            elevator[i] = new Thread(new ElevatorSubsystem("Elevator" + (i + 1)), "Elevator " + (i + 1));
+            elevator[i] = new Thread(new ElevatorSubsystem("Elevator" + (i + 1)), "Elevator" + (i + 1));
             elevator[i].start();
         }
     }
