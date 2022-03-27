@@ -219,44 +219,44 @@ public class Scheduler {
                 	elev.setStatus("moving");
                 	elev.setCurrentFloor(Integer.parseInt(splitElevatorMsg[2]));
                 	if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + "elevator moving " + splitElevatorMsg[2];
+                        message = message + splitElevatorMsg[0] + "-elevator moving-" + splitElevatorMsg[2];
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " elevator moving " + splitElevatorMsg[2];
+                        message = message + " " + splitElevatorMsg[0] + "-elevator moving-" + splitElevatorMsg[2];
                         waiting--;
                     }
                 } else if (splitElevatorMsg[1].equals("waiting")) { //If elevator waiting for new instruction
                 	elev.setStatus("waiting");
                 	waiting++;
                     if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " waiting";
+                        message = message + splitElevatorMsg[0] + "-waiting-";
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " waiting";
+                        message = message + " " + splitElevatorMsg[0] + "-waiting-";
                         waiting--;
                     }
                 } else if (splitElevatorMsg[1].equals(" door is closing!")) { //If elevators door closing
                 	elev.setStatus(" door is closing!");
                 	if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " door is closing!";
+                        message = message + splitElevatorMsg[0] + "-door is closing!-";
                     } else { 
-                        message = message + " " + splitElevatorMsg[0] + " door is closing!";
+                        message = message + " " + splitElevatorMsg[0] + "-door is closing!-";
                         waiting--;
                     }
 
                 } else if (splitElevatorMsg[1].equals("door is closed")) { 
                 	elev.setStatus("door is closed");
                 	if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " door is closed " + splitElevatorMsg[2];
+                        message = message + splitElevatorMsg[0] + "-door is closed-" + splitElevatorMsg[2];
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " door is closed " + splitElevatorMsg[2];
+                        message = message + " " + splitElevatorMsg[0] + "-door is closed-" + splitElevatorMsg[2];
                         waiting--;
                     }
 
                 } else if (splitElevatorMsg[1].equals("door_opening")) {
                 	elev.setStatus("door opening");
                 	if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " door is opening.";
+                        message = message + splitElevatorMsg[0] + "-door is opening.-";
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " door is opening.";
+                        message = message + " " + splitElevatorMsg[0] + "-door is opening.-";
                         waiting--;
                     }
                 } else if (splitElevatorMsg[1].equals("error")) {
@@ -268,18 +268,18 @@ public class Scheduler {
                 	}
 
                     if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " error " + splitElevatorMsg[2];
+                        message = message + splitElevatorMsg[0] + "-error-" + splitElevatorMsg[2];
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " error " + splitElevatorMsg[2];
+                        message = message + " " + splitElevatorMsg[0] + "-error-" + splitElevatorMsg[2];
                         waiting--;
                     }
                 } else if (splitElevatorMsg[1].equals("doorReset")) {
                 	elev.setStatus("doors reset");
                 	elev.setError(0);
                     if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " waiting " + splitElevatorMsg[2];
+                        message = message + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " waiting " + splitElevatorMsg[2];
+                        message = message + " " + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                         waiting--;
                     }
                 }
@@ -287,9 +287,9 @@ public class Scheduler {
                     elev.setStatus("doors reseting");
                     elev.setError(0);
                     if (message.equals("")) {
-                        message = message + splitElevatorMsg[0] + " waiting " + splitElevatorMsg[2];
+                        message = message + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                     } else {
-                        message = message + " " + splitElevatorMsg[0] + " waiting " + splitElevatorMsg[2];
+                        message = message + " " + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                         waiting--;
                     }
                 }
@@ -338,7 +338,6 @@ public class Scheduler {
      * Sends data to the floor
      *
      * @return the instructions to the floor, right now just an arriving message
-     * TODO: Turn on lamps on floor
      */
     public synchronized void sendToFloor() {
         byte[] toSend = new byte[100];
