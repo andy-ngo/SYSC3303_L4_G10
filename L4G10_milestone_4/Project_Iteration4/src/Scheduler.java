@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.net.*;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 public class Scheduler {
@@ -154,7 +156,8 @@ public class Scheduler {
         String[] removed = id.split(" ");
         
         if (!removed[0].equals("go")) {
-            if (!removed[0].equals("error")) {
+    		System.out.println(Timestamp.from(Instant.now()) + "  -  Request received from floor: "+id);
+            if (!removed[0].equals("error")) {	
                 checkPriority(Integer.parseInt(removed[1]), removed[2], Integer.parseInt(removed[3]));
             } else {
             	int hold;
@@ -613,7 +616,7 @@ public class Scheduler {
             time.add(getTime());
         }
 
-        System.out.println("Floor port is: " + portFloor + " and address is: " + addressFloor);
+        System.out.println(Timestamp.from(Instant.now()) + "  -  Floor port is: " + portFloor + " and address is: " + addressFloor);
         for (int z = 0; z < elevators.size(); z++) {
             Elevator temp = elevators.get(z);
             System.out
