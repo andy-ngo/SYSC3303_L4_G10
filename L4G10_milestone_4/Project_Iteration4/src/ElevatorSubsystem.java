@@ -1,377 +1,394 @@
 /**
  * @author Andy Ngo, Karim Mahrous
  * 
+ * Verion: 4.0V
+ * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
  * if there are any requests. If there are requests the elevator will check to go up and down or to stop when it arrives.
  * A state machine is implemented to organize some parts of the code.
  * This class will be synchronizing with the scheduler class.
  */
+
 import java.io.IOException;
 import java.net.*;
 
-public class ElevatorSubsystem implements Runnable {
+public class ElevatorSubsystem implements Runnable 
+{
+	
+	//ReadPropertyFile variables
+    private static ReadPropertyFile rpf = new ReadPropertyFile();
+    private static long doorTimes = rpf.getDoorTimes();
+    private static long floorTimes = rpf.getFloorTravelTimes();
 
-    private int location = 1; // current location of the elevator
-    private ElevatorStates currentState; // current state of the elevator
-    private ElevatorMotor motorState; // The motor state is whether the elevator is moving
-    private boolean doorOpen; // Whether the door is open
-    private FloorRequest data; // The current request
-    private int[] elevatorButtons; // array of buttons
-    private boolean[] elevatorLamps; // array of lamps
-    private ElevatorMotor directionLamp; // ElevatorMotoral lamp
+    //Initialize variables
+    private int floor = 1; 					// The floor that the elevator is on
+    private ElevatorStates currentState; 	// The current state of the elevator
+    private ElevatorMotor motorState; 		// The motor state is whether the elevator is moving
+    private int[] buttons; 					// Array of elevator buttons
+    private boolean[] lampStatus; 			// Array of lamps
     private DatagramPacket sendPacket, receivePacket;
     private DatagramSocket sendReceiveSocket;
     private String[] packetString = new String[2];
-    private String id;
-    private long time = 0;
-    private long time2 = 0;
+    private String id;						// Will be the id of the elevator
+    private String msg,msg1,msg2;			// These message variables will be used to send messages
+    private long time_x = 0;				// These time variables will store the times of the elevators
+    private long time_y = 0;
+    private long travelTime,currentTime;	// Will be used to store the travel time of the elevators
     private int currFloor, destFloor;
     private int errorSelect = 0;
 
-    //Variables to read config file
-    private static ReadPropertyFile rpf = new ReadPropertyFile();
-    private static long time_open_close_doors = rpf.getDoorTimes();
-    private static long time_between_floors = rpf.getFloorTravelTimes();
-
     /**
-     * Instantiates the variables
+     * Initialize the variables and constructor
      *
-     * @param id Name of the thread
+     * @param id the id of the elevator thread
      */
-    public ElevatorSubsystem(String id) {
+    public ElevatorSubsystem(String id) 
+    {
         this.id = id;
         currentState = ElevatorStates.INITIAL_STATE;
         motorState = ElevatorMotor.STOP;
-        data = new FloorRequest();
-        doorOpen = true;
-        elevatorLamps = new boolean[rpf.getNumFloors()];
+        lampStatus = new boolean[rpf.getNumFloors()];
         currFloor = 1;
         destFloor = 0;
 
-
-        try {
+        try 
+        {
             sendReceiveSocket = new DatagramSocket();
-        } catch (SocketException se) {
+        } catch (SocketException se) 
+        {
             se.printStackTrace();
             System.exit(1);
         }
 
-        // Initializing the lamps
-        for (int i = 0; i < elevatorLamps.length; ++i) {
-            elevatorLamps[i] = false;
+        // Initializing the lamps, buttons, direction lamp
+        for (int i = 0; i < lampStatus.length; ++i) 
+        {
+            lampStatus[i] = false;
         }
 
-        // Initializing the buttons
-        elevatorButtons = new int[rpf.getNumFloors()];
-        for (int i = 0; i < this.elevatorButtons.length; ++i) {
-            elevatorButtons[i] = i + 1;
+        buttons = new int[rpf.getNumFloors()];
+        for (int i = 0; i < this.buttons.length; ++i) 
+        {
+            buttons[i] = i + 1;
         }
-
-        // Initializing the directionLamp
-        directionLamp = ElevatorMotor.STOP;
     }
 
     /**
-     * Init packet and socket for elevator
+     * Initialize the packets and sockets for elevator
      */
-    public void Initialize() {
+    public void init() 
+    {
         byte[] sendData = new byte[100];
 
         sendData = this.id.getBytes();
-        try {
+        try 
+        {
             this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), rpf.getElevatorPort());
-        } catch (UnknownHostException e) {
+        } catch (UnknownHostException e) 
+        {
             e.printStackTrace();
             System.exit(1);
         }
 
-        try {
+        try 
+        {
             this.sendReceiveSocket.send(this.sendPacket);
-        } catch (IOException e) {
+        } catch (IOException e) 
+        {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
     /**
-     * Depending on the current state, sets the direction in which the elevator
-     * needs to move or if stationary, then turns on lamps
+     * This will be used in the states where the elevator motor needs to have the
+     * direction state changed. As well as changing the lamp status
      *
-     * @param type Used to identify whether the elevator needs directions or need
-     *             the floor lamps.
+     * @param direction, type
+     * Direction will be used to change the elevator motor state
+     * Type will be used to identify if the elevator needs direction or the lamp status
      */
-    private void parseData(String direction, String type) {
-        //Sets the motor state of the elevator
-        if (type.equals("ElevatorMotor")) {
-            if (this.currFloor < this.destFloor) {
+    private void parse(String motorState, String type) 
+    {
+        if (type.equals("ElevatorMotor")) 
+        {
+            if (this.currFloor < this.destFloor) 
+            {
                 this.motorState = ElevatorMotor.UP;
-            } else if (this.currFloor > this.destFloor) {
+            } 
+            else if (this.currFloor > this.destFloor) 
+            {
                 this.motorState = ElevatorMotor.DOWN;
-            } else {
+            } 
+            else 
+            {
                 this.motorState = ElevatorMotor.STOP;
             }
         }
-        //If type is floor number, then turn on the direction lamps
-        if (type.equals("Floor Number")) {
-            this.elevatorLamps[Integer.parseInt(direction) - 1] = true;
-            this.destFloor = Integer.parseInt(direction);
+        if (type.equals("Floor Number")) 
+        {
+            this.lampStatus[Integer.parseInt(motorState) - 1] = true;
+            this.destFloor = Integer.parseInt(motorState);
         }
 
     }
+    
+    /**
+     * This method will be used to send any messages from the elevator to the Scheduler
+     * 
+     * @param elevatorWithRequest the message that will be sent to Scheduler
+     */
+    private void sendElevatorMessage(String elevatorWithRequest) 
+    {
+    	byte[] sendData = elevatorWithRequest.getBytes();
+        try 
+        {
+            this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), rpf.getElevatorPort());
+        } catch (UnknownHostException e) 
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        try 
+        {
+            this.sendReceiveSocket.send(this.sendPacket);
+        } catch (IOException e) 
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     /**
-     * State Machine that will complete ElevatorSubsystem operations
+     * This state machine will be used to go through all the elevator operations
+     * Each state will have brief descriptions in the ElevatorState class
      */
-    public void stateMachine() {
-
-        switch (currentState) {
-            case INITIAL_STATE: // Elevator stopped with doors open
-
-                //create a byte array and try to receive packet
-                byte[] data = new byte[100];
-                receivePacket = new DatagramPacket(data, data.length);
-                try {
+    public void stateMachine() 
+    {
+        switch (currentState) 
+        {
+            case INITIAL_STATE:
+                byte[] dateByte = new byte[100];
+                receivePacket = new DatagramPacket(dateByte, dateByte.length);
+                try 
+                {
                     sendReceiveSocket.receive(receivePacket);
-                } catch (IOException e) {
+                } catch (IOException e) 
+                {
                     e.printStackTrace();
                     System.exit(1);
                 }
-
-                //Convert packet to string
+                
+                // Will convert the packet to string and print out what was received
                 String receivePacketData = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
-
-                //print the info received
-                if(receivePacketData != "waiting") {
+                if(receivePacketData != "waiting") 
+                {
                 	System.out.println("\n================  " + this.id + "  ================");
                     System.out.println("       ==      Received: " + new String(receivePacket.getData(), 0, this.receivePacket.getLength()) + "      ==");                	
                 }
-
-                //Process the received info
-                if (receivePacketData.equals("waiting")) {  //if received waiting then, put elevator into initial state
+                
+                //The received packet will then be processed
+                if (receivePacketData.equals("waiting")) 
+                {
                     currentState = ElevatorStates.INITIAL_STATE;
-
-                    //Sending the id of the elevator and "waiting" message back so that scheduler know which elevator is available
                     String elevatorWithRequest = id + "-" + receivePacketData;
                     sendElevatorMessage(elevatorWithRequest);
 
-                } else {
+                } 
+                else 
+                {
                     String[] temp = receivePacketData.split(" ");
-                    if (temp[0].equals("error")) { //if received error
+                    if (temp[0].equals("error")) 
+                    {
                         errorSelect = Integer.parseInt(temp[1]);
-                        //go to state 5
                         currentState = ElevatorStates.ERROR_STATE;
-                        time = System.nanoTime();
+                        time_x = System.nanoTime();
                         break;
                     }
-                    //change state
                     currentState = ElevatorStates.START_STATE;
                 }
-                //once state is changed, set time to get the initial time of movement start
-                time = System.nanoTime();
+                time_x = System.nanoTime(); // Upon state change, store the time to get initial time of movement
                 break;
-            case START_STATE: // doors close
-                //Set the timing of the door to close
-                if (System.nanoTime() >= (time_open_close_doors + time)) {
-                    doorOpen = false;
-
+                
+            case START_STATE:
+            	// This will go through the door closing process, once the doors are closed it will notify Scheduler to change states
+                if (System.nanoTime() >= (doorTimes + time_x)) 
+                {
                     System.out.println("\n================  " + id + "  ================");
                     System.out.println("    ==\t\tDoor Closed \t\t==");
-
-                    //send to scheduler that door is closed and then change state
                     this.packetString = (new String(receivePacket.getData(), 0, this.receivePacket.getLength())).split(" ");
-                    parseData(this.packetString[1], "ElevatorMotor");
-                    String msg1 = id + "-door_closed-" + currFloor;
+                    parse(this.packetString[1], "ElevatorMotor");
+                    msg1 = id + "-door_closed-" + currFloor;
                     sendElevatorMessage(msg1);
                     currentState = ElevatorStates.MOVE_STATE;
-                    time = System.nanoTime();
-                } else { //if door is still in the process of closing
+                    time_x = System.nanoTime();
+                } 
+                // Door is still in the closing process, will keep calling start state until doors are closed
+                else 
+                { 
                 	System.out.println("\n================  " + id + "  ================");
                 	System.out.println("    ==\t\tDoor Closing... \t==");
-
-                    //Send to scheduler that door is closing
-                    String msg1 = id + "-door_closing";
+                    msg1 = id + "-door_closing";
                     sendElevatorMessage(msg1);
-                    //Keep recursively calling the same state if the elevator is still in the process of closing doors
                     currentState = ElevatorStates.START_STATE;
                 }
                 break;
-            case MOVE_STATE: // Transition to moving
-                // Turn on lamps
-                directionLamp = motorState;
-                parseData(this.packetString[0], "Floor Number");
-                parseData(this.packetString[1], "ElevatorMotor");
-                //Elevator Lamps and Buttons are pushed within elevator to add a new request
-                //Set to state 3 to start the process of moving between floor timers
+                
+            case MOVE_STATE:
+                // Elevator lamps will turn on and any buttons pushed will add new requests
+                parse(this.packetString[0], "Floor Number");
+                parse(this.packetString[1], "ElevatorMotor");
                 currentState = ElevatorStates.MOVING_STATE;
-                time = System.nanoTime();
-                time2 = System.nanoTime();
+                time_x = System.nanoTime();
+                time_y = System.nanoTime();
                 break;
-            case MOVING_STATE: // Elevator moving
-                //Calculate the total time taken to from current to destination floor
-                long x = time_between_floors * Math.abs(this.destFloor - this.currFloor);
-                //Compares time to check if elevator has reached the floor
-                if (System.nanoTime() <= (x + time)) {
-                    long currTime = System.nanoTime();
-                    //compares time between floors to iterate one floor after another
-                    if (currTime - time2 >= time_between_floors) {
-                        if (this.currFloor < this.destFloor) { // if going up
-                            location++;
-                            time2 = System.nanoTime();
+                
+            case MOVING_STATE:
+                // This will calculate the travel time between floors
+                travelTime = floorTimes * Math.abs(this.destFloor - this.currFloor);
+                // Will then be used and compared to see if the elevator has reach its destination
+                if (System.nanoTime() <= (travelTime + time_x)) 
+                {
+                    currentTime = System.nanoTime();
+                    
+                    // Will be used to compare the times between each floor and will iterate each floor that is travelled to
+                    if (currentTime - time_y >= floorTimes) 
+                    {
+                        if (this.currFloor < this.destFloor) 
+                        {
+                            floor++;
+                            time_y = System.nanoTime();
                             System.out.println("\n================  " + id + "  ================");
                             System.out.println("    ==\t\tGoing up...      \t==");
-                        } else if (this.currFloor > this.destFloor) {//if going down
-                            location--;
-                            time2 = System.nanoTime();
+                        }
+                        else if (this.currFloor > this.destFloor) 
+                        {
+                            floor--;
+                            time_y = System.nanoTime();
                             System.out.println("\n================  " + id + "  ================");
                             System.out.println("    ==\t\tGoing Down...     \t==");
                         }
                     }
-
-                    //Send the message of moving to the scheduler
-                    String msg = id + "-moving-" + (location + 1);
+                    
+                    // A message of the current state will be sent to the Scheduler, this will continue till floor is reached
+                    msg = id + "-moving-" + (floor + 1);
                     sendElevatorMessage(msg);
-                    //recursively call the same state till reached the correct floor
                     currentState = ElevatorStates.MOVING_STATE;
-                } else {//switch states when reached destination floor
-                    time = System.nanoTime(); // reset time before switching states
+                } 
+                // Upon reaching the destination floor
+                else 
+                {
+                    time_x = System.nanoTime();
                     currentState = ElevatorStates.FINAL_STATE;
                 }
                 break;
-            case FINAL_STATE: // reach destination
-                //Timing for the doors to open
-                if (System.nanoTime() >= (time_open_close_doors + time)) { //if doors are fully opened
-                    //set doors open to true and set the motor sate to stopped
-                    doorOpen = true;
+                
+            case FINAL_STATE:
+                if (System.nanoTime() >= (doorTimes + time_x)) 
+                {
                     motorState = ElevatorMotor.STOP;
-                    directionLamp = motorState;
-
-                    //Send to scheduler with arrive info
+                    
+                    // Send a message to the Scheduler about the arrival
                     this.currFloor = Integer.parseInt(this.packetString[0]);
-                    String msg = id + "-arrived-" + this.packetString[0];
+                    msg = id + "-arrived-" + this.packetString[0];
                     sendElevatorMessage(msg);
                     System.out.println("\n================  " + this.id + "  ================");
                     System.out.println("    ==    Sent: " + msg + "\t==");
-                    //go back to the initial state
                     currentState = ElevatorStates.INITIAL_STATE;
-                } else {//Keep sending doors opening to scheduler till the doors are fully open
+                } 
+                // Door opening still in process, will continue until doors are fully open and notify Scheduler
+                else
+                {
                 	System.out.println("\n================  " + id + "  ================");
                 	System.out.println("  ==\t\tDoor Opening... \t==");
-                    String msg1 = id + "-door_opening";
+                    msg1 = id + "-door_opening";
                     sendElevatorMessage(msg1);
-                    //Recursively set the same state till doors are completely open
                     currentState = ElevatorStates.FINAL_STATE;
                 }
 
                 break;
-            case ERROR_STATE: //Error Handling
-                if (errorSelect == -1) { // If error is door is stuck
-                    
-                	String msg2;
-                	
-                	//Simulate door stuck and reset 
+                
+            case ERROR_STATE:
+                if (errorSelect == -1)
+                {
+                	// This will simulate the elevator doors getting stuck
                 	System.out.println("\n================  " + id + "  ================");
                 	System.out.println("    ==\t\tDoor Closing... \t==");
                     System.out.println("    ==\t\tDoor is Stuck... \t==");
                                      
-                	//Timing for the error
-                    if (System.nanoTime() < (time_open_close_doors + time)) { //if doors fully reset
+                	// Begin timer for error time
+                    if (System.nanoTime() < (doorTimes + time_x)) 
+                    {
                     	System.out.println("\n================  " + id + "  ================");
                     	System.out.println("    ==\t\t" + " Resetting Door... \t==");
                         msg2 =  id + "-doorReseting-" + this.currFloor;
                         sendElevatorMessage(msg2);
-                        //Recursively set the same state till doors are completely open
                         currentState = ElevatorStates.ERROR_STATE;
 
-                    } else {//Keep sending doors opening to scheduler till the doors are fully open
+                    }
+                    // Will keep sending door reset message to Scheduler until it is fixed
+                    else 
+                    {
                         msg2 =  id + "-doorReset-" + this.currFloor;
                         errorSelect = 0;
                         currentState = ElevatorStates.INITIAL_STATE;
                         sendElevatorMessage(msg2);
                     }
 
-                } else if (errorSelect == -2) {//if fatal error: stuck between floors
-                    //Send the data to the scheduler about which floor is elevator stuck on
+                } 
+                else if (errorSelect == -2) 
+                {
+                    // Will send out the floor that the elevator is stuck on to the Scheduler
                 	System.out.println("\n================  " + id + "  ================");
                     System.out.println("    ==      Stuck at floor " + this.currFloor + "\t==");
                     System.out.println(" == Shutting down and reallocating queues ==");
-                    String msg1 = id + "-error-" + this.currFloor;
+                    msg1 = id + "-error-" + this.currFloor;
                     sendElevatorMessage(msg1);
                     errorSelect = -3;
-                } else if (errorSelect == -3) {
-                    String msg1 = id + "-error-" + this.currFloor;
+                } 
+                else if (errorSelect == -3) 
+                {
+                    msg1 = id + "-error-" + this.currFloor;
                     sendElevatorMessage(msg1);
                 }
         }
     }
 
-    private void sendElevatorMessage(String elevatorWithRequest) {
-    	byte[] sendData = elevatorWithRequest.getBytes();
-        try {
-            this.sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), rpf.getElevatorPort());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        try {
-            this.sendReceiveSocket.send(this.sendPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
     /**
-     * Calls the state machine continuously while thread is active
+     * Will call the state machine while the threads are active
      */
     @Override
-    public void run() {
+    public void run() 
+    {
     	System.out.println("\n================  " + id + "  ==================");
         System.out.println("       ==\t Started! \t==");
-        Initialize();
-        while (true) {
+        init();
+        while (true) 
+        {
             this.stateMachine();
 
-            try {
+            try 
+            {
                 Thread.sleep(1500L);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e) 
+            {
                 e.printStackTrace();
             }
         }
     }
-
+    
     /**
-     * Getters for Unit Testing
-     */
-    public ElevatorMotor getMotorState() {
-        return this.motorState;
-    }
-
-    public boolean isDoorOpen() {
-        return this.doorOpen;
-    }
-
-    public ElevatorMotor getElevatorMotorLamp() {
-        return this.directionLamp;
-    }
-
-    public FloorRequest getData() {
-        return this.data;
-    }
-
-    public ElevatorStates getCurrentState() {
-        return this.currentState;
-    }
-
-    /**
+     * The main function that will run the elevator subsystem
      * @param args
      */
-    public static void main(String[] args) {
-
+    public static void main(String[] args) 
+    {
         Thread elevator[] = new Thread[rpf.getNumElevators()];
 
-        for (int i = 0; i < rpf.getNumElevators(); i++) {
+        for (int i = 0; i < rpf.getNumElevators(); i++) 
+        {
             elevator[i] = new Thread(new ElevatorSubsystem("Elevator" + (i + 1)), "Elevator" + (i + 1));
             elevator[i].start();
         }

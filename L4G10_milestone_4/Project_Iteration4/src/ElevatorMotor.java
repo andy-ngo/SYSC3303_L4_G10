@@ -8,5 +8,7 @@
  */
 
 public enum ElevatorMotor {
-    UP, DOWN, STOP;
+    UP,     //Motor state as going up
+    DOWN,   //Motor state as going down
+    STOP;   //Motor state as stop
 }
