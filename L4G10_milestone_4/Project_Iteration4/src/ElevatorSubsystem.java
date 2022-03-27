@@ -104,10 +104,9 @@ public class ElevatorSubsystem implements Runnable
     /**
      * This will be used in the states where the elevator motor needs to have the
      * direction state changed. As well as changing the lamp status
-     *
-     * @param direction, type
-     * Direction will be used to change the elevator motor state
-     * Type will be used to identify if the elevator needs direction or the lamp status
+     * 
+     * @param motorState, will be used to change the elevator motor state
+     * @param type, will be used to identify if the elevator needs direction or the lamp status
      */
     private void parse(String motorState, String type) 
     {

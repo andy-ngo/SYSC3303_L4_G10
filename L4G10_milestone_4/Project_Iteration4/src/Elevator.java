@@ -1,14 +1,23 @@
+/**
+ * @author Andy Ngo
+ * Version: 1.0V
+ * 
+ * The data structure of the elevator and has all the elevator propterties that can be used
+ * in tests cases and the elevator subsystem
+ */
+
 import java.net.InetAddress;
 import java.util.*;
 
 public class Elevator {
+	//Initialize variables
 	String id = "";
 	int port;
 	private InetAddress address;
 	private ArrayList<Integer> upQueue;
 	private ArrayList<Integer> downQueue;
 	private int currentFloor, currDestination;
-	private ElevatorMotor direction;
+	private ElevatorMotor elevatorMotor;
 	private ReadPropertyFile r;
 	private boolean elevatorLampArray[];
 	private int error;
@@ -18,12 +27,12 @@ public class Elevator {
 	private ArrayList<Integer> destinations;
 	
 	/**
-	 * Constructor for elevator.
+	 * Initialize variables
 	 *
-	 * @param id elevator's id
-	 * @param port elevator's port
-	 * @param address elevator's address
-	 * @param currentFloor current floor of elevator
+	 * @param id, the elevator id
+	 * @param port, the elevator port
+	 * @param address, the elevator address 
+	 * @param currentFloor, the current floor that the elevator is on
 	 */
 	public Elevator(String id, int port, InetAddress address, int currentFloor) {
 		this.id = id;
@@ -34,7 +43,7 @@ public class Elevator {
 		destinations = new ArrayList<>();
 		this.currentFloor = currentFloor;
 		this.currDestination = -1;
-		direction = ElevatorMotor.STOP;
+		elevatorMotor = ElevatorMotor.STOP;
 		r = new ReadPropertyFile();
 		this.error = 0;
 		this.elevatorLampArray = new boolean[r.getNumFloors()];
@@ -46,214 +55,299 @@ public class Elevator {
 		this.status = "waiting";
 	}
 
-	public Elevator() {}
-
 	/**
-	 * @return int the current floor
+	 * Elevator constructor
 	 */
-	public int getCurrentFloor() {
+	public Elevator() 
+	{
+	}
+
+	// Getters and setters for the elevator
+	
+	/**
+	 * Getting the current floor that the elevator is on
+	 * 
+	 * @return currentFloor
+	 */
+	public int getCurrentFloor() 
+	{
 		return currentFloor;
 	}
-
+	
 	/**
-	 * @return int the error code
+	 * Will set the current floor that the elevator is on
+	 * 
+	 * @param currentFloor, the current floor number
 	 */
-	public int getError() {
-		return error;
-	}
-
-	/**
-	 * Set error
-	 */
-	public void setError(int error) {
-		this.error = error;
-	}
-
-	/**
-	 * Set current floor
-	 */
-	public void setCurrentFloor(int currentFloor) {
+	public void setCurrentFloor(int currentFloor) 
+	{
 		this.currentFloor = currentFloor;
 	}
 
 	/**
-	 * @return ElevatorMotor the elevator's direction
+	 * Will get the error 
+	 *
+	 * @return error
 	 */
-	public ElevatorMotor getElevatorMotor() {
-		return direction;
+	public int getError() 
+	{
+		return error;
 	}
 
 	/**
-	 * Set the elevator direction
+	 * Will set the error
+	 * 
+	 * @param x, the error number
 	 */
-	public void setElevatorMotor(ElevatorMotor motor) {
-		this.direction = motor;
+	public void setError(int x) 
+	{
+		this.error = x;
 	}
 
 	/**
-	 * remove first value from the up queue
+	 * Will get the elevator motor direction
+	 * 
+	 * @return elevatorMotor
 	 */
-	public void removeUp() {
+	public ElevatorMotor getElevatorMotor() 
+	{
+		return elevatorMotor;
+	}
+
+	/**
+	 * This will set the elevator motor to the desired direction
+	 * 
+	 * @param elevatorMotor, the desired direction for the elevator motor
+	 */
+	public void setElevatorMotor(ElevatorMotor elevatorMotor) 
+	{
+		this.elevatorMotor = elevatorMotor;
+	}
+
+	/**
+	 * Will remove the first value from the up queue
+	 */
+	public void removeUp() 
+	{
 		upQueue.remove(0);
 	}
 
 	/**
-	 * remove first value from the down queue
+	 * Will remove the first value from the down queue
 	 */
-	public void removeDown() {
+	public void removeDown() 
+	{
 		downQueue.remove(0);
 	}
 
 	/**
-	 * @return string id of elevator
+	 * Will get the ID of the elevator
+	 * 
+	 * @return id of elevator
 	 */
-	public String getID() {
+	public String getID() 
+	{
 		return id;
 	}
 
 	/**
-	 * @param string id of elevator
+	 * Will set the ID of the elevator
+	 * 
+	 * @param id, the id for the elevator
 	 */
-	public void setID(String id) {
+	public void setID(String id) 
+	{
 		this.id = id;
 	}
 
 	/**
-	 * @return ArrayList<Integer> the down queue
+	 * This will return the down queue of the elevator
+	 * 
+	 * @return the down queue
 	 */
-	public ArrayList<Integer> getDownQueue() {
+	public ArrayList<Integer> getDownQueue() 
+	{
 		return downQueue;
 	}
 
 	/**
-	 * @return ArrayList<Integer> the up queue
+	 * This will return the up queue of the elevator
+	 * 
+	 * @return the up queue
 	 */
-	public ArrayList<Integer> getUpQueue() {
+	public ArrayList<Integer> getUpQueue() 
+	{
 		return upQueue;
 	}
-
+	
 	/**
-	 * @return int the port
+	 * Will add to the elevator up queue
+	 * 
+	 * @param floorNum, desired floor to add to the queue
 	 */
-	public int getPort() {
-		return port;
-	}
-
-	/**
-	 * @param int port of elevator
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	/**
-	 * @param int floorNum
-	 */
-	public void addToUp(int floorNum) {
+	public void addToUp(int floorNum) 
+	{
 		upQueue.add(floorNum);
 	}
 
 	/**
-	 * @param int floorNum
+	 * Will add to the elevator down queue
+	 * 
+	 * @param floorNum, desired floor to add to the queue
 	 */
-	public void addToDown(int floorNum) {
+	public void addToDown(int floorNum) 
+	{
 		downQueue.add(floorNum);
 	}
 
 	/**
-	 * @return InetAddress address
+	 * Will get the port of the elevator
+	 * 
+	 * @return the port
 	 */
-	public InetAddress getAddress() {
+	public int getPort() 
+	{
+		return port;
+	}
+
+	/**
+	 * Will set the port of the elevator
+	 * 
+	 * @param port, the desire port for the elevator
+	 */
+	public void setPort(int port) 
+	{
+		this.port = port;
+	}
+
+	/**
+	 * Will get the address of the elevator
+	 * 
+	 * @return address
+	 */
+	public InetAddress getAddress() 
+	{
 		return address;
 	}
 
 	/**
-	 * @param InetAddress address
+	 * Will set the address for the elevator
+	 * 
+	 * @param address, desire address for the elevator
 	 */
-	public void setAddress(InetAddress address) {
+	public void setAddress(InetAddress address) 
+	{
 		this.address = address;
 	}
 
 	/**
-	 * @return String timestamp
+	 * This will return the time stamp of the elevator
+	 * 
+	 * @return timestamp
 	 */
-	public String getTimestamp() {
+	public String getTimestamp() 
+	{
 		return this.timestamp;
+	}
+	
+	/**
+	 * This method will be used to set a time stamp
+	 * 
+	 * @param timestamp, the time stamp
+	 */
+	public void setTimestamp(String timestamp) 
+	{
+		this.timestamp = timestamp;
 	}
 
 	/**
-	 * @return String status
+	 * This will return the status of the elevator
+	 * 
+	 * @return status
 	 */
-	public String getStatus() {
+	public String getStatus() 
+	{
 		return this.status;
 	}
 
 	/**
-	 * @param string status
+	 * This will set the status of the elevator
+	 * 
+	 * @param status, desired status for the elevator
 	 */
-	public void setStatus(String status) {
+	public void setStatus(String status) 
+	{
 		this.status = status;
 		setDestination();
 	}
 	
 	/**
-	 * @return int destination
+	 * This will get the destination of the elevator
+	 * 
+	 * @return destination
 	 */
-	public int getDestination() {
+	public int getDestination() 
+	{
 		return this.currDestination;
 	}
 
 	/**
+	 * This will be used to add a destination for the elevator
 	 * 
-	 * @param int destination
+	 * @param destination, the destination that will be added to the elevator requests
 	 */
-	public void addDestination(int destination) {
+	public void addDestination(int destination) 
+	{
 		this.destinations.add(destination);
-		if(destinations.size() == 1) {
+		if(destinations.size() == 1) 
+		{
 			currDestination = destination;
 		}
 	}
 	
 	/**
-	 * Set the destination
+	 * This will set the destination for the elevator
 	 */
-	private void setDestination() {
+	private void setDestination() 
+	{
 		if(this.status.contains("arr"))
 			{
 				destinations.remove(0);
-				if(destinations.size() != 0) {
+				if(destinations.size() != 0) 
+				{
 					currDestination = destinations.get(0);
-				}else {
+				}
+				else 
+				{
 					currDestination = -1; 
 				}
 			}
 	}
 	
 	/**
-	 * @param string timestamp
+	 * This will sort the arrays of the elevator
 	 */
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	/**
-	 * Sorts the arrays in the elevator
-	 */
-	public void sortArrays() {
+	public void sortArrays() 
+	{
 		Collections.sort(this.upQueue);
 		Collections.sort(this.downQueue);
 		Collections.reverse(this.downQueue);
 	}
 
 	/**
-	 * @param boolean add
-	 * @param int floorNum
+	 * This will be used to set the elevator lamps
+	 * 
+	 * @param add, if it is true it will add the floor number to the lamp array
+	 * @param floornum, the desired floor
 	 */
-	public void setElevatorLamps(boolean add, int floorNum) {
-		if (add) {
-			this.elevatorLampArray[floorNum - 1] = true;
-		} else {
-			this.elevatorLampArray[floorNum - 1] = false;
+	public void setElevatorLamps(boolean add, int floornum) {
+		if (add) 
+		{
+			this.elevatorLampArray[floornum - 1] = true;
+		} 
+		else 
+		{
+			this.elevatorLampArray[floornum - 1] = false;
 		}
 
 	}
