@@ -8,13 +8,10 @@
  - Scharara Islam 101149731
 
 ## How to Run:
-To run the application, use Main.java. To find a sample input file, naviagte to the root of this folder and click on elevator.txt
+To run the application, start with the Scheduler.java, then FloorSubsystem.java, and then ElevatorSubsystem.java concurrently for them to communicate with each other.
+
 
 ## Source Code:
-
-Main.java
-- Class that will create instances of each class and run the whole system.
-
 ElevatorSubsystem.java
 - A class that will check the floor request array and make sure if there are any request. With the request, the elevator will check to go up or down and to stop when it arrive. It will communicate with the scheduler whenever there has been arrival. This class is synchronized with the scheduler class.
 - A state machine was added into this iteration. Having the elevator call to the state machine method at each different state. 
@@ -24,6 +21,8 @@ ElevatorSubsystem.java
     - UP
     - DOWN
     - STOP
+
+Elevator.java
 
 Elevator_Motor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
@@ -46,12 +45,30 @@ JUnit Test files to verify that it is working
 - SchedulerTest.java
 
 ## UML Diagrams:
-- ClassDiagram3.png
-- SequenceDiagram3.png
-- Elevator_StateDiagram3.png
-- Scheduler_StateDiagram3.png
+- ClassDiagram4.png
+- SequenceDiagram4.png
+- Elevator_StateDiagram4.png
+- Scheduler_StateDiagram4.png
+- Elevator_FloorStuck_TimingDiagram4.png
+- Elevator_doorStuck_TimingDiagram4.png
 
 ## Breakdown of Responsibilities:
+## Iteration 4
+Ali Fahd:
+- Updated source codes
+
+Karim Mahrous:
+- Updated source codes
+
+Andy Ngo:
+- Updated source codes
+
+Scharara Islam:
+- Updated README
+- Updated UML diagram
+- Updated State Diagram
+- Created Timing Diagram
+
 ## ITERATION 3
 Ali Fahd:
 - Updated source codes
