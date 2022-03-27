@@ -1,21 +1,17 @@
+
+
 import java.net.InetAddress;
 import java.util.*;
 
-
-/**
- * Data structure that hold all the properties of the Elevator
- *
- * @author Andy Ngo
- */
-public class Elevator {
-	String id = "";
+public class ElevatorData {
+	String name = "";
 	int port;
 	private InetAddress address;
 	private ArrayList<Integer> upQueue;
 	private ArrayList<Integer> downQueue;
 	private int currentFloor, currDestination;
-	private ElevatorMotor direction;
-	private ReadPropertyFile rpf;
+	private Direction direction;
+	private ReadPropertyFile r;
 	private boolean elevatorLampArray[];
 	private int error;
 	private String timestamp;
@@ -26,14 +22,13 @@ public class Elevator {
 	/**
 	 * Initializes all variables
 	 *
-	 * @param id         Elevator's id
+	 * @param name         Elevator's name
 	 * @param port         Elevator's port
-	 * @param address      Elevator's address
+	 * @param address      Elevator's adress
 	 * @param currentFloor current floor of elevator
 	 */
-	public Elevator(String id, int port, InetAddress address, int currentFloor) 
-	{
-		this.id = id;
+	public ElevatorData(String name, int port, InetAddress address, int currentFloor) {
+		this.name = name;
 		this.port = port;
 		this.address = address;
 		upQueue = new ArrayList<>();
@@ -41,21 +36,19 @@ public class Elevator {
 		destinations = new ArrayList<>();
 		this.currentFloor = currentFloor;
 		this.currDestination = -1;
-		direction = ElevatorMotor.Stop;
-		rpf = new ReadPropertyFile();
+		direction = Direction.STOPPED;
+		r = new ReadPropertyFile();
 		this.error = 0;
-		this.elevatorLampArray = new boolean[rpf.getNumFloors()];
+		this.elevatorLampArray = new boolean[r.getNumFloors()];
 		
-		for (int i = 0; i < rpf.getNumFloors(); i++) 
-		{
+		for (int i = 0; i < r.getNumFloors(); i++) {
 			elevatorLampArray[i] = false;
 		}
 		this.timestamp = " ";
 		this.status = "waiting";
 	}
 
-	public Elevator() 
-	{
+	public ElevatorData() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -92,14 +85,14 @@ public class Elevator {
 	/**
 	 * @return the elevator's direction
 	 */
-	public ElevatorMotor getDirection() {
+	public Direction getDirection() {
 		return direction;
 	}
 
 	/**
 	 * Set the direction
 	 */
-	public void setDirection(ElevatorMotor direction) {
+	public void setDirection(Direction direction) {
 		this.direction = direction;
 	}
 
@@ -118,17 +111,17 @@ public class Elevator {
 	}
 
 	/**
-	 * @return id of elevator
+	 * @return name of elevator
 	 */
-	public String getID() {
-		return id;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Set id
+	 * Set name
 	 */
-	public void setID(String id) {
-		this.id = id;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

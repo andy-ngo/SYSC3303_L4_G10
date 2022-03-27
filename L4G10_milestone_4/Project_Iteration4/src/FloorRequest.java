@@ -1,89 +1,115 @@
+
+
 import java.sql.Timestamp;
 
-/**
- * Data Structure for Floor Requests that are inputed form the data file.
- * @author Ali Fahd
- *
- */
 public class FloorRequest {
-	private String requestTime;
-    private int floorOrigin;
-    private ElevatorMotor direction;
-    private int floorDestination;
+
+    private String requestTime;
     private long travelTime;
     private long doorTime;
+    private int floorRequestOrigin;
+    private int floorDestination;
+    private Direction direction;
 
     /**
-     * Constructor for class Floor Request. Initializes each field.
-     * @param String request time - time when request was made
-     * @param int floor origin - floor where user got on
-     * @param String request time - time when request was made
-     * @param int floor destination - floor where user wants to get off
+     * Initializes all the variables, when parameter are given
      *
+     * @param requestTime      Current real time of the elevator
+     * @param travelTime       Time it takes for the elevator to run travel between one floor to the other
+     * @param doorTime         Time it takes for the door to open/close
+     * @param floorOrigin      The original floor the elevator was called on
+     * @param floorDestination The destination floor
+     * @param direction        The direction the elevator need to go
      */
-    public FloorRequest(String requestTime, int floorOrigin, ElevatorMotor direction, int floorDestination, long travelTime, long doorTime) {
-		this.requestTime = requestTime;
-		this.floorOrigin = floorOrigin;
-		this.direction = direction;
-		this.floorDestination = floorDestination;
+    public FloorRequest(String requestTime, long travelTime, long doorTime, int floorOrigin, int floorDestination,
+                        Direction direction) {
+        this.requestTime = requestTime;
+        this.direction = direction;
+        this.floorDestination = floorDestination;
+        this.floorRequestOrigin = floorOrigin;
         this.travelTime = travelTime;
         this.doorTime = doorTime;
-	}
-    
+    }
+
     /**
-     * Default constructor
+     * A default constructor for the elevator, when there is no elevator request, but the elevator is stopped.
      */
     public FloorRequest() {
         this.requestTime = (String.valueOf(new Timestamp(System.currentTimeMillis())));
-        this.direction = ElevatorMotor.Stop;
+        this.direction = Direction.STOPPED;
         this.floorDestination = -1;
-        this.floorOrigin = -1;
+        this.floorRequestOrigin = -1;
         this.travelTime = -1L;
         this.doorTime = -1L;
     }
 
     /**
-     * @return String requestTime - time stamp when elevator request was made
+     * @return the time stamp
      */
     public String getRequestTime() {
-        return requestTime;
+        return this.requestTime;
     }
-    
-    /**
-     * @return int floorOrigin - the floor where the request was made
-     */
-    public int getFloorOrigin() {
-        return floorOrigin;
+
+    public void setFloorDestination(int x) {
+        this.floorDestination = x;
     }
 
     /**
-     * @return String direction - returns direction of elevator request
+     * @return travel time of this elevator
      */
-    public String getDirection() {
-        return direction.toString();
+    public long getTravelTime() {
+        return this.travelTime;
     }
 
     /**
-     * @return int floorDestination - the floor number where the destination is
+     * @return the original floor
+     */
+    public int getFloorRequestOrigin() {
+        return this.floorRequestOrigin;
+    }
+
+    /**
+     * @return returns directions
+     */
+    public Direction getDirection() {
+        return this.direction;
+    }
+
+    /**
+     * @return the destination floor
      */
     public int getFloorDestination() {
         return this.floorDestination;
     }
 
     /**
-     * Sets the floor destination field.
-     * 
-     * @param int floorNumber - the floor number to set the floor destination to
+     * @return the door close/open time
      */
-    public void setFloorDestination(int floorNunmber) {
-        this.floorDestination = floorNunmber;
+    public long getDoorTime() {
+        return this.doorTime;
     }
 
-    /**
-     * @return String summary - the data of the request in a readable format.
-     */
     public String toString() {
-        String stringVersion = getRequestTime() + " " + getFloorOrigin() + " " + getDirection() + " " + getFloorDestination();
+        String stringVersion = getRequestTime() + " " + getFloorRequestOrigin() + " " + getDirection() + " " + getFloorDestination();
         return stringVersion;
     }
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//
+//		FloorRequest f = (FloorRequest) obj;
+//
+//		return (f.requestTime == this.getRequestTime() &&
+//				f.travelTime == this.travelTime &&
+//				f.doorTime == this.doorTime &&
+//				f.floorRequestOrigin == this.floorRequestOrigin &&
+//				f.floorDestination == this.floorDestination &&
+//				f.direction == this.direction);
+//	}
 }
