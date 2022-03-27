@@ -3,27 +3,26 @@ import java.sql.Timestamp;
 public class FloorRequest {
 
     private String requestTime;
+    private int floorRequestOrigin;
+    private ElevatorMotor direction;
+    private int floorDestination;
     private long travelTime;
     private long doorTime;
-    private int floorRequestOrigin;
-    private int floorDestination;
-    private ElevatorMotor direction;
 
     /**
-     * Initializes all the variables, when parameter are given
+     * Constructor for floor request class
      *
-     * @param requestTime      Current real time of the elevator
-     * @param travelTime       Time it takes for the elevator to run travel between one floor to the other
-     * @param doorTime         Time it takes for the door to open/close
-     * @param floorOrigin      The original floor the elevator was called on
+     * @param requestTime Current real time of the elevator
+     * @param floorOrigin The original floor the elevator was called on
+     * @param direction The direction the elevator need to go
      * @param floorDestination The destination floor
-     * @param direction        The direction the elevator need to go
+     * @param travelTime Time it takes for the elevator to run travel between one floor to the other
+     * @param doorTime Time it takes for the door to open/close
      */
-    public FloorRequest(String requestTime, long travelTime, long doorTime, int floorOrigin, int floorDestination,
-                        ElevatorMotor direction) {
+    public FloorRequest(String requestTime, int floorOrigin, ElevatorMotor direction, int floorDestination, long travelTime, long doorTime) {
         this.requestTime = requestTime;
-        this.direction = direction;
         this.floorDestination = floorDestination;
+        this.direction = direction;
         this.floorRequestOrigin = floorOrigin;
         this.travelTime = travelTime;
         this.doorTime = doorTime;
@@ -42,51 +41,57 @@ public class FloorRequest {
     }
 
     /**
-     * @return the time stamp
+     * @return String the time stamp
      */
     public String getRequestTime() {
         return this.requestTime;
     }
 
-    public void setFloorDestination(int x) {
-        this.floorDestination = x;
+    /**
+     * @param int floor num
+     */
+    public void setFloorDestination(int num) {
+        this.floorDestination = num;
     }
 
     /**
-     * @return travel time of this elevator
+     * @return long travel time of this elevator
      */
     public long getTravelTime() {
         return this.travelTime;
     }
 
     /**
-     * @return the original floor
+     * @return int the original floor
      */
     public int getFloorRequestOrigin() {
         return this.floorRequestOrigin;
     }
 
     /**
-     * @return returns directions
+     * @return ElevatorMotor direction
      */
     public ElevatorMotor getElevatorMotor() {
         return this.direction;
     }
 
     /**
-     * @return the destination floor
+     * @return int the destination floor
      */
     public int getFloorDestination() {
         return this.floorDestination;
     }
 
     /**
-     * @return the door close/open time
+     * @return long the door time
      */
     public long getDoorTime() {
         return this.doorTime;
     }
 
+    /**
+     * @return string summary of floor request
+     */
     public String toString() {
         String stringVersion = getRequestTime() + " " + getFloorRequestOrigin() + " " + getElevatorMotor() + " " + getFloorDestination();
         return stringVersion;
