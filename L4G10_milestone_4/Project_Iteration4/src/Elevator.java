@@ -1,16 +1,14 @@
-
-
 import java.net.InetAddress;
 import java.util.*;
 
-public class ElevatorData {
-	String name = "";
+public class Elevator {
+	String id = "";
 	int port;
 	private InetAddress address;
 	private ArrayList<Integer> upQueue;
 	private ArrayList<Integer> downQueue;
 	private int currentFloor, currDestination;
-	private Direction direction;
+	private ElevatorMotor direction;
 	private ReadPropertyFile r;
 	private boolean elevatorLampArray[];
 	private int error;
@@ -22,13 +20,13 @@ public class ElevatorData {
 	/**
 	 * Initializes all variables
 	 *
-	 * @param name         Elevator's name
+	 * @param id         Elevator's id
 	 * @param port         Elevator's port
 	 * @param address      Elevator's adress
 	 * @param currentFloor current floor of elevator
 	 */
-	public ElevatorData(String name, int port, InetAddress address, int currentFloor) {
-		this.name = name;
+	public Elevator(String id, int port, InetAddress address, int currentFloor) {
+		this.id = id;
 		this.port = port;
 		this.address = address;
 		upQueue = new ArrayList<>();
@@ -36,7 +34,7 @@ public class ElevatorData {
 		destinations = new ArrayList<>();
 		this.currentFloor = currentFloor;
 		this.currDestination = -1;
-		direction = Direction.STOPPED;
+		direction = ElevatorMotor.STOP;
 		r = new ReadPropertyFile();
 		this.error = 0;
 		this.elevatorLampArray = new boolean[r.getNumFloors()];
@@ -48,7 +46,7 @@ public class ElevatorData {
 		this.status = "waiting";
 	}
 
-	public ElevatorData() {
+	public Elevator() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -85,14 +83,14 @@ public class ElevatorData {
 	/**
 	 * @return the elevator's direction
 	 */
-	public Direction getDirection() {
+	public ElevatorMotor getElevatorMotor() {
 		return direction;
 	}
 
 	/**
 	 * Set the direction
 	 */
-	public void setDirection(Direction direction) {
+	public void setElevatorMotor(ElevatorMotor direction) {
 		this.direction = direction;
 	}
 
@@ -111,17 +109,17 @@ public class ElevatorData {
 	}
 
 	/**
-	 * @return name of elevator
+	 * @return id of elevator
 	 */
-	public String getName() {
-		return name;
+	public String getID() {
+		return id;
 	}
 
 	/**
-	 * Set name
+	 * Set id
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setID(String id) {
+		this.id = id;
 	}
 
 	/**
@@ -211,7 +209,7 @@ public class ElevatorData {
 
 	/**
 	 * 
-	 * Set the status
+	 * Add the destination
 	 */
 	public void addDestination(int destination) {
 		this.destinations.add(destination);
@@ -222,7 +220,7 @@ public class ElevatorData {
 	
 	/**
 	 * 
-	 * Set the status
+	 * Set the destination
 	 */
 	private void setDestination() {
 		if(this.status.contains("arr"))

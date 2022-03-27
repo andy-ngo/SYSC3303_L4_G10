@@ -1,5 +1,3 @@
-
-
 import java.io.IOException;
 import java.net.*;
 import java.text.DateFormat;
@@ -8,7 +6,7 @@ import java.util.*;
 
 public class Scheduler {
 
-    public Direction direction;
+    public ElevatorMotor direction;
     private String isDataFromFloor, dataFromElevator;
     private int floorToVisit, portFloor, currentFloor;
     private boolean emptyFloor, emptyElevator;
@@ -16,8 +14,8 @@ public class Scheduler {
     private DatagramPacket receivePacket, sendPacket;
     private DatagramSocket sendReceiveSocketFloor, sendReceiveSocketElevators;
     private InetAddress addressFloor;
-    private ArrayList<ElevatorData> elevators;
-    private ArrayList<ElevatorData> elevatorsStuck;
+    private ArrayList<Elevator> elevators;
+    private ArrayList<Elevator> elevatorsStuck;
     private ArrayList<String> timeStamps;
     private int waiting = 0;
     private int elevatorBeingUsed = 0;
@@ -184,8 +182,6 @@ public class Scheduler {
             	elevators.get(temp).setError(Integer.parseInt(cut[1]));//Sets type of error
 
             }
-            // TODO: Need to figure out the direction to go to the floor where we pick up
-            // people
         }
     }
 
@@ -197,7 +193,7 @@ public class Scheduler {
      */
     public synchronized boolean receiveFromElevator(byte[] data) {
         //Gets the elevator in use and tries to receive packet
-        ElevatorData temp = new ElevatorData(); //elevators.get(elevatorBeingUsed);
+        Elevator temp = new Elevator(); //elevators.get(elevatorBeingUsed);
         try {
             sendReceiveSocketElevators.receive(receivePacket);
         } catch (IOException e) {
@@ -211,12 +207,12 @@ public class Scheduler {
         String[] test = mess.split(" "); //split message string into an array of strings
         
         // Selecting the correct elevator in use
-        for(ElevatorData e : elevators) {
-        	if(splitElevatorMsg[0].equals(e.getName())) {
+        for(Elevator e : elevators) {
+        	if(splitElevatorMsg[0].equals(e.getID())) {
         		temp = e;
         	}
         }
-        int elevatorNum = Integer.parseInt(String.valueOf(temp.getName().charAt(temp.getName().length()-1)));
+        int elevatorNum = Integer.parseInt(String.valueOf(temp.getID().charAt(temp.getID().length()-1)));
         timeStamps.set(elevatorNum-1,getTime());
 
         // If message was not blank and was split into an array
@@ -316,7 +312,6 @@ public class Scheduler {
                 } else if (splitElevatorMsg[1].equals("doorReset")) {
                 	temp.setStatus("doors reset");
                 	temp.setError(0);
-                	System.out.print("got it");
                     if (mess.equals("")) {
                         mess = mess + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                     } else {
@@ -328,7 +323,6 @@ public class Scheduler {
                 else if (splitElevatorMsg[1].equals("doorReseting")) {
                     temp.setStatus("doors reseting");
                     temp.setError(0);
-                    System.out.print("got it");
                     if (mess.equals("")) {
                         mess = mess + splitElevatorMsg[0] + "-waiting-" + splitElevatorMsg[2];
                     } else {
@@ -383,7 +377,6 @@ public class Scheduler {
      * Sends data to the floor
      *
      * @return the instructions to the floor, right now just an arriving message
-     * TODO: Turn on lamps on floor
      */
     public synchronized void sendToFloor() {
         //create a byte array
@@ -415,7 +408,7 @@ public class Scheduler {
      * @return sends the floor requested to the elevator
      */
     public synchronized void sendToElevator() {
-        ElevatorData temp = elevators.get(elevatorBeingUsed);
+        Elevator temp = elevators.get(elevatorBeingUsed);
         byte[] toSend = new byte[100];
         // send the appropriate floor request based on the elevator
 
@@ -433,7 +426,7 @@ public class Scheduler {
                 String wait = "waiting";
                 toSend = wait.getBytes();
             } else { //if floor to visit is a valid floor than send direction and floor to the elevator
-                String dat = t + " " + temp.getDirection();
+                String dat = t + " " + temp.getElevatorMotor();
                 temp.addDestination(t);
                 toSend = dat.getBytes();
             }
@@ -463,10 +456,10 @@ public class Scheduler {
     private void getElevatorFromDifference(HashMap<String, Integer> differenceMap, int floor, boolean down, int floor2,
                                            String dir) {
         int minDifference = Collections.min(differenceMap.values());
-        for (String currElevatorName : differenceMap.keySet()) {
-            if (differenceMap.get(currElevatorName).equals(minDifference)) {
-                for (ElevatorData e : elevators) {
-                    if (e.getName().equals(currElevatorName)) {
+        for (String currElevatorID : differenceMap.keySet()) {
+            if (differenceMap.get(currElevatorID).equals(minDifference)) {
+                for (Elevator e : elevators) {
+                    if (e.getID().equals(currElevatorID)) {
                         if (down) {
                             e.addToDown(floor);
                             if (dir.equals("UP")) {
@@ -495,10 +488,10 @@ public class Scheduler {
      * Adds the floor to the right queue
      *
      * @param origin               thats is the floor that need to be added to the queue
-     * @param floorButtonDirection received from the floor
+     * @param floorButtonElevatorMotor received from the floor
      * @param floor                is the destination
      */
-    public synchronized void checkPriority(int origin, String floorButtonDirection, int floor) {
+    public synchronized void checkPriority(int origin, String floorButtonElevatorMotor, int floor) {
 
         // Splits Elevator into different hashmaps depending on their direction
         HashMap<String, Integer> differenceUp = new HashMap<>();
@@ -506,24 +499,21 @@ public class Scheduler {
         HashMap<String, Integer> differenceStopped = new HashMap<>();
 
         //Calculates the differences and add to above maps
-        for (ElevatorData currElevator : elevators) {
+        for (Elevator currElevator : elevators) {
             // difference - used to calculate difference from the elevators current floor
             // and the new floor request
             if (!elevatorsStuck.contains(currElevator) || elevatorsStuck.isEmpty()) {
                 int difference = currElevator.getCurrentFloor() - origin;
-                if (currElevator.getDirection().equals(Direction.DOWN)) {
+                if (currElevator.getElevatorMotor().equals(ElevatorMotor.DOWN)) {
                     if (difference > 0) {
-                        differenceDown.put(currElevator.name, difference);
-//					downElevators.add(currElevator);
+                        differenceDown.put(currElevator.getID(), difference);
                     }
-                } else if (currElevator.getDirection().equals(Direction.UP)) {
+                } else if (currElevator.getElevatorMotor().equals(ElevatorMotor.UP)) {
                     if (difference < 0) {
-                        differenceUp.put(currElevator.name, difference);
-//					upElevators.add(currElevator);
+                        differenceUp.put(currElevator.getID(), difference);
                     }
-                } else if (currElevator.getDirection().equals(Direction.STOPPED)) {
-                    differenceStopped.put(currElevator.getName(), difference);
-//				stoppedElevators.add(currElevator);
+                } else if (currElevator.getElevatorMotor().equals(ElevatorMotor.STOP)) {
+                    differenceStopped.put(currElevator.getID(), difference);
                 } else {
                     // if direction is not correct
 
@@ -532,20 +522,20 @@ public class Scheduler {
 
         }
 
-        switch (floorButtonDirection) {
+        switch (floorButtonElevatorMotor) {
             case "DOWN": // Elevator is going down
                 if (!differenceDown.isEmpty()) {
-                    getElevatorFromDifference(differenceDown, origin, true, floor, floorButtonDirection);
+                    getElevatorFromDifference(differenceDown, origin, true, floor, floorButtonElevatorMotor);
                 } else if (!differenceStopped.isEmpty()) {
-                    getElevatorFromDifference(differenceStopped, origin, true, floor, floorButtonDirection);
+                    getElevatorFromDifference(differenceStopped, origin, true, floor, floorButtonElevatorMotor);
 
                 } else {
                     // Case where there are no elevators going down or stopped, so we assign the
                     // floor request to an elevator with the least amount of requests
                     //(ie. the size of their up and down queues)
-                    ElevatorData minElevatorReq = elevators.get(elevatorBeingUsed);
+                    Elevator minElevatorReq = elevators.get(elevatorBeingUsed);
                     int minSum = minElevatorReq.getUpQueue().size() + minElevatorReq.getDownQueue().size();
-                    for (ElevatorData e : elevators) {
+                    for (Elevator e : elevators) {
                         int sumOfSizeQueues = e.getDownQueue().size() + e.getUpQueue().size();
                         if (sumOfSizeQueues < minSum) {
                             minElevatorReq = e;
@@ -553,8 +543,8 @@ public class Scheduler {
                         }
                     }
 
-                    for (ElevatorData e : elevators) {
-                        if (minElevatorReq.getName().equals(e.getName())) {
+                    for (Elevator e : elevators) {
+                        if (minElevatorReq.getID().equals(e.getID())) {
                             e.addToDown(origin);
                             e.addToDown(floor);
                             e.setElevatorLamps(true, floor);
@@ -568,18 +558,18 @@ public class Scheduler {
             case "UP": // Elevator is going up
                 if (!differenceUp.isEmpty()) {
 
-                    getElevatorFromDifference(differenceUp, origin, false, floor, floorButtonDirection);
+                    getElevatorFromDifference(differenceUp, origin, false, floor, floorButtonElevatorMotor);
                 } else if (!differenceStopped.isEmpty()) {
 
-                    getElevatorFromDifference(differenceStopped, origin, false, floor, floorButtonDirection);
+                    getElevatorFromDifference(differenceStopped, origin, false, floor, floorButtonElevatorMotor);
 
                 } else {
                     // Case where there are no elevators going down or stopped, so we assign the
                     // floor request to an elevator with the least amount of requests
                     //(ie. the size of their up and down queues)
-                    ElevatorData minElevatorReq = elevators.get(elevatorBeingUsed);
+                    Elevator minElevatorReq = elevators.get(elevatorBeingUsed);
                     int minSum = minElevatorReq.getUpQueue().size() + minElevatorReq.getDownQueue().size();
-                    for (ElevatorData e : elevators) {
+                    for (Elevator e : elevators) {
                         int sumOfSizeQueues = e.getDownQueue().size() + e.getUpQueue().size();
                         if (sumOfSizeQueues < minSum) {
                             minElevatorReq = e;
@@ -587,8 +577,8 @@ public class Scheduler {
                         }
                     }
 
-                    for (ElevatorData e : elevators) {
-                        if (minElevatorReq.getName().equals(e.getName())) {
+                    for (Elevator e : elevators) {
+                        if (minElevatorReq.getID().equals(e.getID())) {
                             e.addToUp(origin);
                             e.addToUp(floor);
                             e.setElevatorLamps(false, floor);
@@ -610,40 +600,31 @@ public class Scheduler {
      *
      * @return
      */
-    public synchronized int checkSend(ElevatorData elevator) {
+    public synchronized int checkSend(Elevator elevator) {
         int toVisit = -1;
 
-        int currFloor = elevator.getCurrentFloor();
         //System.out.println("In check send");
 
         // If up queue is empty and down queue is not empty, set the elevator direction
         // to down
         if (elevator.getUpQueue().isEmpty() && !elevator.getDownQueue().isEmpty()) {
-            //System.out.println("printing down queue");
-            for (int i : elevator.getDownQueue()) {
-                //System.out.println(i);
-            }
-            elevator.setDirection(Direction.DOWN);
+            elevator.setElevatorMotor(ElevatorMotor.DOWN);
         }
         // If up queue is not empty and down queue is empty, set the elevator direction
         // to up
         else if (!elevator.getUpQueue().isEmpty() && elevator.getDownQueue().isEmpty()) {
-            //System.out.println("printing up queue");
-            for (int i : elevator.getUpQueue()) {
-                //System.out.println(i);
-            }
-            elevator.setDirection(Direction.UP);
+            elevator.setElevatorMotor(ElevatorMotor.UP);
         }
 
         // If up queue is not empty or down queue is not empty
         if (!elevator.getUpQueue().isEmpty() || !elevator.getDownQueue().isEmpty()) {
             // If the elevator direction is up, get floor to visit from up queue
-            if (elevator.getDirection() == Direction.UP) {
+            if (elevator.getElevatorMotor() == ElevatorMotor.UP) {
                 toVisit = (Integer) elevator.getUpQueue().get(0);
                 elevator.removeUp();
             }
             // If the elevator direction is up, get floor to visit from down queue
-            else if (elevator.getDirection() == Direction.DOWN) {
+            else if (elevator.getElevatorMotor() == ElevatorMotor.DOWN) {
                 toVisit = (Integer) elevator.getDownQueue().get(0);
                 elevator.removeDown();
             }
@@ -693,7 +674,7 @@ public class Scheduler {
                 System.exit(1);
             }
             String name = new String(receivePacket.getData(), 0, this.receivePacket.getLength());
-            elevators.add(new ElevatorData(name, receivePacket.getPort(), receivePacket.getAddress(), 1));
+            elevators.add(new Elevator(name, receivePacket.getPort(), receivePacket.getAddress(), 1));
             if (elevators.size() == numOfElevators) {
                 break;
             }
@@ -706,24 +687,10 @@ public class Scheduler {
         //prints out the floor and elevator ports and address
         System.out.println("Floor port is: " + portFloor + " and address is: " + addressFloor);
         for (int z = 0; z < elevators.size(); z++) {
-            ElevatorData temp = elevators.get(z);
+            Elevator temp = elevators.get(z);
             System.out
-                    .println(temp.getName() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
+                    .println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
         }
-    }
-
-    /**
-     * A to string method for the byte array
-     * Converts byte array to string
-     *
-     * @return string
-     */
-    private static String toString(byte[] temp) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b : temp) {
-            builder.append(String.format("%02X ", b));
-        }
-        return builder.toString();
     }
 
     /* For testing purposes */
@@ -752,7 +719,7 @@ public class Scheduler {
         return this.currentState2;
     }
 
-    public Direction getDirection() {
+    public ElevatorMotor getElevatorMotor() {
         return this.direction;
     }
 
@@ -784,11 +751,11 @@ public class Scheduler {
         return this.sendReceiveSocketElevators;
     }
 
-    public ArrayList<ElevatorData> getElevators() {
+    public ArrayList<Elevator> getElevators() {
         return this.elevators;
     }
 
-    public void setElevators(ArrayList<ElevatorData> e) {
+    public void setElevators(ArrayList<Elevator> e) {
         this.elevators = e;
     }
 

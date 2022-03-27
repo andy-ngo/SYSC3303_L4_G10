@@ -1,5 +1,3 @@
-
-
 import java.sql.Timestamp;
 
 public class FloorRequest {
@@ -9,7 +7,7 @@ public class FloorRequest {
     private long doorTime;
     private int floorRequestOrigin;
     private int floorDestination;
-    private Direction direction;
+    private ElevatorMotor direction;
 
     /**
      * Initializes all the variables, when parameter are given
@@ -22,7 +20,7 @@ public class FloorRequest {
      * @param direction        The direction the elevator need to go
      */
     public FloorRequest(String requestTime, long travelTime, long doorTime, int floorOrigin, int floorDestination,
-                        Direction direction) {
+                        ElevatorMotor direction) {
         this.requestTime = requestTime;
         this.direction = direction;
         this.floorDestination = floorDestination;
@@ -36,7 +34,7 @@ public class FloorRequest {
      */
     public FloorRequest() {
         this.requestTime = (String.valueOf(new Timestamp(System.currentTimeMillis())));
-        this.direction = Direction.STOPPED;
+        this.direction = ElevatorMotor.STOP;
         this.floorDestination = -1;
         this.floorRequestOrigin = -1;
         this.travelTime = -1L;
@@ -71,7 +69,7 @@ public class FloorRequest {
     /**
      * @return returns directions
      */
-    public Direction getDirection() {
+    public ElevatorMotor getElevatorMotor() {
         return this.direction;
     }
 
@@ -90,26 +88,8 @@ public class FloorRequest {
     }
 
     public String toString() {
-        String stringVersion = getRequestTime() + " " + getFloorRequestOrigin() + " " + getDirection() + " " + getFloorDestination();
+        String stringVersion = getRequestTime() + " " + getFloorRequestOrigin() + " " + getElevatorMotor() + " " + getFloorDestination();
         return stringVersion;
     }
 
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//
-//		FloorRequest f = (FloorRequest) obj;
-//
-//		return (f.requestTime == this.getRequestTime() &&
-//				f.travelTime == this.travelTime &&
-//				f.doorTime == this.doorTime &&
-//				f.floorRequestOrigin == this.floorRequestOrigin &&
-//				f.floorDestination == this.floorDestination &&
-//				f.direction == this.direction);
-//	}
 }

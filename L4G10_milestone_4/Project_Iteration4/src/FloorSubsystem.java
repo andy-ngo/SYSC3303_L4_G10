@@ -1,4 +1,3 @@
-
 import java.io.*; // Import the File class
 import java.net.*;
 import java.sql.Timestamp;
@@ -123,19 +122,19 @@ public class FloorSubsystem implements Runnable {
 				} else {
 					String direction = requestArray[2];
 					Boolean[] currLampStatus = floorLamps.get(Integer.parseInt(requestArray[1]));
-					Direction requestDirection;
+					ElevatorMotor requestElevatorMotor;
 					if (direction.equals("Up")) {
 						currLampStatus[0] = true;
-						requestDirection = Direction.UP;
+						requestElevatorMotor = ElevatorMotor.UP;
 					} else if (direction.equals("Down")) {
-						requestDirection = Direction.DOWN;
+						requestElevatorMotor = ElevatorMotor.DOWN;
 						currLampStatus[1] = true;
 					} else {
-						requestDirection = Direction.STOPPED;
+						requestElevatorMotor = ElevatorMotor.STOP;
 					}
 
 					request = new FloorRequest(requestArray[0], travelTime, doorTime, Integer.parseInt(requestArray[1]),
-							Integer.parseInt(requestArray[3]), requestDirection);
+							Integer.parseInt(requestArray[3]), requestElevatorMotor);
 				}
 				this.listofRequests.add(request);
 			}

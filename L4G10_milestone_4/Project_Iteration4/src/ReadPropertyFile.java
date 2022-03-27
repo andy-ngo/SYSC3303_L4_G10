@@ -1,5 +1,3 @@
-
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,7 +63,7 @@ public class ReadPropertyFile {
      *
      * @return the open/close door time
      */
-    public long getTimeToOpenCloseDoors() {
+    public long getDoorTimes() {
         return Long.parseLong(this.property.getProperty("time_open_close_doors_sec")) * NANOSEC;
     }
 
@@ -74,7 +72,7 @@ public class ReadPropertyFile {
      *
      * @return time between floors taken by the elevator
      */
-    public long getTimeBetweenFloors() {
+    public long getFloorTravelTimes() {
         return Long.parseLong(this.property.getProperty("time_between_floors_sec")) * NANOSEC;
     }
     
