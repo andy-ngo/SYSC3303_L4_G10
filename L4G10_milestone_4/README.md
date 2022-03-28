@@ -18,7 +18,7 @@ ElevatorSubsystem.java
 Elevator.java
 - A class that has all the elevator properties that can be used in tests cases and the elevatorSubsystem
 
-Elevator_Motor.java
+ElevatorMotor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
 
 FloorRequest.java
@@ -35,9 +35,7 @@ ReadPropertyFile.java
 
 ## Test Included:
 JUnit Test files to verify that it is working
-- ElevatorTest.java
 - FloorSubsystemTest.java
-- SchedulerTest.java
 
 ## UML Diagrams:
 - ClassDiagram4.png
