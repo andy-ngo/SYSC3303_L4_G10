@@ -347,6 +347,13 @@ public class Elevator {
 	}
 
 	/**
+	 * @return the elevator's direction
+	 */
+	public ElevatorMotor getDirection() {
+		return elevatorMotor;
+	}
+	
+	/**
 	 * This will be used to set the elevator lamps
 	 * 
 	 * @param add, if it is true it will add the floor number to the lamp array

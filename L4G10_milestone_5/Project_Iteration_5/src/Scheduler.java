@@ -661,6 +661,11 @@ public class Scheduler {
                     .println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
         }
     }
+
+    public void closeSockets() {
+        this.sendReceiveSocketElevators.close();
+        this.sendReceiveSocketFloor.close();
+    }
     
     public ArrayList<Elevator> getElevators() {
         return this.elevators;
@@ -668,6 +673,10 @@ public class Scheduler {
 
     public ArrayList<String> getTimeStamps() {
         return timeStamps;
+    }
+    
+    public void setElevators(ArrayList<Elevator> e) {
+        this.elevators = e;
     }
 
     /**
