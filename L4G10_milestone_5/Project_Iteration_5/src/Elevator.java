@@ -16,7 +16,7 @@ public class Elevator {
 	private InetAddress address;
 	private ArrayList<Integer> upQueue;
 	private ArrayList<Integer> downQueue;
-	private int currentFloor, currDestination;
+	private int currentFloor, currDestination, startFloor;
 	private ElevatorMotor elevatorMotor;
 	private ReadPropertyFile r;
 	private boolean elevatorLampArray[];
@@ -42,6 +42,7 @@ public class Elevator {
 		downQueue = new ArrayList<>();
 		destinations = new ArrayList<>();
 		this.currentFloor = currentFloor;
+		this.startFloor = 1;
 		this.currDestination = -1;
 		elevatorMotor = ElevatorMotor.STOP;
 		r = new ReadPropertyFile();
@@ -332,6 +333,17 @@ public class Elevator {
 		Collections.sort(this.upQueue);
 		Collections.sort(this.downQueue);
 		Collections.reverse(this.downQueue);
+	}
+
+	/**
+	 * @return name of elevator
+	 */
+	public String getId() {
+		return id;
+	}
+
+	public int getStartFloor() {
+		return startFloor;
 	}
 
 	/**

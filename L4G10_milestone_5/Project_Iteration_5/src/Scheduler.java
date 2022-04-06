@@ -21,6 +21,7 @@ public class Scheduler {
     private int count = 0;
     private String mess;
     private Random rand;
+    private ElevatorDisplay display;
 
     private static ReadPropertyFile r = new ReadPropertyFile();
 
@@ -44,6 +45,8 @@ public class Scheduler {
         elevators = new ArrayList<>();
         elevatorsStuck = new ArrayList<>();
         timeStamps = new ArrayList<>();
+        
+        display = new ElevatorDisplay(this);
 
         try {
             sendReceiveSocketFloor = new DatagramSocket(r.getFloorPort());
@@ -110,10 +113,12 @@ public class Scheduler {
                 for (int i = 0; i <= maxElevator; i++) {
                     sendToElevator();
                 }
+                display.refresh();
                 currentState1 = SchedulerStates.STATE_2;
                 break;
             case STATE_2://Send to floor
                 sendToFloor();
+                display.refresh();
                 currentState1 = SchedulerStates.STATE_1;
                 count++;
                 break;
@@ -133,10 +138,12 @@ public class Scheduler {
                         i--;
                     }
                 }
+                display.refresh();
                 currentState2 = SchedulerStates.STATE_2;
                 break;
             case STATE_2: //receive from floor
                 receiveFromFloor(data);
+                display.refresh();
                 currentState2 = SchedulerStates.STATE_1;
                 break;
         }
@@ -653,6 +660,14 @@ public class Scheduler {
             System.out
                     .println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
         }
+    }
+    
+    public ArrayList<Elevator> getElevators() {
+        return this.elevators;
+    }
+
+    public ArrayList<String> getTimeStamps() {
+        return timeStamps;
     }
 
     /**
