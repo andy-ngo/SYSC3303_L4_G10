@@ -237,7 +237,7 @@ public class ElevatorSubsystem implements Runnable
                 
             case MOVE_STATE:
                 // Elevator lamps will turn on and any buttons pushed will add new requests
-                parse(this.packetString[0], "Floor Number");
+            	parse(this.packetString[0], "Floor Number");
                 parse(this.packetString[1], "ElevatorMotor");
                 currentState = ElevatorStates.MOVING_STATE;
                 time_x = System.nanoTime();
@@ -288,7 +288,6 @@ public class ElevatorSubsystem implements Runnable
                 if (System.nanoTime() >= (doorTimes + time_x)) 
                 {
                     motorState = ElevatorMotor.STOP;
-                    
                     // Send a message to the Scheduler about the arrival
                     this.currFloor = Integer.parseInt(this.packetString[0]);
                     msg = id + "-arrived-" + this.packetString[0];
@@ -377,6 +376,25 @@ public class ElevatorSubsystem implements Runnable
             }
         }
     }
+    
+    /**
+     * Creating getters that can be used for Unit Testing
+     */
+    public ElevatorMotor getMotorState() 
+    {
+        return this.motorState;
+    }
+    
+    public int getCurrentFloor()
+    {
+    	return this.currFloor;
+    }
+    
+    public String getID()
+    {
+    	return this.id;
+    }
+
     
     /**
      * The main function that will run the elevator subsystem
