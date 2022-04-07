@@ -1,3 +1,15 @@
+/**
+ * @author Andy Ngo, Ali Fahd
+ * 
+ * Version: 1.0V
+ * 
+ * Description:
+ * This will initialize the GUI for the system, this class will show the 4 elevators and 22 floors
+ * When each elevator is clicked on, it will trigger an event where a pop up window will appear
+ * the window will display the time stamp, status, destination, and current floor
+ * 
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -33,6 +45,10 @@ public class ElevatorDisplay extends JFrame {
 	// <elevator, {Up, Down}>
 	private HashMap<Integer, Boolean[]> floorLamps = new HashMap<Integer, Boolean[]>();
 
+	/**
+	 * Constructor for the elevator GUI
+	 * @param model
+	 */
 	public ElevatorDisplay(Scheduler model) {
 		super("Elevator");
 		currFloor = new int[columns - 1];
@@ -96,7 +112,10 @@ public class ElevatorDisplay extends JFrame {
 			addFloorMouseListener(i);
 		}
 	}
-
+	
+	/**
+	 * 
+	 */
 	private void initializeMaps() {
 		floorLamps = new HashMap<Integer, Boolean[]>();
 		for (int i = 0; i < r.getNumFloors(); i++) {
@@ -113,6 +132,13 @@ public class ElevatorDisplay extends JFrame {
 		}
 	}
 
+	/**
+	 * Upon this event, the user must click on the elevator and it will trigger a window
+	 * to pop up to display the elevator status which will constantly update with the
+	 * updateElevatorFrame method
+	 * @param floor, which floor the elevator is currently on
+	 * @param elevator, which elevator is being clicked
+	 */
 	public void addElevatorMouseListener(int floor, int elevator) {
 		String elevatorTitle = "Elevator " + elevator;
 		grid[floor][elevator].addMouseListener(new MouseListener() {

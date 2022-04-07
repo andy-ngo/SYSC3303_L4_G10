@@ -1,13 +1,14 @@
 /**
  * @author Andy Ngo, Karim Mahrous
  * 
- * Verion: 4.0V
+ * Version: 4.0V
  * 
  * Description:
  * The purpose of this class is for the elevator thread and it will check the floor request array and make sure
  * if there are any requests. If there are requests the elevator will check to go up and down or to stop when it arrives.
  * A state machine is implemented to organize some parts of the code.
  * This class will be synchronizing with the scheduler class.
+ * 
  */
 
 import java.io.IOException;
