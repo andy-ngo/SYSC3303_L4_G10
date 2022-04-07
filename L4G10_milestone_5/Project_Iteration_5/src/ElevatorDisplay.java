@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +17,7 @@ public class ElevatorDisplay extends JFrame {
 
 	private int currFloor[];
 	private JLabel grid[][];
-	private Color bgCol;
+	private Color backgroundColour;
 
 	private String imageName = "";
 	private String currImageName = "";
@@ -28,9 +27,7 @@ public class ElevatorDisplay extends JFrame {
 	private JTextArea properties[];
 	private JLabel floorLampsGuis[][] = new JLabel[r.getNumFloors()][2];
 	private JLabel arrivalSensorGuis[] = new JLabel[r.getNumFloors()];
-	// <elevator, floorArrival sensor that the elevator has arrived at
 	private HashMap<Integer, ArrayList<Boolean>> arrivalSensors = new HashMap<Integer, ArrayList<Boolean>>();
-	// <elevator, {Up, Down}>
 	private HashMap<Integer, Boolean[]> floorLamps = new HashMap<Integer, Boolean[]>();
 
 	public ElevatorDisplay(Scheduler model) {
@@ -42,13 +39,11 @@ public class ElevatorDisplay extends JFrame {
 		}
 		this.model = model;
 
-		// background color
-		bgCol = new Color(245,245,220);
+		backgroundColour = new Color(245,245,220);
 
-		// Container to hold elevator view properties
 		container = getContentPane();
 		container.setLayout(new GridLayout(rows, columns));
-		container.setBackground(bgCol);
+		container.setBackground(backgroundColour);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(width, height);
@@ -58,7 +53,6 @@ public class ElevatorDisplay extends JFrame {
 		initializeElevatorFrames();
 		initializeFloorFrames();
 
-		// Initialize grid
 		initializeGrid();
 
 		setVisible(true);
@@ -69,15 +63,12 @@ public class ElevatorDisplay extends JFrame {
 	 * 
 	 */
 	private void initializeGrid() {
-
-		// Initializing grid
 		grid = new JLabel[rows][columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				grid[i][j] = new JLabel();
 				grid[i][j].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 				grid[i][j].setVisible(true);
-
 				container.add(grid[i][j]);
 			}
 			grid[i][0].setText("FLOOR " + String.valueOf(rows - i));
@@ -151,8 +142,8 @@ public class ElevatorDisplay extends JFrame {
 
 	/**
 	 * 
-	 * @param floor
-	 * @param elevator
+	 * @param floor number
+	 * @param elevator number
 	 */
 	public void removeMouseListener(int floor, int elevator) {
 		MouseListener[] m = grid[floor][elevator].getMouseListeners();
@@ -162,7 +153,7 @@ public class ElevatorDisplay extends JFrame {
 	/**
 	 * Make floor frames clickable
 	 * 
-	 * @param floorIndex
+	 * @param floorIndex number
 	 */
 	public void addFloorMouseListener(int floorIndex) {
 		grid[floorIndex][0].addMouseListener(new MouseListener() {
@@ -201,30 +192,6 @@ public class ElevatorDisplay extends JFrame {
 	}
 
 	/**
-	 * 
-	 */
-	private void deserializeFloorSubsystem() {
-
-		try {
-			FileInputStream fis1 = new FileInputStream("arrival_sensors.ser");
-			FileInputStream fis2 = new FileInputStream("floor_lamps.ser");
-
-			ObjectInputStream ois1 = new ObjectInputStream(fis1);
-			ObjectInputStream ois2 = new ObjectInputStream(fis2);
-
-			this.arrivalSensors = (HashMap) ois1.readObject();
-			this.floorLamps = (HashMap) ois2.readObject();
-
-			fis1.close();
-			fis2.close();
-
-			ois1.close();
-			ois2.close();
-
-		} catch (Exception e) {}
-	}
-
-	/**
 	 * Initialize elevator frames
 	 */
 	public void initializeElevatorFrames() {
@@ -236,11 +203,11 @@ public class ElevatorDisplay extends JFrame {
 			elevatorFrames[i].setLayout(new GridLayout(propTitle.length, 1));
 			for (int j = 0; j < propTitle.length; j++) {
 				properties[j] = new JTextArea(propTitle[j]);
-				properties[j].setFont(new Font("Consolas", Font.BOLD, 20));
+				properties[j].setFont(new Font("Courier New", Font.BOLD, 20));
 				properties[j].setForeground(Color.BLACK);
 				properties[j].setText(propTitle[j]);
 				properties[j].setEditable(false);
-				properties[j].setBackground(bgCol);
+				properties[j].setBackground(backgroundColour);
 				elevatorFrames[i].add(properties[j]);
 			}
 		}
@@ -254,20 +221,18 @@ public class ElevatorDisplay extends JFrame {
 		for (int i = 0; i < floorStatuses.length; i++) {
 			floorStatuses[i] = new JFrame();
 			floorStatuses[i].setLayout(new GridLayout(3, 1));
-			floorStatuses[i].setBackground(this.bgCol);
+			floorStatuses[i].setBackground(this.backgroundColour);
 
-			// Setting up arrival sensor
 			arrivalSensorGuis[i] = new JLabel();
 			arrivalSensorGuis[i].setText("Arrival Sensor");
 			arrivalSensorGuis[i].setForeground(Color.BLACK);
-			arrivalSensorGuis[i].setFont(new Font("Consolas", Font.BOLD, 20));
+			arrivalSensorGuis[i].setFont(new Font("Courier New", Font.BOLD, 20));
 			arrivalSensorGuis[i].setHorizontalAlignment(SwingConstants.CENTER);
 			arrivalSensorGuis[i].setVerticalAlignment(SwingConstants.CENTER);
 			arrivalSensorGuis[i].setOpaque(false);
 
 			floorStatuses[i].add(arrivalSensorGuis[i]);
 
-			// Setting up layout for floor lamps
 			JPanel floorLampsGrid = new JPanel();
 			floorLampsGrid.setLayout(new GridLayout(floorLampsGuis.length, 1));
 
@@ -275,7 +240,7 @@ public class ElevatorDisplay extends JFrame {
 				floorLampsGuis[i][j] = new JLabel();
 				floorLampsGuis[i][j].setText(lampNames[j]);
 				floorLampsGuis[i][j].setForeground(Color.BLACK);
-				floorLampsGuis[i][j].setFont(new Font("Consolas", Font.BOLD, 20));
+				floorLampsGuis[i][j].setFont(new Font("Courier New", Font.BOLD, 20));
 				floorLampsGuis[i][j].setOpaque(false);
 				floorLampsGuis[i][j].setHorizontalAlignment(SwingConstants.CENTER);
 				floorLampsGuis[i][j].setVerticalAlignment(SwingConstants.CENTER);
@@ -298,12 +263,10 @@ public class ElevatorDisplay extends JFrame {
 		for (int i = 0; i < textAreas.length; i++) {
 			update[i] = (JTextArea) textAreas[i];
 		}
-		System.out.println("Timestamp: " + e.getTimestamp());
 		update[0].setText("Timestamp: " + e.getTimestamp());
 		update[1].setText("Status: " + e.getStatus() + " at " + String.valueOf(e.getCurrentFloor()));
 		update[2].setText("Current Floor: " + String.valueOf(e.getCurrentFloor()));
 
-		System.out.println("setting destination");
 		if (e.getDestination() != -1) {
 			System.out.println("dest is not -1");
 			update[3].setText("Destination: " + e.getDestination());
@@ -315,12 +278,6 @@ public class ElevatorDisplay extends JFrame {
 
 	/**
 	 * Updating floor subsystem frames
-	 * 
-	 * // <elevator, floorArrival sensors that the elevator has arrived at> private
-	 * HashMap<Integer, ArrayList<Boolean>> arrivalSensors = null;
-	 * 
-	 * // <elevator, {Up, Down}> private HashMap<Integer, Boolean[]> floorLamps =
-	 * null;
 	 */
 	private void updateFloorFrames() {
 		for (int i = 0; i < this.floorStatuses.length; i++) {
@@ -362,19 +319,15 @@ public class ElevatorDisplay extends JFrame {
 		ArrayList<Elevator> elevators = model.getElevators();
 		ArrayList<String> timestamps = model.getTimeStamps();
 
-
-		// Update the properties of each floor
-		deserializeFloorSubsystem();
 		updateFloorFrames();
 
-		// Updating each property of the elevator
 		for (Elevator e : elevators) {
 			int num = Integer.parseInt(e.getId().split("Elevator")[1]);
 			e.setTimestamp(timestamps.get(num - 1));
 
-			// Highlight elevator's destination if it is set
+			//highlight elevator's destination if it is set
 			if (e.getDestination() != -1) {
-				grid[rows - e.getDestination()][num].setBackground(Color.YELLOW);
+				grid[rows - e.getDestination()][num].setBackground(Color.BLUE);
 				grid[rows - e.getDestination()][num].setOpaque(true);
 
 				//Lights up the direction lights at floor receiving the command
@@ -423,6 +376,4 @@ public class ElevatorDisplay extends JFrame {
 			}
 		}
 	}
-
-	public static void main(String[] args) {}
 }
