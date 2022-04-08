@@ -1,15 +1,3 @@
-/**
- * @author Andy Ngo, Ali Fahd
- * 
- * Version: 1.0V
- * 
- * Description:
- * This will initialize the GUI for the system, this class will show the 4 elevators and 22 floors
- * When each elevator is clicked on, it will trigger an event where a pop up window will appear
- * the window will display the time stamp, status, destination, and current floor
- * 
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -22,10 +10,10 @@ public class ElevatorDisplay extends JFrame {
 	private Scheduler model;
 	private Container container;
 
-	public static ReadPropertyFile r = new ReadPropertyFile();
-	private int columns = r.getNumElevators() + 1;
-	private int rows = r.getNumFloors();
-	private int width = 500, height = 1000;
+	public static ReadPropertyFile rpf = new ReadPropertyFile();
+	private int columns = rpf.getNumElevators() + 1;
+	private int rows = rpf.getNumFloors();
+	private int width = 550, height = 850;
 
 	private int currFloor[];
 	private JLabel grid[][];
@@ -34,18 +22,14 @@ public class ElevatorDisplay extends JFrame {
 	private String imageName = "";
 	private String currImageName = "";
 	private Image elevatorImage;
-	final JFrame[] elevatorFrames = new JFrame[r.getNumElevators()];
-	final JFrame[] floorStatuses = new JFrame[r.getNumFloors()];
+	final JFrame[] elevatorFrames = new JFrame[rpf.getNumElevators()];
+	final JFrame[] floorStatuses = new JFrame[rpf.getNumFloors()];
 	private JTextArea properties[];
-	private JLabel floorLampsGuis[][] = new JLabel[r.getNumFloors()][2];
-	private JLabel arrivalSensorGuis[] = new JLabel[r.getNumFloors()];
+	private JLabel floorLampsGuis[][] = new JLabel[rpf.getNumFloors()][2];
+	private JLabel arrivalSensorGuis[] = new JLabel[rpf.getNumFloors()];
 	private HashMap<Integer, ArrayList<Boolean>> arrivalSensors = new HashMap<Integer, ArrayList<Boolean>>();
 	private HashMap<Integer, Boolean[]> floorLamps = new HashMap<Integer, Boolean[]>();
 
-	/**
-	 * Constructor for the elevator GUI
-	 * @param model
-	 */
 	public ElevatorDisplay(Scheduler model) {
 		super("Elevator");
 		currFloor = new int[columns - 1];
@@ -94,7 +78,7 @@ public class ElevatorDisplay extends JFrame {
 		elevatorImage = new ImageIcon(this.getClass().getResource("elevator_image.png")).getImage();
 		Image elevator = elevatorImage.getScaledInstance(width / columns, height / rows, java.awt.Image.SCALE_SMOOTH);
 
-		for (int i = 0; i < r.getNumElevators(); i++) {
+		for (int i = 0; i < rpf.getNumElevators(); i++) {
 			grid[rows - 1][i + 1].setIcon(new ImageIcon(elevator));
 			addElevatorMouseListener(rows - 1, i + 1);
 		}
@@ -103,33 +87,23 @@ public class ElevatorDisplay extends JFrame {
 			addFloorMouseListener(i);
 		}
 	}
-	
-	/**
-	 * 
-	 */
+
 	private void initializeMaps() {
 		floorLamps = new HashMap<Integer, Boolean[]>();
-		for (int i = 0; i < r.getNumFloors(); i++) {
+		for (int i = 0; i < rpf.getNumFloors(); i++) {
 			Boolean[] b = { false, false };
 			floorLamps.put(i + 1, b);
 		}
 		arrivalSensors = new HashMap<Integer, ArrayList<Boolean>>();
-		for (int i = 0; i < r.getNumFloors(); i++) {
+		for (int i = 0; i < rpf.getNumFloors(); i++) {
 			ArrayList<Boolean> b = new ArrayList<>();
-			for (int j = 0; j < r.getNumElevators(); j++) {
+			for (int j = 0; j < rpf.getNumElevators(); j++) {
 				b.add(false);
 			}
 			arrivalSensors.put(i + 1, b);
 		}
 	}
 
-	/**
-	 * Upon this event, the user must click on the elevator and it will trigger a window
-	 * to pop up to display the elevator status which will constantly update with the
-	 * updateElevatorFrame method
-	 * @param floor, which floor the elevator is currently on
-	 * @param elevator, which elevator is being clicked
-	 */
 	public void addElevatorMouseListener(int floor, int elevator) {
 		String elevatorTitle = "Elevator " + elevator;
 		grid[floor][elevator].addMouseListener(new MouseListener() {
