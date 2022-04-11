@@ -1,3 +1,14 @@
+/**
+ * @author Ali Fahd, Andy Ngo
+ * 
+ * Version: 1.0V
+ * 
+ * Description:
+ * The purpose of this class is to create the GUI for the elevator system. It will simulate the view
+ * of h
+ * 
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -22,6 +33,7 @@ public class ElevatorDisplay extends JFrame {
 	private String imageName = "";
 	private String currImageName = "";
 	private Image elevatorImage;
+	private Image lampImage;
 	final JFrame[] elevatorFrames = new JFrame[rpf.getNumElevators()];
 	final JFrame[] floorStatuses = new JFrame[rpf.getNumFloors()];
 	private JTextArea properties[];
@@ -76,9 +88,12 @@ public class ElevatorDisplay extends JFrame {
 		}
 
 		elevatorImage = new ImageIcon(this.getClass().getResource("elevator_image.png")).getImage();
+		lampImage = new ImageIcon(this.getClass().getResource("floor_lamp.png")).getImage();
 		Image elevator = elevatorImage.getScaledInstance(width / columns, height / rows, java.awt.Image.SCALE_SMOOTH);
+		Image lamp = lampImage.getScaledInstance(width / columns, height / rows, java.awt.Image.SCALE_SMOOTH);
 
 		for (int i = 0; i < rpf.getNumElevators(); i++) {
+			grid[rows - 1][i + 1].setIcon(new ImageIcon(lamp));
 			grid[rows - 1][i + 1].setIcon(new ImageIcon(elevator));
 			addElevatorMouseListener(rows - 1, i + 1);
 		}
@@ -104,6 +119,12 @@ public class ElevatorDisplay extends JFrame {
 		}
 	}
 
+	/**
+	 * This method will check when the user clicks on a elevator, this will then create
+	 * a window that will show the status of the current elevator
+	 * @param floor
+	 * @param elevator
+	 */
 	public void addElevatorMouseListener(int floor, int elevator) {
 		String elevatorTitle = "Elevator " + elevator;
 		grid[floor][elevator].addMouseListener(new MouseListener() {
@@ -141,7 +162,7 @@ public class ElevatorDisplay extends JFrame {
 	}
 
 	/**
-	 * 
+	 * This will take away the mouse listener event
 	 * @param floor number
 	 * @param elevator number
 	 */
@@ -251,7 +272,7 @@ public class ElevatorDisplay extends JFrame {
 	}
 
 	/**
-	 * 
+	 * This will update the window that pops up when the elevator is clicked
 	 * @param frameNum
 	 * @param e
 	 */
@@ -354,6 +375,19 @@ public class ElevatorDisplay extends JFrame {
 				imageName = "elevator_door_open.png";
 			} else {
 				imageName = "elevator_image.png";
+			}
+			
+			if (e.getElevatorMotor() == ElevatorMotor.UP)
+			{
+				imageName = "up_lamp.png";
+			}
+			else if (e.getElevatorMotor() == ElevatorMotor.DOWN)
+			{
+				imageName = "down_lamp.png";
+			}
+			else
+			{
+				imageName = "floor_lamp.png";
 			}
 
 			System.out.println(e.getId() + ": " + e.getStatus());
