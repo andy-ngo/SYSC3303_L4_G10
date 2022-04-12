@@ -44,7 +44,7 @@ JUnit Test files to verify that it is working
 
 ## UML Diagrams:
 - UML_ClassDiagram5.png
-- SequenceDiagram5.png
+- Error_SequenceDiagram5.png
 - Elevator_StateDiagram5.png
 - Scheduler_StateDiagram5.png
 - Elevator_FloorStuck_TimingDiagram5.png
