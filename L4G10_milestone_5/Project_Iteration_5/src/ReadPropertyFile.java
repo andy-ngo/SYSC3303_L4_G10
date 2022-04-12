@@ -2,6 +2,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/*
+ * Information from config file for settings on this program
+ * */
 public class ReadPropertyFile {
     Properties property;
     private static final long NANOSEC = 1000000000;
@@ -72,14 +75,5 @@ public class ReadPropertyFile {
      */
     public long getFloorTravelTimes() {
         return Long.parseLong(this.property.getProperty("time_between_floors_sec")) * NANOSEC;
-    }
-    
-    /**
-     * Gets the path of the floor data json file from the config file
-     *
-     * @return json file path
-     */
-    public String getJsonPath() {
-        return this.property.getProperty("json_path");
     }
 }

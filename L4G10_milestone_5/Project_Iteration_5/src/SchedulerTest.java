@@ -1,15 +1,16 @@
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
+/*
+ * Test for class scheduler. Tests check to see if requests are distributed to the appropriate elevator queue.
+ */
 public class SchedulerTest extends TestCase {
 	private Scheduler scheduler;
 	private FloorSubsystem floor;
 	private FloorRequest floorRequest;
 	private byte[] data;
-	private int floorToVisit;
 	private DatagramSocket socket;
 
 	protected void setUp() throws Exception {
@@ -19,7 +20,6 @@ public class SchedulerTest extends TestCase {
 
 		floorRequest = floor.getRequests().remove(0);
 		data = floorRequest.toString().getBytes();
-		floorToVisit = 2;
 
 		socket = new DatagramSocket(50);
 	}
@@ -33,7 +33,7 @@ public class SchedulerTest extends TestCase {
 	/**
 	 * Method checks if request is added to appropriate queue
 	 */
-	public void testCheckPriority() {
+	public void testPriority() {
 		ArrayList<Elevator> elevators = new ArrayList<>();
 		DatagramPacket p = new DatagramPacket(new byte[100], 100);
 		Elevator e = new Elevator("Elevator1", p.getPort(), p.getAddress(), 0);
@@ -54,7 +54,7 @@ public class SchedulerTest extends TestCase {
 	/**
 	 * method updates the direction of the elevator
 	 */
-	public void testCheckSend() {
+	public void testUpdate() {
 		ArrayList<Elevator> elevators = new ArrayList<>();
 		DatagramPacket p = new DatagramPacket(new byte[100], 100);
 		Elevator e = new Elevator("Elevator1", p.getPort(), p.getAddress(), 0);

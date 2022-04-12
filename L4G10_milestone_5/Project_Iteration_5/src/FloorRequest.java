@@ -1,5 +1,8 @@
 import java.sql.Timestamp;
 
+/*
+ * Floor Request object containing request information.
+ */
 public class FloorRequest {
 
     private String requestTime;
@@ -93,8 +96,7 @@ public class FloorRequest {
      * @return string summary of floor request
      */
     public String toString() {
-        String stringVersion = getRequestTime() + " " + getFloorRequestOrigin() + " " + getElevatorMotor() + " " + getFloorDestination();
-        return stringVersion;
+        return getRequestTime() + " " + getFloorRequestOrigin() + " " + getElevatorMotor() + " " + getFloorDestination();
     }
 
 }

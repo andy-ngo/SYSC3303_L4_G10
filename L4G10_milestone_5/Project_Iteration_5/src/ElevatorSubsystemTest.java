@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Andy Ngo
  * Student ID: 101132278
  * Version: 5.0V

@@ -18,7 +18,7 @@ public class FloorSubsystem implements Runnable {
 	public int requestCount = 0;
 	private Map<Integer, Boolean[]> floorLamps;
 	private Map<Integer, ArrayList<Boolean>> arrivalSensors;
-	private static ReadPropertyFile r = new ReadPropertyFile();
+	private static ReadPropertyFile rpf = new ReadPropertyFile();
 
 	/**
 	 * Constructor for class floor subsystem
@@ -29,13 +29,13 @@ public class FloorSubsystem implements Runnable {
 		this.requests = new ArrayList<FloorRequest>();
 		floorLamps = new HashMap<Integer, Boolean[]>();
 		arrivalSensors = new HashMap<Integer, ArrayList<Boolean>>();
-		for (int i = 0; i < r.getNumFloors(); i++) {
+		for (int i = 0; i < rpf.getNumFloors(); i++) {
 			Boolean[] b = { false, false };
 			floorLamps.put(i + 1, b);
 		}
-		for (int i = 0; i < r.getNumFloors(); i++) {
+		for (int i = 0; i < rpf.getNumFloors(); i++) {
 			ArrayList<Boolean> b = new ArrayList<>();
-			for (int j = 0; j < r.getNumElevators(); j++) {
+			for (int j = 0; j < rpf.getNumElevators(); j++) {
 				b.add(false);
 			}
 			arrivalSensors.put(i + 1, b);
@@ -55,7 +55,7 @@ public class FloorSubsystem implements Runnable {
 	public void initialize() {
 		byte[] toSend = new byte[100];
 		try {
-			this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), r.getFloorPort());
+			this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -161,8 +161,7 @@ public class FloorSubsystem implements Runnable {
 	 * @param String floor - floor number to turn light off
 	 */
 	private void setFloorLampsOff(String floor) {
-		// Turn off Floor lamp at the floor it was requested at when elevator arrives at
-		// requested floor
+		//turn off Floor lamp at the floor it was requested at when elevator arrives at requested floor
 		Boolean[] b = floorLamps.get(Integer.parseInt(floor));
 		if (b[0]) {
 			b[0] = false;
@@ -182,8 +181,7 @@ public class FloorSubsystem implements Runnable {
 			String status = "ok";
 			byte[] toSend = status.getBytes();
 			try {
-				this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(),
-						r.getFloorPort());
+				this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -212,8 +210,7 @@ public class FloorSubsystem implements Runnable {
 			}
 			byte[] toSend = floorRequestData.getBytes();
 			try {
-				this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(),
-						r.getFloorPort());
+				this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -295,8 +292,7 @@ public class FloorSubsystem implements Runnable {
 			while (elevatorWait) {
 				byte[] toSend2 = floorStatus.getBytes();
 				try {
-					this.sendPacket = new DatagramPacket(toSend2, toSend2.length, InetAddress.getLocalHost(),
-							r.getFloorPort());
+					this.sendPacket = new DatagramPacket(toSend2, toSend2.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
 					System.exit(1);
@@ -382,7 +378,7 @@ public class FloorSubsystem implements Runnable {
 		String floorRequestData = wait.toString();
 		byte[] toSend = floorRequestData.getBytes();
 		try {
-			this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), r.getFloorPort());
+			this.sendPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -465,8 +461,7 @@ public class FloorSubsystem implements Runnable {
 		while (elevatorWait) {	//as long as the elevator is waiting
 			byte[] toSend2 = floorStatus.getBytes();
 			try {
-				this.sendPacket = new DatagramPacket(toSend2, toSend2.length, InetAddress.getLocalHost(),
-						r.getFloorPort());
+				this.sendPacket = new DatagramPacket(toSend2, toSend2.length, InetAddress.getLocalHost(), rpf.getFloorPort());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				System.exit(1);

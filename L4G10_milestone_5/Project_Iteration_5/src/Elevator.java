@@ -59,16 +59,14 @@ public class Elevator {
 	/**
 	 * Elevator constructor
 	 */
-	public Elevator() 
-	{
-	}
+	public Elevator(){}
 
 	// Getters and setters for the elevator
 	
 	/**
 	 * Getting the current floor that the elevator is on
 	 * 
-	 * @return currentFloor
+	 * @return int currentFloor
 	 */
 	public int getCurrentFloor() 
 	{
@@ -78,7 +76,7 @@ public class Elevator {
 	/**
 	 * Will set the current floor that the elevator is on
 	 * 
-	 * @param currentFloor, the current floor number
+	 * @param int currentFloor, the current floor number
 	 */
 	public void setCurrentFloor(int currentFloor) 
 	{
@@ -88,7 +86,7 @@ public class Elevator {
 	/**
 	 * Will get the error 
 	 *
-	 * @return error
+	 * @return int error
 	 */
 	public int getError() 
 	{
@@ -98,11 +96,11 @@ public class Elevator {
 	/**
 	 * Will set the error
 	 * 
-	 * @param x, the error number
+	 * @param num, the error number
 	 */
-	public void setError(int x) 
+	public void setError(int num) 
 	{
-		this.error = x;
+		this.error = num;
 	}
 
 	/**

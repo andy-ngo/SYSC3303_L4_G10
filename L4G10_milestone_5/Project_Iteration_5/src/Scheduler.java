@@ -4,6 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/*
+ * Schedules requests. Gets requests from floor subsystem and passes it to elevator subsystem.
+ */
 public class Scheduler {
 
     public ElevatorMotor direction;
@@ -23,7 +26,7 @@ public class Scheduler {
     private Random rand;
     private ElevatorDisplay display;
 
-    private static ReadPropertyFile r = new ReadPropertyFile();
+    private static ReadPropertyFile rpf = new ReadPropertyFile();
 
     /**
      * Enum for the states
@@ -49,8 +52,8 @@ public class Scheduler {
         display = new ElevatorDisplay(this);
 
         try {
-            sendReceiveSocketFloor = new DatagramSocket(r.getFloorPort());
-            sendReceiveSocketElevators = new DatagramSocket(r.getElevatorPort());
+            sendReceiveSocketFloor = new DatagramSocket(rpf.getFloorPort());
+            sendReceiveSocketElevators = new DatagramSocket(rpf.getElevatorPort());
         } catch (SocketException se) {
             se.printStackTrace();
             System.exit(1);
@@ -438,9 +441,9 @@ public class Scheduler {
      * @param floor stores the origin floor
      * @param down boolean that chooses whether the origin is up or down from the current elevator location
      * @param floor2 stores the destination
-     * @param dir stores the direction
+     * @param motor stores the direction
      */
-    private void getElevatorFromDifference(HashMap<String, Integer> differenceMap, int floor, boolean down, int floor2, String dir) {
+    private void getElevatorFromDifference(HashMap<String, Integer> differenceMap, int floor, boolean down, int floor2, String motor) {
         int minDifference = Collections.min(differenceMap.values());
         for (String currElevatorID : differenceMap.keySet()) {
             if (differenceMap.get(currElevatorID).equals(minDifference)) {
@@ -448,7 +451,7 @@ public class Scheduler {
                     if (e.getID().equals(currElevatorID)) {
                         if (down) {
                             e.addToDown(floor);
-                            if (dir.equals("UP")) {
+                            if (motor.equals("UP")) {
                                 e.addToUp(floor2);
                             } else {
                                 e.addToDown(floor2);
@@ -456,7 +459,7 @@ public class Scheduler {
                             break;
                         } else {
                             e.addToUp(floor);
-                            if (dir.equals("UP")) {
+                            if (motor.equals("UP")) {
                                 e.addToUp(floor2);
                             } else {
                                 e.addToDown(floor2);
@@ -610,9 +613,9 @@ public class Scheduler {
      * @param int numOfElevators
      */
     public void InitializePort(int numOfElevators) {
+        byte[] data = new byte[100];
         maxElevator = numOfElevators;
         maxElevator--;
-        byte[] data = new byte[100];
         receivePacket = new DatagramPacket(data, data.length);
         try {
             sendReceiveSocketFloor.receive(receivePacket);
@@ -657,8 +660,7 @@ public class Scheduler {
         System.out.println("Floor port is: " + portFloor + " and address is: " + addressFloor);
         for (int z = 0; z < elevators.size(); z++) {
             Elevator temp = elevators.get(z);
-            System.out
-                    .println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
+            System.out.println(temp.getID() + " port is: " + temp.getPort() + " and address is: " + temp.getAddress());
         }
     }
 
@@ -687,7 +689,7 @@ public class Scheduler {
     public static void main(String[] args) {
         Scheduler scheduler = new Scheduler();
 
-        scheduler.InitializePort(r.getNumElevators());
+        scheduler.InitializePort(rpf.getNumElevators());
         scheduler.sendAndReceive();
     }
 }

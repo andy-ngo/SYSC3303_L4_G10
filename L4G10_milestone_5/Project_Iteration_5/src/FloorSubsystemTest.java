@@ -1,10 +1,11 @@
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Map;
-
 import org.junit.Test;
 
+/*
+ * Class to test the Floor Subsystem class. Checks lamp r and adding requests.
+ */
 public class FloorSubsystemTest {
 	private FloorSubsystem floor = new FloorSubsystem("requests.txt");
 
@@ -38,13 +39,13 @@ public class FloorSubsystemTest {
 		lamps = sensors.get(floorNum);
 		sensorOn = lamps.get(elevatorIndex);
 		
-		assertEquals(true, sensorOn);	//check its on
+		assertEquals(true, sensorOn);//check its on
 		
-		floor.setLampsSensors("4", elevator, false);	//turn it off
+		floor.setLampsSensors("4", elevator, false);//turn it off
 		sensors = floor.getArrivalSensors();
 		lamps = sensors.get(floorNum);
 		sensorOn = lamps.get(elevatorIndex);
 		
-		assertEquals(false, sensorOn);	//check for on again
+		assertEquals(false, sensorOn);//check for on again
 	}
 }
