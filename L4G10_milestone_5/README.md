@@ -47,6 +47,7 @@ JUnit Test files to verify that it is working
 - Error_SequenceDiagram5.png
 - Elevator_StateDiagram5.png
 - Scheduler_StateDiagram5.png
+- Scheduler_TimingDiagram5.png
 - Elevator_FloorStuck_TimingDiagram5.png
 - Elevator_doorStuck_TimingDiagram5.png
 
