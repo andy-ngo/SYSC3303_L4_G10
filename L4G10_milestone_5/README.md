@@ -1,4 +1,4 @@
-# SYSC 3303 Project Iteration 4
+# SYSC 3303 Project Iteration 5
 # L4 Group 10
 
 ## Group Members:
@@ -18,6 +18,9 @@ ElevatorSubsystem.java
 Elevator.java
 - A class that has all the elevator properties that can be used in tests cases and the elevatorSubsystem
 
+ElevatorDisplay.java
+- GUI that display the elevators
+
 ElevatorMotor.java
 - A class to represent the function of the elevator to go up or down as well as stopping.
 
@@ -36,16 +39,46 @@ ReadPropertyFile.java
 ## Test Included:
 JUnit Test files to verify that it is working
 - FloorSubsystemTest.java
+- ElevatorSubsystemTest.java
+- SchedulerTest.java
 
 ## UML Diagrams:
-- ClassDiagram4.png
-- SequenceDiagram4.png
-- Elevator_StateDiagram4.png
-- Scheduler_StateDiagram4.png
-- Elevator_FloorStuck_TimingDiagram4.png
-- Elevator_doorStuck_TimingDiagram4.png
+- ClassDiagram5.png
+- SequenceDiagram5.png
+- Elevator_StateDiagram5.png
+- Scheduler_StateDiagram5.png
+- Elevator_FloorStuck_TimingDiagram5.png
+- Elevator_doorStuck_TimingDiagram5.png
 
 ## Breakdown of Responsibilities:
+## Iteration 5
+Ali Fahd:
+- Worked on the Report 
+- Worked on the Video
+- Worked on GUI Interface
+- Created Testing
+- Presented Final Project
+
+Karim Mahrous:
+- Worked on the Report 
+- Worked on the Video
+- Created Testing
+- Updated Code
+- Presented Final Project
+
+Andy Ngo:
+- Worked on the Report 
+- Worked on the Video
+- Created Testing
+- Updated Code
+- Presented Final Project
+
+Scharara Islam:
+- Updated UML Diagrams
+- Worked on the Report 
+- Worked on the Video
+- Presented Final Project
+
 ## Iteration 4
 Ali Fahd:
 - Updated source codes
